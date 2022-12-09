@@ -24,10 +24,10 @@
 ; GDT TABLE LOCATION
 [ORG 0x7C00]
 
-; SET VRES (hope this works :'D)
-mov ah, 0
-mov al, 02h
-int 10h
+; ; SET VRES (hope this works :'D)
+; mov ah, 0
+; mov al, 02h
+; int 10h
 
 jmp main
 
@@ -123,12 +123,14 @@ gdt:
 
 main:
 
-    cli            ; disable interrupts
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
+    cli            ; disable interrupts
+    pusha
     mov eax, cr0
     or al, 1       ; set PE (Protection Enable) bit in CR0 (Control Register 0)
     mov cr0, eax
+    popa
     ; END ENABLE PROTECTED MODE
 
     ; Perform far jump to selector 08h (offset into GDT, pointing at a 32bit PM code segment descriptor)
@@ -136,12 +138,12 @@ main:
 
 
     ; INITIALIZE A20 LINE
-    in al, 0x92
-    test al, 2
+    ; in al, 0x92
+    ; test al, 2
     jmp 08h:PModeMain ; Jump to Protected Mode Main
-    or al, 2
-    and al, 0xFE
-    out 0x92, al
+    ; or al, 2
+    ; and al, 0xFE
+    ; out 0x92, al
 
     [BITS 32]
     PModeMain:
@@ -158,10 +160,11 @@ main:
         ; call _start
         ; [TEST] Print Exclamation mark to scren
 
-        mov ebx, [0xb8000]    ; The video address
-        mov al, '!'         ; The character to be print
-        mov ah, 0x0F        ; The color: white(F) on black(0)
-        mov [ebx], ax        ; Put the character into the video memory
+        mov edi, 0xb8000    ; The video address
+        mov bl, '.'         ; The character to be print
+        mov dl, bl        ; The color: white(F) on black(0)
+        mov dh, 63
+        mov word [edi], dx        ; Put the character into the video memory
         ; HANG IF THE KERNEL DECIDES TO RETURN
 
     .hang:
@@ -172,7 +175,7 @@ main:
         jmp .hang
 
 
-; Fill up empty space with zeroes
+; Fill up empty space with zeroes to meet 512KB
 times 510-($-$$) db 0
 
 dw 0xAA55

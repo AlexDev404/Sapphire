@@ -16,11 +16,11 @@ mbr: chainloader/chainloader.asm always
 2stage: 2stage/2stage.asm always
 	nasm -fbin -o 2stage.bin 2stage/2stage.asm
 
-test:
+test: chainloader/example/sector_test.asm always
 	nasm -f bin chainloader/example/sector_test.asm -o chainloader.bin
 	dd if=chainloader.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
-test2:
+test2: chainloader/example/oem_label.asm always
 	nasm -f bin chainloader/example/oem_label.asm -o chainloader.bin
 	dd if=chainloader.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
