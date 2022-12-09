@@ -1,4 +1,4 @@
-%DEFINE KERNEL_LOAD_OFFSET 0x1000
+%DEFINE KERNEL_LOAD_OFFSET 0x7E00
 
 org 0x7c00
 
@@ -50,7 +50,7 @@ ErrorFloppy:
  jmp hang
 
 
-main: 
+main:
  .print:
 
   mov si, msg
@@ -84,7 +84,7 @@ main:
 
 
  bits 32
- ljmp_pM: 
+ ljmp_pM:
   mov ax, 0x10
   mov ds, ax
   mov ss, ax

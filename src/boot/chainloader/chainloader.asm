@@ -18,18 +18,53 @@
 ;       2. and stack. ✅
 
 
-
-
-[BITS 16]
 ; GDT TABLE LOCATION
-[ORG 0x7C00]
 
-; ; SET VRES (hope this works :'D)
+%DEFINE KERNEL_CODE 0x7E00
+[ORG 0x7C00]
+[BITS 16]
+
+xor ax, ax
+mov ds, ax
+
+
+; JUMP TO THE MAIN LABEL
+start: jmp main
+
+BIOS_UTIL:
+    Print:
+        .print:
+            lodsb
+            or al, al
+            je .done
+            mov ah, 0x0E
+            int 0x10
+            .repeat:
+                jmp .print
+            .done:
+                ret
+    ResetFloppy:
+        mov ah, 0x0
+        int 0x13
+        jc ErrorFloppy
+        .done:
+            ret
+    ReadFloppy:
+        mov ah, 0x02
+        int 0x13
+        jc ErrorFloppy
+        .done:
+            ret
+    ErrorFloppy:
+        fErr db "There was an error with the floppy.", 13, 10, 0
+        mov si, fErr
+        call Print
+        jmp hang
+
+; ; SET VRES
 ; mov ah, 0
 ; mov al, 02h
 ; int 10h
-
-jmp main
 
 ; STRUCT - ONE ENTRY OF THE GDT TABLE
 STRUC gdt_entry
@@ -67,8 +102,8 @@ gdt:
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 0x9B
-                    AT gdt_entry.granularity, db 0xF
+                    AT gdt_entry.access, db 10011010b
+                    AT gdt_entry.granularity, db 11001111b
                     AT gdt_entry.base_high, db 0
                 IEND
             DATA_SEGMENT: ; Access using "mov al, [label + struc.byte]"
@@ -76,8 +111,8 @@ gdt:
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 0x93
-                    AT gdt_entry.granularity, db 0xF
+                    AT gdt_entry.access, db 10010010b
+                    AT gdt_entry.granularity, db 11001111b
                     AT gdt_entry.base_high, db 0
                 IEND
             STACK_SEGMENT: ; Access using "mov al, [label + struc.byte]"
@@ -122,28 +157,45 @@ gdt:
 ; JUMP TO MAIN
 
 main:
-
+    ; .status:
+        ; statmsg db "[16 BIT MODE] We are in main", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+        ; mov si, statmsg
+        ; call Print
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
-    cli            ; disable interrupts
-    pusha
-    mov eax, cr0
-    or al, 1       ; set PE (Protection Enable) bit in CR0 (Control Register 0)
-    mov cr0, eax
-    popa
-    ; END ENABLE PROTECTED MODE
+    statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    mov si, statmsg
+    call Print
 
-    ; Perform far jump to selector 08h (offset into GDT, pointing at a 32bit PM code segment descriptor)
-    ; to load CS with proper PM32 descriptor)
+   .initFloppy:
+        mov al, 0xF
+        mov ch, 0x0
+        mov cl, 0x02
+        mov dh, 0x0
+        mov dl, 0x0
+        mov bx, KERNEL_CODE
+        call ResetFloppy
+        call ReadFloppy
+    .startPM:
+        cli            ; disable interrupts
+        pusha
+        mov eax, cr0
+        or al, 1       ; set PE (Protection Enable) bit in CR0 (Control Register 0)
+        mov cr0, eax
+        popa
+        ; END ENABLE PROTECTED MODE - INTERRUPTS INACCESSIBLE
+
+        ; Perform far jump to selector 08h (offset into GDT, pointing at a 32bit PM code segment descriptor)
+        ; to load CS with proper PM32 descriptor)
 
 
-    ; INITIALIZE A20 LINE
-    ; in al, 0x92
-    ; test al, 2
-    jmp 08h:PModeMain ; Jump to Protected Mode Main
-    ; or al, 2
-    ; and al, 0xFE
-    ; out 0x92, al
+        ; INITIALIZE A20 LINE
+        ; in al, 0x92
+        ; test al, 2
+        jmp 08h:PModeMain ; Jump to Protected Mode Main
+        ; or al, 2
+        ; and al, 0xFE
+        ; out 0x92, al
 
     [BITS 32]
     PModeMain:
@@ -167,12 +219,12 @@ main:
         mov word [edi], dx        ; Put the character into the video memory
         ; HANG IF THE KERNEL DECIDES TO RETURN
 
-    .hang:
+    hang:
         cli
         hlt
         ; If for some cursed reason the CPU decides to exist anyway,
         ; we jump back to hang
-        jmp .hang
+        jmp hang
 
 
 ; Fill up empty space with zeroes to meet 512KB
