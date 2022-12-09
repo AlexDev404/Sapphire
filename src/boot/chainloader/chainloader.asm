@@ -174,3 +174,5 @@ main:
 
 ; Fill up empty space with zeroes
 times 510-($-$$) db 0
+
+dw 0xAA55
