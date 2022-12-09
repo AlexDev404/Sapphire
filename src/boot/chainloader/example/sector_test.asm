@@ -92,11 +92,12 @@ main:
   mov es, ax
   mov gs, ax
 
-        mov edi, 0xb8000    ; The video address
-        mov bl, '.'         ; The character to be print
-        mov dl, bl        ; The color: white(F) on black(0)
-        mov dh, 63
-        mov word [edi], dx        ; Put the character into the video memory
+; THIS WORKS
+  mov edi, 0xb8000    ; The video address
+  mov bl, '.'         ; The character to be print
+  mov dl, bl        ; The color: white(F) on blue(0)
+  mov dh, 63
+  mov word [edi], dx        ; Put the character into the video memory
   ; jmp KERNEL_LOAD_OFFSET
 
 hang:
