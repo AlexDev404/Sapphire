@@ -94,7 +94,7 @@ main:
 
 ; THIS WORKS
   mov edi, 0xb8000    ; The video address
-  mov bl, '.'         ; The character to be print
+  mov bl, 'x'         ; The character to be print
   mov dl, bl        ; The color: white(F) on blue(0)
   mov dh, 63
   mov word [edi], dx        ; Put the character into the video memory
@@ -128,7 +128,7 @@ gdtr:
     Limit dw 24         ; length of GDT
     Base dd NULL_DESC   ; base of GDT
 
-msg db "Loading OS", 13, 10, 0
+msg db "BIOS Interrupt Message", 13, 10, 0
 msgErrorFloppy db "There was an error with the floppy", 13, 10, 0
 
 FILL:

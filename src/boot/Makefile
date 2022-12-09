@@ -25,8 +25,8 @@ test2: chainloader/example/oem_label.asm always
 	dd if=chainloader.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
 clean:
-	rm -rf chainloader/chainloader.bin
-	rm -rf 2stage/2stage.bin
+	rm -rf chainloader.bin
+	rm -rf 2stage.bin
 	rm -rf out
 
 always: clean
