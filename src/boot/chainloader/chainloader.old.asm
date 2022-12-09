@@ -43,6 +43,28 @@ BIOS_UTIL:
                 jmp .print
             .done:
                 ret
+    ; ResetFloppy:
+    ;     mov ah, 0x0
+    ;     int 0x13
+    ;     jc ErrorFloppy
+    ;     .done:
+    ;         ret
+    ; ReadFloppy:
+    ;     mov ah, 0x02
+    ;     int 0x13
+    ;     jc ErrorFloppy
+    ;     .done:
+    ;         ret
+    ; ErrorFloppy:
+    ;     fErr db "There was an error with the floppy.", 13, 10, 0
+    ;     mov si, fErr
+    ;     call Print
+    ;     jmp hang
+
+; ; SET VRES
+; mov ah, 0
+; mov al, 02h
+; int 10h
 
 ; STRUCT - ONE ENTRY OF THE GDT TABLE
 STRUC gdt_entry
@@ -135,21 +157,25 @@ gdt:
 ; JUMP TO MAIN
 
 main:
-
+    ; .status:
+        ; statmsg db "[16 BIT MODE] We are in main", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+        ; mov si, statmsg
+        ; call Print
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
     statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
     mov si, statmsg
     call Print
 
-    ; INITIALIZE A20 LINE
-    .initA20:
-        in al, 0x92
-        test al, 2
-        jmp .startPM ; Initialize Protected Mode right after enabling A20 line
-        or al, 2
-        and al, 0xFE
-        out 0x92, al
+;    .initFloppy:
+;         mov al, 0xF
+;         mov ch, 0x0
+;         mov cl, 0x02
+;         mov dh, 0x0
+;         mov dl, 0x0
+;         mov bx, KERNEL_CODE
+;         call ResetFloppy
+;         call ReadFloppy
     .startPM:
         cli            ; disable interrupts
         pusha
@@ -162,7 +188,14 @@ main:
         ; Perform far jump to selector 08h (offset into GDT, pointing at a 32bit PM code segment descriptor)
         ; to load CS with proper PM32 descriptor)
 
+
+        ; INITIALIZE A20 LINE
+        ; in al, 0x92
+        ; test al, 2
         jmp 08h:PModeMain ; Jump to Protected Mode Main
+        ; or al, 2
+        ; and al, 0xFE
+        ; out 0x92, al
 
     [BITS 32]
     PModeMain:
