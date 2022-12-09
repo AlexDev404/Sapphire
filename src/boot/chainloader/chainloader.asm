@@ -80,8 +80,8 @@ gdt:
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 10011010b
-                    AT gdt_entry.granularity, db 11001111b
+                    AT gdt_entry.access, db 0x9A
+                    AT gdt_entry.granularity, db 0xCF
                     AT gdt_entry.base_high, db 0
                 IEND
             DATA_SEGMENT: ; Access using "mov al, [label + struc.byte]"
@@ -89,8 +89,8 @@ gdt:
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 10010010b
-                    AT gdt_entry.granularity, db 11001111b
+                    AT gdt_entry.access, db 0x92
+                    AT gdt_entry.granularity, db 0xCF
                     AT gdt_entry.base_high, db 0
                 IEND
             STACK_SEGMENT: ; Access using "mov al, [label + struc.byte]"
@@ -99,7 +99,7 @@ gdt:
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
                     AT gdt_entry.access, db 0x97
-                    AT gdt_entry.granularity, db 0
+                    AT gdt_entry.granularity, db 0xCF
                     AT gdt_entry.base_high, db 0
                 IEND
         USERLAND:
@@ -189,12 +189,14 @@ main:
     hang:
         cli
         hlt
-        ; If for some cursed reason the CPU decides to exist anyway,
+        ; If for some cursed reason the CPU decides to exit anyway,
         ; we jump back to hang
         jmp hang
 
 
 ; Fill up empty space with zeroes to meet 512KB
-times 510-($-$$) db 0
+; [EDIT] I disabled this so that I can keep an eye on how much
+;        space I have left in the binary
+; times 510-($-$$) db 0
 
 dw 0xAA55
