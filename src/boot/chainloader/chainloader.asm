@@ -94,7 +94,7 @@ gdt:
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
                     AT gdt_entry.access, db 10011100b
-                    AT gdt_entry.granularity, db 0xCF
+                    AT gdt_entry.granularity, db 11001111b
                     AT gdt_entry.base_high, db 0
                 IEND
             DATA_SEGMENT: ; 0x10 - Access using "mov al, [label + struc.byte]"
@@ -103,7 +103,7 @@ gdt:
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
                     AT gdt_entry.access, db 10010010b
-                    AT gdt_entry.granularity, db 0xCF
+                    AT gdt_entry.granularity, db 11001111b
                     AT gdt_entry.base_high, db 0
                 IEND
             STACK_SEGMENT: ; 0x18 - Access using "mov al, [label + struc.byte]"
@@ -112,7 +112,7 @@ gdt:
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
                     AT gdt_entry.access, db 10011110b
-                    AT gdt_entry.granularity, db 0xCF
+                    AT gdt_entry.granularity, db 11001111b
                     AT gdt_entry.base_high, db 0
                 IEND
         USERLAND:
@@ -122,7 +122,7 @@ gdt:
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
                     AT gdt_entry.access, db 11101100b
-                    AT gdt_entry.granularity, db 0xF
+                    AT gdt_entry.granularity, db 11001111b
                     AT gdt_entry.base_high, db 0
                 IEND
             UDATA_SEGMENT: ; 0x28 - Access using "mov al, [label + struc.byte]"
@@ -131,7 +131,7 @@ gdt:
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
                     AT gdt_entry.access, db 11100010b
-                    AT gdt_entry.granularity, db 0xF
+                    AT gdt_entry.granularity, db 11001111b
                     AT gdt_entry.base_high, db 0
                 IEND
             USTACK_SEGMENT: ; 0x30 - Access using "mov al, [label + struc.byte]"
@@ -140,7 +140,7 @@ gdt:
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
                     AT gdt_entry.access, db 11111110b
-                    AT gdt_entry.granularity, db 0
+                    AT gdt_entry.granularity, db 11001111b
                     AT gdt_entry.base_high, db 0
                 IEND
 
