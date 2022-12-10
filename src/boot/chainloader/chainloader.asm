@@ -79,13 +79,13 @@ ENDSTRUC
 ; STRUCT - GDT DESCRIPTION
 
 gdtr:
-    GLimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
+    GLimit dw (gdt_end - gdt) + 1 ; length of GDT (end - start + 1)
     GBase dd GNULL_SEGMENT ; where the GDT starts
-idtr:
-    ; ILimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
-    ; IBase dd INULL_GATE ; where the GDT starts
-    ILimit dw 0
-    IBase dd 0
+; idtr:
+;     ; ILimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
+;     ; IBase dd INULL_GATE ; where the GDT starts
+;     ILimit dw 0
+;     IBase dd 0
 
 ; IDT STARTS HERE
 
@@ -93,7 +93,7 @@ idtr:
 ;         INULL_GATE:
 ;             ISTRUC idt_entry
 ;                 AT idt_entry.base_low, dw 0
-;                 AT idt_entry.selector, dw 0x8 ; Select Kernel Code
+;                 AT idt_entry.selector, dw 0 ; Select Kernel Code
 ;                 AT idt_entry.reserved, db 0
 ;                 AT idt_entry.gate_flags, db 0
 ;                 AT idt_entry.base_high, db 0
@@ -176,6 +176,7 @@ idtr:
                     AT gdt_entry.granularity, db 11001111b
                     AT gdt_entry.base_high, db 0
                 IEND
+gdt_end:
 
 ; CHAINLOADER
 ; JUMP TO MAIN
@@ -183,7 +184,7 @@ idtr:
 main:
 
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
-    lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
+    ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
     statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
     mov si, statmsg
