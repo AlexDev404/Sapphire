@@ -55,17 +55,30 @@ STRUC gdt_entry
 	.size:
 ENDSTRUC
 
+STRUC idt_entry
+    .offset0_15:  resw 1
+    .select:      resw 1
+    .type:        resw 1
+    .offset16_31: resw 1
+ENDSTRUC
+
 
 ; STRUCT - GDT DESCRIPTION
 
 gdtr:
-    Limit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
-    Base dd NULL_SEGMENT ; where the GDT starts
+    GLimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
+    GBase dd GNULL_SEGMENT ; where the GDT starts
+idtr:
+    ILimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
+    IBase dd INULL_SEGMENT ; where the GDT starts
 
+; IDT STARTS HERE
+idt:
+    INULL_SEGMENT:
 
 ; GDT STARTS HERE
 gdt:
-        NULL_SEGMENT: ; 0x0 - Access using "mov al, [label + struc.byte]"
+        GNULL_SEGMENT: ; 0x0 - Access using "mov al, [label + struc.byte]"
             ISTRUC gdt_entry
                 AT gdt_entry.limit_low, dw 0
                 AT gdt_entry.base_low, dw 0
@@ -80,7 +93,7 @@ gdt:
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 0x9A
+                    AT gdt_entry.access, db 10011100b
                     AT gdt_entry.granularity, db 0xCF
                     AT gdt_entry.base_high, db 0
                 IEND
@@ -89,7 +102,7 @@ gdt:
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 0x92
+                    AT gdt_entry.access, db 10010010b
                     AT gdt_entry.granularity, db 0xCF
                     AT gdt_entry.base_high, db 0
                 IEND
@@ -98,7 +111,7 @@ gdt:
                     AT gdt_entry.limit_low, dw 0
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 0x97
+                    AT gdt_entry.access, db 10011110b
                     AT gdt_entry.granularity, db 0xCF
                     AT gdt_entry.base_high, db 0
                 IEND
@@ -108,7 +121,7 @@ gdt:
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 0xFF
+                    AT gdt_entry.access, db 11101100b
                     AT gdt_entry.granularity, db 0xF
                     AT gdt_entry.base_high, db 0
                 IEND
@@ -117,7 +130,7 @@ gdt:
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 0xF3
+                    AT gdt_entry.access, db 11100010b
                     AT gdt_entry.granularity, db 0xF
                     AT gdt_entry.base_high, db 0
                 IEND
@@ -126,7 +139,7 @@ gdt:
                     AT gdt_entry.limit_low, dw 0
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 0xF7
+                    AT gdt_entry.access, db 11111110b
                     AT gdt_entry.granularity, db 0
                     AT gdt_entry.base_high, db 0
                 IEND
