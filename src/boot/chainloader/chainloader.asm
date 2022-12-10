@@ -65,7 +65,7 @@ gdtr:
 
 ; GDT STARTS HERE
 gdt:
-        NULL_SEGMENT: ; Access using "mov al, [label + struc.byte]"
+        NULL_SEGMENT: ; 0x0 - Access using "mov al, [label + struc.byte]"
             ISTRUC gdt_entry
                 AT gdt_entry.limit_low, dw 0
                 AT gdt_entry.base_low, dw 0
@@ -75,7 +75,7 @@ gdt:
                 AT gdt_entry.base_high, db 0
             IEND
         KERNEL:
-            CODE_SEGMENT: ; Access using "mov al, [label + struc.byte]"
+            CODE_SEGMENT: ; 0x8 - Access using "mov al, [label + struc.byte]"
                 ISTRUC gdt_entry
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
@@ -84,7 +84,7 @@ gdt:
                     AT gdt_entry.granularity, db 0xCF
                     AT gdt_entry.base_high, db 0
                 IEND
-            DATA_SEGMENT: ; Access using "mov al, [label + struc.byte]"
+            DATA_SEGMENT: ; 0x10 - Access using "mov al, [label + struc.byte]"
                 ISTRUC gdt_entry
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
@@ -93,7 +93,7 @@ gdt:
                     AT gdt_entry.granularity, db 0xCF
                     AT gdt_entry.base_high, db 0
                 IEND
-            STACK_SEGMENT: ; Access using "mov al, [label + struc.byte]"
+            STACK_SEGMENT: ; 0x18 - Access using "mov al, [label + struc.byte]"
                 ISTRUC gdt_entry
                     AT gdt_entry.limit_low, dw 0
                     AT gdt_entry.base_low, dw 0
@@ -103,7 +103,7 @@ gdt:
                     AT gdt_entry.base_high, db 0
                 IEND
         USERLAND:
-            UCODE_SEGMENT: ; Access using "mov al, [label + struc.byte]"
+            UCODE_SEGMENT: ; 0x20 - Access using "mov al, [label + struc.byte]"
                 ISTRUC gdt_entry
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
@@ -112,7 +112,7 @@ gdt:
                     AT gdt_entry.granularity, db 0xF
                     AT gdt_entry.base_high, db 0
                 IEND
-            UDATA_SEGMENT: ; Access using "mov al, [label + struc.byte]"
+            UDATA_SEGMENT: ; 0x28 - Access using "mov al, [label + struc.byte]"
                 ISTRUC gdt_entry
                     AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
@@ -121,7 +121,7 @@ gdt:
                     AT gdt_entry.granularity, db 0xF
                     AT gdt_entry.base_high, db 0
                 IEND
-            USTACK_SEGMENT: ; Access using "mov al, [label + struc.byte]"
+            USTACK_SEGMENT: ; 0x30 - Access using "mov al, [label + struc.byte]"
                 ISTRUC gdt_entry
                     AT gdt_entry.limit_low, dw 0
                     AT gdt_entry.base_low, dw 0
@@ -151,24 +151,24 @@ main:
         and al, 0xFE
         out 0x92, al
     .startPM:
-        cli            ; disable interrupts
+        cli            ; Disable interrupts
         pusha
         mov eax, cr0
-        or al, 1       ; set PE (Protection Enable) bit in CR0 (Control Register 0)
+        or al, 1       ; Set PE (Protection Enable) bit in CR0 (Control Register 0)
         mov cr0, eax
         popa
         ; END ENABLE PROTECTED MODE - INTERRUPTS INACCESSIBLE
 
-        ; Perform far jump to selector 08h (offset into GDT, pointing at a 32bit PM code segment descriptor)
+        ; Perform far jump to selector 0x8 (offset into GDT, pointing at a 32bit PM code segment descriptor)
         ; to load CS with proper PM32 descriptor)
 
-        jmp 08h:PModeMain ; Jump to Protected Mode Main
+        jmp 0x8:PModeMain ; Jump to Protected Mode Main in the code segment
 
     [BITS 32]
     PModeMain:
         ; load DS, ES, FS, GS, SS, ESP
-        ; Flush GDT + Initialize it
-        mov ax, 0x10
+        ; Flush GDT + Initialize it + load segment registers
+        mov ax, 0x10 ; Initialize the segment descriptors with the data segment
         mov ds, ax
         mov es, ax
         mov fs, ax
@@ -180,9 +180,9 @@ main:
         ; [TEST] Print Exclamation mark to scren
 
         mov ebx, 0xb8000 ; Copy the video address to a general purpose register (this register supports color)
-        mov eax, 0x07690748     ; Copy the character to print to a general purpose register
-        mov ah, 0x3F     ; Aqua (3) on White (F)
-        mov [ebx], eax   ; Put the character into the video memory by turning the
+        mov eax, 0x076907489     ; Copy the character to print to a general purpose register
+        mov ah, 0x2F     ; Aqua (3) on White (F)
+        mov [ebx], eax  ; Put the character into the video memory by turning the
                          ; video memory address into a pointer
         ; HANG IF THE KERNEL DECIDES TO RETURN
 
