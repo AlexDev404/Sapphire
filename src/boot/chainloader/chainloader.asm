@@ -21,12 +21,24 @@
 ; GDT TABLE LOCATION
 
 %DEFINE KERNEL_CODE 0x7E00
+%DEFINE IDT_FLAG_GATE_TASK 0x5
+%DEFINE IDT_FLAG_GATE_16BIT_INT 0x6
+%DEFINE IDT_FLAG_GATE_16BIT_TRAP 0x7
+%DEFINE IDT_FLAG_GATE_32BIT_INT 0x8
+%DEFINE IDT_FLAG_GATE_32BIT_TRAP 0x9
+%DEFINE IDT_FLAG_RING0 0
+%DEFINE IDT_FLAG_RING1 32
+%DEFINE IDT_FLAG_RING2 64
+%DEFINE IDT_FLAG_RING3 96
+%DEFINE IDT_FLAG_PRESENT 0x80
+
 [BITS 16]
 [ORG 0x7C00]
 
+; Initialize the segment registers
 xor ax, ax
 mov ds, ax
-
+mov es, ax
 
 ; JUMP TO THE MAIN LABEL
 start: jmp main
@@ -70,27 +82,22 @@ gdtr:
     GLimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
     GBase dd GNULL_SEGMENT ; where the GDT starts
 idtr:
-    ILimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
-    IBase dd INULL_GATE ; where the GDT starts
+    ; ILimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
+    ; IBase dd INULL_GATE ; where the GDT starts
+    ILimit dw 0
+    IBase dd 0
 
 ; IDT STARTS HERE
-idt:
-        INULL_GATE:
-            ISTRUC idt_entry
-                AT idt_entry.base_low, dw 0
-                AT idt_entry.selector, dw 0x8 ; Select Kernel Code
-                AT idt_entry.reserved, db 0
-                AT idt_entry.gate_flags, db 0
-                AT idt_entry.base_high, db 0
-            IEND
-        IGATE_ZERO:
-            ISTRUC idt_entry
-                AT idt_entry.base_low, dw 0
-                AT idt_entry.selector, dw 0x8 ; Select Kernel Code
-                AT idt_entry.reserved, db 0
-                AT idt_entry.gate_flags, db 0
-                AT idt_entry.base_high, db 0
-            IEND
+
+; idt: ; NULL IDT - People say interrupts aren't needed
+;         INULL_GATE:
+;             ISTRUC idt_entry
+;                 AT idt_entry.base_low, dw 0
+;                 AT idt_entry.selector, dw 0x8 ; Select Kernel Code
+;                 AT idt_entry.reserved, db 0
+;                 AT idt_entry.gate_flags, db 0
+;                 AT idt_entry.base_high, db 0
+;             IEND
 
 ; GDT STARTS HERE
 ; OUTLINE
@@ -176,6 +183,7 @@ idt:
 main:
 
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
+    lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
     statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
     mov si, statmsg
