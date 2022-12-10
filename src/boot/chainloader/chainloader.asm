@@ -56,10 +56,11 @@ STRUC gdt_entry
 ENDSTRUC
 
 STRUC idt_entry
-    .offset0_15:  resw 1
+    .offset0_15:  resw 1 ; limit_Low
     .select:      resw 1
-    .type:        resw 1
-    .offset16_31: resw 1
+    .zero         resb 1
+    .gate_attr:   resw 1
+    .offset16_31: resw 1 ; limit_high
 ENDSTRUC
 
 
@@ -70,11 +71,26 @@ gdtr:
     GBase dd GNULL_SEGMENT ; where the GDT starts
 idtr:
     ILimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
-    IBase dd INULL_SEGMENT ; where the GDT starts
+    IBase dd INULL_GATE ; where the GDT starts
 
 ; IDT STARTS HERE
 idt:
-    INULL_SEGMENT:
+        INULL_GATE:
+            ISTRUC idt_entry
+                AT idt_entry.offset0_15, dw 0
+                AT idt_entry.select, dw 0x8 ; Select Kernel Code
+                AT idt_entry.zero, db 0
+                AT idt_entry.gate_attr, db 0
+                AT idt_entry.offset16_31, db 0
+            IEND
+        IGATE_ZERO:
+            ISTRUC idt_entry
+                AT idt_entry.offset0_15, dw 0
+                AT idt_entry.select, dw 0x8
+                AT idt_entry.zero, db 0
+                AT idt_entry.gate_attr, db 0
+                AT idt_entry.offset16_31, db 0
+            IEND
 
 ; GDT STARTS HERE
 ; OUTLINE
