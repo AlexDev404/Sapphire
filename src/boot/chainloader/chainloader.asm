@@ -179,10 +179,10 @@ main:
         ; call _start
         ; [TEST] Print Exclamation mark to scren
 
-        mov eax, 0xb8000 ; Copy the video address to a general purpose register
-        mov al, 'x'      ; Copy the character to print to a general purpose register
-        mov ah, 0x3F     ; Set the color and copy to a general purpose register
-        mov [eax], ax    ; Put the character into the video memory by turning the
+        mov ebx, 0xb8000 ; Copy the video address to a general purpose register (this register supports color)
+        mov eax, 0x07690748     ; Copy the character to print to a general purpose register
+        mov ah, 0x3F     ; Aqua (3) on White (F)
+        mov [ebx], eax   ; Put the character into the video memory by turning the
                          ; video memory address into a pointer
         ; HANG IF THE KERNEL DECIDES TO RETURN
 
