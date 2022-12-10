@@ -56,11 +56,11 @@ STRUC gdt_entry
 ENDSTRUC
 
 STRUC idt_entry
-    .offset0_15:  resw 1 ; limit_Low
-    .select:      resw 1
-    .zero         resb 1
-    .gate_attr:   resw 1
-    .offset16_31: resw 1 ; limit_high
+    .base_low:    resw 1 ; base_Low 0...15
+    .selector:    resw 1
+    .reserved:    resb 1
+    .gate_flags:  resw 1
+    .base_high:   resw 1 ; base_high 16...31
 ENDSTRUC
 
 
@@ -77,19 +77,19 @@ idtr:
 idt:
         INULL_GATE:
             ISTRUC idt_entry
-                AT idt_entry.offset0_15, dw 0
-                AT idt_entry.select, dw 0x8 ; Select Kernel Code
-                AT idt_entry.zero, db 0
-                AT idt_entry.gate_attr, db 0
-                AT idt_entry.offset16_31, db 0
+                AT idt_entry.base_low, dw 0
+                AT idt_entry.selector, dw 0x8 ; Select Kernel Code
+                AT idt_entry.reserved, db 0
+                AT idt_entry.gate_flags, db 0
+                AT idt_entry.base_high, db 0
             IEND
         IGATE_ZERO:
             ISTRUC idt_entry
-                AT idt_entry.offset0_15, dw 0
-                AT idt_entry.select, dw 0x8
-                AT idt_entry.zero, db 0
-                AT idt_entry.gate_attr, db 0
-                AT idt_entry.offset16_31, db 0
+                AT idt_entry.base_low, dw 0
+                AT idt_entry.selector, dw 0x8 ; Select Kernel Code
+                AT idt_entry.reserved, db 0
+                AT idt_entry.gate_flags, db 0
+                AT idt_entry.base_high, db 0
             IEND
 
 ; GDT STARTS HERE
