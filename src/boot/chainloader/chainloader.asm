@@ -21,8 +21,8 @@
 ; GDT TABLE LOCATION
 
 %DEFINE KERNEL_CODE 0x7E00
-[ORG 0x7C00]
 [BITS 16]
+[ORG 0x7C00]
 
 xor ax, ax
 mov ds, ax
@@ -179,11 +179,11 @@ main:
         ; call _start
         ; [TEST] Print Exclamation mark to scren
 
-        mov edi, 0xb8000    ; The video address
-        mov bl, 'x'         ; The character to be print
-        mov dl, bl        ; The color: white(F) on black(0)
-        mov dh, 63
-        mov word [edi], dx        ; Put the character into the video memory
+        mov eax, 0xb8000 ; Copy the video address to a general purpose register
+        mov al, 'x'      ; Copy the character to print to a general purpose register
+        mov ah, 0x3F     ; Set the color and copy to a general purpose register
+        mov [eax], ax    ; Put the character into the video memory by turning the
+                         ; video memory address into a pointer
         ; HANG IF THE KERNEL DECIDES TO RETURN
 
     hang:
