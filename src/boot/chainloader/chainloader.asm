@@ -77,7 +77,17 @@ idt:
     INULL_SEGMENT:
 
 ; GDT STARTS HERE
-gdt:
+; OUTLINE
+; ========
+; Selector 0x00: Null segment (32-bit)
+; Selector 0x08: kernel code (32-bit, ring 0)
+; Selector 0x10: kernel data (32-bit)
+; Selector 0x18: kernel stack (32-bit, ring 0)
+; Selector 0x20: user code (32-bit, ring 3)
+; Selector 0x28: user data (32-bit)
+; Selector 0x30: user stack (64-bit, ring 3)
+
+ gdt:
         GNULL_SEGMENT: ; 0x0 - Access using "mov al, [label + struc.byte]"
             ISTRUC gdt_entry
                 AT gdt_entry.limit_low, dw 0
