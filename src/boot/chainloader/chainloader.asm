@@ -182,6 +182,10 @@ gdt_end:
 ; JUMP TO MAIN
 
 main:
+    ; Set video mode
+    mov al, 13h
+    mov ah, 00h
+    int 10h
 
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
     ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
@@ -227,10 +231,10 @@ main:
         ; call _start
         ; [TEST] Print Exclamation mark to scren
 
-        mov ebx, 0xb8000 ; Copy the video address to a general purpose register (this register supports color)
-        mov eax, 0x076907489     ; Copy the character to print to a general purpose register
-        mov ah, 0x2F     ; Aqua (3) on White (F)
-        mov [ebx], eax  ; Put the character into the video memory by turning the
+        ; mov ebx, 0xb8000 ; Copy the video address to a general purpose register (this register supports color)
+        ; mov eax, 0x076907489     ; Copy the character to print to a general purpose register
+        ; mov ah, 0x2F     ; Aqua (3) on White (F)
+        ; mov [ebx], eax  ; Put the character into the video memory by turning the
                          ; video memory address into a pointer
         ; HANG IF THE KERNEL DECIDES TO RETURN
 
