@@ -183,7 +183,7 @@ gdt_end:
 
 main:
     ; Set video mode
-    ; Switch to graphics mode
+    ; Switch out of text mode and into to graphics mode
     mov al, 13h
     mov ah, 00h
     int 10h
@@ -232,15 +232,17 @@ main:
         ; call _start
         ; [TEST] Print Exclamation mark to scren
 
-        ; mov ebx, 0xb8000 ; Copy the video address to a general purpose register (this register supports color)
+        ; mov ebx, 0xb8000 ; Text mode video address - Copy the video address to a general purpose register (this register supports color)
         ; mov eax, 0x076907489     ; Copy the character to print to a general purpose register
         ; mov ah, 0x2F     ; Aqua (3) on White (F)
         ; mov [ebx], eax  ; Put the character into the video memory by turning the
                          ; video memory address into a pointer
+
         ; HANG IF THE KERNEL DECIDES TO RETURN
-        mov edi, 0x0A0000 ; Graphics mode video address
-        mov al, 0x0A     ; the color of the pixel
-        mov [edi+3600], al ; Offset of X, Y of pixel
+        mov ebx, 0x0A0000 ; Graphics mode video address - Copy the video address to a general purpose register
+        mov al, 0x0A     ; the color of the pixel - Black (0) on Green (A) - Easy way to get video colors on Windows -> `color /?`
+        mov [ebx+3600], al ; Offset of X, Y of pixel - Put the character into the video memory by turning the
+                         ; video memory address into a pointer and adding an x, y offset
     hang:
         cli
         hlt
