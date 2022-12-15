@@ -246,7 +246,7 @@ main:
         
         mov ebx, 0xA0000 ; Graphics mode video address - Copy the video address to a general purpose register
         mov al, 0x0A     ; the color of the pixel - Black (0) on Green (A) - Easy way to get video colors on Windows -> `color /?`
-        mov [ebx], al ; Offset of X, Y of pixel - Put the character into the video memory by turning the
+        mov [ebx], al    ; Offset of X, Y of pixel - Put the character into the video memory by turning the
                          ; video memory address into a pointer and adding an x, y offset
         ; FMT: x+y*screen_x
         mov [ebx+((0)+(0)*320)], al ; beginning of screen
