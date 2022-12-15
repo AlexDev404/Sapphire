@@ -239,6 +239,11 @@ main:
                          ; video memory address into a pointer
 
         ; HANG IF THE KERNEL DECIDES TO RETURN
+        ; PIXELS
+        ; =======
+        ; Pixel FMT: Color
+        ; Placing a pixel: The location is the address offset
+        
         mov ebx, 0xA0000 ; Graphics mode video address - Copy the video address to a general purpose register
         mov al, 0x0A     ; the color of the pixel - Black (0) on Green (A) - Easy way to get video colors on Windows -> `color /?`
         mov [ebx], al ; Offset of X, Y of pixel - Put the character into the video memory by turning the
