@@ -183,6 +183,7 @@ gdt_end:
 
 main:
     ; Set video mode
+    ; Switch to graphics mode
     mov al, 13h
     mov ah, 00h
     int 10h
@@ -237,7 +238,9 @@ main:
         ; mov [ebx], eax  ; Put the character into the video memory by turning the
                          ; video memory address into a pointer
         ; HANG IF THE KERNEL DECIDES TO RETURN
-
+        mov edi, 0x0A0000 ; Graphics mode video address
+        mov al, 0x0A     ; the color of the pixel
+        mov [edi+3600], al ; Offset of X, Y of pixel
     hang:
         cli
         hlt
