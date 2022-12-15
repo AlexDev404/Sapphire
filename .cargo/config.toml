@@ -4,4 +4,4 @@ build-std-features = ["compiler-builtins-mem"]
 
 
 [build]
-target = "x86_64-unknown-target.json"
+target = "x86-unknown-bare-metal.json"
