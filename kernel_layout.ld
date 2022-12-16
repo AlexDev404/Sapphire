@@ -3,17 +3,17 @@ ENTRY(_start)
 SECTIONS
 {
     . = 0x100000;
-    .text : {
+    .text: {
         *(.text.init)
         *(.text .text.*)
     }
-    .rodata : {
+    .rodata: {
         *(.rodata .rodata.*)
     }
-    .data : {
-        *(.rodata .rodata.*)
+    .data: {
+        *(.data .data.*)
         }
-    .bss : {
+    .bss: {
         *(.bss .bss.*)
     }
 }
