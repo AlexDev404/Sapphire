@@ -12,7 +12,7 @@
         "ld.lld": [
           "-Tkernel_layout.ld"
         ]
-      }
+    },
     "linker": "rust-lld",
     "panic-strategy": "abort",
     "disable-redzone": true,
