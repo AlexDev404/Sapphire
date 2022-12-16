@@ -5,3 +5,7 @@ build-std-features = ["compiler-builtins-mem"]
 
 [build]
 target = "x86-unknown-bare-metal.json"
+
+[profile.release]
+opt-level = 2
+strip = "debuginfo"

@@ -250,9 +250,11 @@ main:
                          ; video memory address into a pointer and adding an x, y offset
         ; FMT: x+y*screen_x
         mov [ebx+((0)+(0)*320)], al ; beginning of screen
-        mov [ebx+((320/2)+(200/2)*320)], al ; center of screen
+        ; mov [ebx+((320/2)+(200/2)*320)], al ; center of screen
         mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
         
+        ; Kernel jump into offset (???)
+        jmp 0x100000
     hang:
         cli
         hlt
@@ -264,6 +266,6 @@ main:
 ; Fill up empty space with zeroes to meet 512KB
 ; [EDIT] I disabled this so that I can keep an eye on how much
 ;        space I have left in the binary
-; times 510-($-$$) db 0
+times 510-($-$$) db 0
 
 dw 0xAA55

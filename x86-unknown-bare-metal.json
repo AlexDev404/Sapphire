@@ -8,6 +8,11 @@
     "os": "none",
     "executables": true,
     "linker-flavor": "ld.lld",
+    "pre-link-args": {
+        "ld.lld": [
+          "-Tkernel_layout.ld"
+        ]
+      }
     "linker": "rust-lld",
     "panic-strategy": "abort",
     "disable-redzone": true,
