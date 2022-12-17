@@ -254,7 +254,7 @@ main:
         mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
         
         ; Kernel jump into offset (???)
-        jmp 0x100000
+        ; jmp 0x100000
     hang:
         cli
         hlt

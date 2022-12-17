@@ -11,10 +11,7 @@ all: chainloader/chainloader.asm 2stage/2stage.asm always
 
 mbr: chainloader/chainloader.asm always
 	nasm -f bin chainloader/chainloader.asm -o chainloader.bin
-	echo dd if=chainloader.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
-	echo "Copy ELF into Binary"
-	objcopy -O binary sapphire.elf kernel.bin
-	wsl cat chainloader.bin kernel.bin | wsl dd if=/dev/stdin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
+	dd if=chainloader.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
 2stage: 2stage/2stage.asm always
 	nasm -fbin -o 2stage.bin 2stage/2stage.asm
