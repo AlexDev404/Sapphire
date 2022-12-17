@@ -12,3 +12,9 @@ panic = "abort"
 panic = "abort"
 
 [dependencies]
+
+[lib]
+name = "sapphire"           # The name of the target.
+path = "src/main.rs"    # The source file of the target.
+edition = "2021"       # The edition of the target.
+crate-type = ["staticlib"]   # The crate types to generate.

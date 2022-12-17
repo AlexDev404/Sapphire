@@ -1,4 +1,5 @@
 out/
-chainloader.bin
-kernel.bin
-sapphire.elf
+chainloader.elf
+image.bin
+image.elf
+libsapphire.a

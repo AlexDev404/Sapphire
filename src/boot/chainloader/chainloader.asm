@@ -31,9 +31,10 @@
 %DEFINE IDT_FLAG_RING2 64
 %DEFINE IDT_FLAG_RING3 96
 %DEFINE IDT_FLAG_PRESENT 0x80
+extern _start
 
 [BITS 16]
-[ORG 0x7C00]
+; [ORG 0x7C00]
 
 ; Initialize the segment registers
 xor ax, ax
@@ -41,7 +42,7 @@ mov ds, ax
 mov es, ax
 
 ; JUMP TO THE MAIN LABEL
-start: jmp main
+init: jmp main
 
 BIOS_UTIL:
     Print:
@@ -98,7 +99,6 @@ gdtr:
 ;                 AT idt_entry.gate_flags, db 0
 ;                 AT idt_entry.base_high, db 0
 ;             IEND
-
 ; GDT STARTS HERE
 ; OUTLINE
 ; ========
@@ -177,23 +177,22 @@ gdtr:
                     AT gdt_entry.base_high, db 0
                 IEND
 gdt_end:
-
 ; CHAINLOADER
 ; JUMP TO MAIN
 
 main:
+
     ; Set video mode
     ; Switch out of text mode and into to graphics mode
     mov al, 13h ; 320x200 @ 256
     mov ah, 00h
     int 10h
 
-    lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
     ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
-    statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
-    mov si, statmsg
-    call Print
+    ; statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    ; mov si, statmsg
+    ; call Print
 
     ; INITIALIZE A20 LINE
     .initA20:
@@ -215,12 +214,13 @@ main:
         ; Perform far jump to selector 0x8 (offset into GDT, pointing at a 32bit PM code segment descriptor)
         ; to load CS with proper PM32 descriptor)
 
-        jmp 0x8:PModeMain ; Jump to Protected Mode Main in the code segment
+        jmp long 0x8:PModeMain ; Jump to Protected Mode Main in the code segment
 
     [BITS 32]
     PModeMain:
         ; load DS, ES, FS, GS, SS, ESP
         ; Flush GDT + Initialize it + load segment registers
+        lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
         mov ax, 0x10 ; Initialize the segment descriptors with the data segment
         mov ds, ax
         mov es, ax
@@ -254,7 +254,7 @@ main:
         mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
         
         ; Kernel jump into offset (???)
-        jmp 0x100000
+        jmp long _start
     hang:
         cli
         hlt
