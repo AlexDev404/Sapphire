@@ -6,7 +6,7 @@ VENDOR=SPPH
 
 
 mbr: chainloader/chainloader.asm always
-	echo Building boootloader (chainloader.elf)
+	echo Building bootloader (chainloader.elf)
 	nasm -f elf32 chainloader/chainloader.asm -o chainloader.elf
 	echo Building kernel image (kernel.a)
 	cargo build --release
