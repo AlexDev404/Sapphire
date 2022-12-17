@@ -188,9 +188,8 @@ main:
     mov ah, 00h
     int 10h
 
-    ; SOMETHING IS GOING ON HERE ======================================================
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
-    ; ====================================================== SOMETHING IS GOING ON HERE
+
     
     ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
@@ -221,10 +220,7 @@ main:
         ; Perform far jump to selector 0x8 (offset into GDT, pointing at a 32bit PM code segment descriptor)
         ; to load CS with proper PM32 descriptor)
         
-        ; FAULTING LINE ==================================================================
         jmp long 0x8:PModeMain ; Jump to Protected Mode Main in the code segment
-        ; ================================================================== FAULTING LINE
-    jmp hang
 
     [BITS 32]
     PModeMain:
@@ -261,6 +257,7 @@ main:
         ; mov [ebx+((320/2)+(200/2)*320)], al ; center of screen
         mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
         
+    jmp hang
         ; Kernel jump into offset (???)
         jmp long _start
     hang:
