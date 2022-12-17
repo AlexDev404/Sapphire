@@ -14,7 +14,7 @@ fn panic(_info: &PanicInfo) -> ! {
 // static HELLO: &[u8] = b"Hello World!";
 
 #[no_mangle]
-#[link_section = ".text.init"] 
+// #[link_section = ".text.init"] 
 pub unsafe extern "C" fn _start() -> ! {
     unsafe {
         let vga = 0xA0000 as *mut u32;

@@ -2,7 +2,7 @@ BUILD_DIR=out
 BUILD=floppy
 VENDOR=SPPH
 
-.PHONY: mbr test test2 clean always
+.PHONY: mbr test test2 clean clean-cargo always
 
 
 mbr: chainloader/chainloader.asm always
@@ -13,7 +13,7 @@ mbr: chainloader/chainloader.asm always
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ./kernel.a
 	wsl ld -m elf_i386 -o image.elf chainloader.elf kernel.a
 	objcopy -O binary -R .note -R .comment -R .note.gnu.property image.elf image.bin
-
+	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
 # Make example boootloader programs
 
