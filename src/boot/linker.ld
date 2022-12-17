@@ -8,6 +8,7 @@ SECTIONS {
     .text : {
         kernel.a(.text)
     }
+    
     /DISCARD/ : {
         *(.comment)
         *(.eh_frame)
