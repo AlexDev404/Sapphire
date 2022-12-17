@@ -24,9 +24,9 @@ test2: chainloader/example/oem_label.asm always
 
 # Cleanup
 clean:
-	rm -rf chainloader.bin
-	rm -rf kernel.bin
-	rm -rf 2stage.bin
+	rm -rf *.bin
+	rm -rf *.elf
+	rm -rf *.a
 	rm -rf out
 
 # Always clean and make the bootdisk
