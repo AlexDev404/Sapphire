@@ -42,7 +42,7 @@ mov ds, ax
 mov es, ax
 
 ; JUMP TO THE MAIN LABEL
-init: jmp main
+init: jmp short main
 
 BIOS_UTIL:
     Print:
@@ -188,11 +188,15 @@ main:
     mov ah, 00h
     int 10h
 
+    ; SOMETHING IS GOING ON HERE ======================================================
+    lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
+    ; ====================================================== SOMETHING IS GOING ON HERE
+    
     ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
-    ; statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
-    ; mov si, statmsg
-    ; call Print
+    statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    mov si, statmsg
+    call Print
 
     ; INITIALIZE A20 LINE
     .initA20:
@@ -203,31 +207,35 @@ main:
         and al, 0xFE
         out 0x92, al
     .startPM:
+    
+
         cli            ; Disable interrupts
         pusha
         mov eax, cr0
         or al, 1       ; Set PE (Protection Enable) bit in CR0 (Control Register 0)
         mov cr0, eax
         popa
+
         ; END ENABLE PROTECTED MODE - INTERRUPTS INACCESSIBLE
 
         ; Perform far jump to selector 0x8 (offset into GDT, pointing at a 32bit PM code segment descriptor)
         ; to load CS with proper PM32 descriptor)
-
+        
+        ; FAULTING LINE ==================================================================
         jmp long 0x8:PModeMain ; Jump to Protected Mode Main in the code segment
+        ; ================================================================== FAULTING LINE
+    jmp hang
 
     [BITS 32]
     PModeMain:
         ; load DS, ES, FS, GS, SS, ESP
         ; Flush GDT + Initialize it + load segment registers
-        lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
         mov ax, 0x10 ; Initialize the segment descriptors with the data segment
         mov ds, ax
         mov es, ax
         mov fs, ax
         mov gs, ax
         mov ss, ax
-
         ; JUMP TO KERNEL
         ; call _start
         ; [TEST] Print Exclamation mark to scren
