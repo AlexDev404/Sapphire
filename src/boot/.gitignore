@@ -2,4 +2,4 @@ out/
 chainloader.elf
 image.bin
 image.elf
-libsapphire.a
+kernel.a

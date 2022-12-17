@@ -6,8 +6,13 @@ VENDOR=SPPH
 
 
 mbr: chainloader/chainloader.asm always
+	echo Building boootloader (chainloader.elf)
 	nasm -f elf32 chainloader/chainloader.asm -o chainloader.elf
-	wsl ld -m elf_i386 -o image.elf chainloader.elf libsapphire.a
+	echo Building kernel image (kernel.a)
+	cargo build --release
+	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ./kernel.a
+	wsl ld -m elf_i386 -o image.elf chainloader.elf kernel.a
+	objcopy -O binary -R .note -R .comment -R .note.gnu.property image.elf image.bin
 
 
 # Make example boootloader programs
@@ -28,6 +33,10 @@ clean:
 	rm -rf *.elf
 	rm -rf *.a
 	rm -rf out
+
+# Don't clean cargo by default (for faster builds)
+clean-cargo:
+	cargo clean
 
 # Always clean and make the bootdisk
 always: clean
