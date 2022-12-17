@@ -184,9 +184,9 @@ main:
 
     ; Set video mode
     ; Switch out of text mode and into to graphics mode
-    mov al, 13h ; 320x200 @ 256
-    mov ah, 00h
-    int 10h
+    ; mov al, 13h ; 320x200 @ 256
+    ; mov ah, 00h
+    ; int 10h
 
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
 
@@ -236,28 +236,28 @@ main:
         ; call _start
         ; [TEST] Print Exclamation mark to scren
 
-        ; mov ebx, 0xb8000 ; Text mode video address - Copy the video address to a general purpose register (this register supports color)
-        ; mov eax, 0x076907489     ; Copy the character to print to a general purpose register
-        ; mov ah, 0x2F     ; Aqua (3) on White (F)
-        ; mov [ebx], eax  ; Put the character into the video memory by turning the
+        mov ebx, 0xb8000 ; Text mode video address - Copy the video address to a general purpose register (this register supports color)
+        mov eax, 0x48     ; Copy the character to print to a general purpose register
+        mov ah, 0x2F     ; Aqua (3) on White (F)
+        mov [ebx], eax  ; Put the character into the video memory by turning the
                          ; video memory address into a pointer
-
+        
         ; HANG IF THE KERNEL DECIDES TO RETURN
         ; PIXELS
         ; =======
         ; Pixel FMT: Color
         ; Placing a pixel: The location is the address offset
         
-        mov ebx, 0xA0000 ; Graphics mode video address - Copy the video address to a general purpose register
-        mov al, 0x0A     ; the color of the pixel - Black (0) on Green (A) - Easy way to get video colors on Windows -> `color /?`
-        mov [ebx], al    ; Offset of X, Y of pixel - Put the character into the video memory by turning the
-                         ; video memory address into a pointer and adding an x, y offset
-        ; FMT: x+y*screen_x
-        mov [ebx+((0)+(0)*320)], al ; beginning of screen
-        ; mov [ebx+((320/2)+(200/2)*320)], al ; center of screen
-        mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
+        ; mov ebx, 0xA0000 ; Graphics mode video address - Copy the video address to a general purpose register
+        ; mov al, 0x0A     ; the color of the pixel - Black (0) on Green (A) - Easy way to get video colors on Windows -> `color /?`
+        ; mov [ebx], al    ; Offset of X, Y of pixel - Put the character into the video memory by turning the
+        ;                  ; video memory address into a pointer and adding an x, y offset
+        ; ; FMT: x+y*screen_x
+        ; mov [ebx+((0)+(0)*320)], al ; beginning of screen
+        ; ; mov [ebx+((320/2)+(200/2)*320)], al ; center of screen
+        ; mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
         
-        jmp hang
+        ; jmp hang
         ; Kernel jump into offset (???)
         jmp long _start
     hang:
