@@ -1,8 +1,13 @@
 SECTIONS {
     . = 0x7C00;
-    /* .text : {
-        *(.text)
-    } */
+    .text : {
+        /* *(.text) */
+        chainloader.elf(.text)
+    }
+    . = 0x100000;
+    .text : {
+        kernel.a(.text)
+    }
     /DISCARD/ : {
         *(.comment)
         *(.eh_frame)

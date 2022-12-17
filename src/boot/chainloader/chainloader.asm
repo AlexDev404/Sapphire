@@ -257,6 +257,7 @@ main:
         ; mov [ebx+((320/2)+(200/2)*320)], al ; center of screen
         mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
         
+        jmp hang
         ; Kernel jump into offset (???)
         jmp long _start
     hang:
