@@ -15,18 +15,6 @@ mbr: chainloader/chainloader.asm always
 	objcopy -O binary -R .note -R .comment -R .note.gnu.property image.elf image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
-# Make example boootloader programs
-
-# Example one
-test: chainloader/example/sector_test.asm always
-	nasm -f bin chainloader/example/sector_test.asm -o chainloader.bin
-	dd if=chainloader.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
-
-# Example 2
-test2: chainloader/example/oem_label.asm always
-	nasm -f bin chainloader/example/oem_label.asm -o chainloader.bin
-	dd if=chainloader.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
-
 # Cleanup
 clean:
 	rm -rf *.bin
