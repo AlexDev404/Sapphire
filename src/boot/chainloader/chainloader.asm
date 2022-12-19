@@ -193,9 +193,9 @@ main:
     
     ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
-    statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
-    mov si, statmsg
-    call Print
+    ; statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    ; mov si, statmsg
+    ; call Print
 
     ; INITIALIZE A20 LINE
     .initA20:
@@ -226,22 +226,22 @@ main:
     PModeMain:
         ; load DS, ES, FS, GS, SS, ESP
         ; Flush GDT + Initialize it + load segment registers
-        mov ax, 0x10 ; Initialize the segment descriptors with the data segment
-        mov ds, ax
-        mov es, ax
-        mov fs, ax
-        mov gs, ax
-        mov ss, ax
+        mov eax, 0x10 ; Initialize the segment descriptors with the data segment
+        mov ds, eax
+        mov es, eax
+        mov fs, eax
+        mov gs, eax
+        mov ss, eax
         ; JUMP TO KERNEL
         ; call _start
         ; [TEST] Print Exclamation mark to scren
 
-        mov ebx, 0xb8000 ; Text mode video address - Copy the video address to a general purpose register (this register supports color)
-        mov eax, 0x48     ; Copy the character to print to a general purpose register
-        mov ah, 0x2F     ; Aqua (3) on White (F)
-        mov [ebx], eax  ; Put the character into the video memory by turning the
-                         ; video memory address into a pointer
-        
+        ; mov ebx, ds:0xb8000 ; Text mode video address - Copy the video address to a general purpose register (this register supports color)
+        ; mov eax, 0x48     ; Copy the character to print to a general purpose register
+        ; mov ah, 0x2F     ; Aqua (3) on White (F)
+        ; mov [ebx], eax  ; Put the character into the video memory by turning the
+        ;                  ; video memory address into a pointer
+        mov [ds:0B8000h], byte 48h ; 'H'
         ; HANG IF THE KERNEL DECIDES TO RETURN
         ; PIXELS
         ; =======
@@ -271,6 +271,6 @@ main:
 ; Fill up empty space with zeroes to meet 512KB
 ; [EDIT] I disabled this so that I can keep an eye on how much
 ;        space I have left in the binary
-times 510-($-$$) db 0
+; times 510-($-$$) db 0
 
 dw 0xAA55

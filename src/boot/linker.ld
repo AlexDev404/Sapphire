@@ -4,7 +4,7 @@ SECTIONS {
         /* *(.text) */
         chainloader.elf(.text)
     }
-    . = 0x100000;
+    . = 0x7C00;
     .text : {
         kernel.a(.text)
     }
