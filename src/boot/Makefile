@@ -15,6 +15,14 @@ mbr: chainloader/chainloader.asm always
 	objcopy -O binary -R .note -R .comment -R .note.gnu.property image.elf image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
+kernel:
+	echo Building kernel image (kernel.a)
+	cargo build --release
+	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ./kernel.a
+	wsl ld -T linker.ld -m elf_i386 -o image.elf chainloader.elf kernel.a
+	objcopy -O binary -R .note -R .comment -R .note.gnu.property image.elf image.bin
+	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
+
 # Make example boootloader programs
 
 # Example one
