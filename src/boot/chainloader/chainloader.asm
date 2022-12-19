@@ -241,7 +241,9 @@ main:
         ; mov ah, 0x2F     ; Aqua (3) on White (F)
         ; mov [ebx], eax  ; Put the character into the video memory by turning the
         ;                  ; video memory address into a pointer
-        mov [ds:0B8000h], byte 48h ; 'H'
+        
+        mov [ds:0B8000h], byte 48h ; 'H' <- Works
+        
         ; HANG IF THE KERNEL DECIDES TO RETURN
         ; PIXELS
         ; =======
