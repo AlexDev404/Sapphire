@@ -1,11 +1,11 @@
-# Sapphire
-The Sapphire Operating System
+# hello-rust
+A minimalistic "Hello World!" Rust kernel
 
-## To Build [WIP]
+## To Build
 
 ### Bootloader
 
 ```shell
 cd src/boot
-make chainloader
+make
 ```
