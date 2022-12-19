@@ -271,6 +271,8 @@ main:
 ; Fill up empty space with zeroes to meet 512KB
 ; [EDIT] I disabled this so that I can keep an eye on how much
 ;        space I have left in the binary
-; times 510-($-$$) db 0
 
+; WHY DOES THIS CAUSE AN ERROR? =================================
+; times 510-($-$$) db 0
+; ================================= WHY DOES THIS CAUSE AN ERROR?
 dw 0xAA55
