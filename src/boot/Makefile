@@ -26,7 +26,7 @@ mbr: chainloader/chainloader.asm always
 	@echo.
 	@echo Building disk image (floppy.img)
 	@echo.
-	wsl ld -T -no-PIE linker.ld -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} ${KERNEL_O} --oformat binary
+	wsl ld -T linker.ld -no-PIE -no-PIC -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} ${KERNEL_O} --oformat binary
 	cat ${CHAINLOADER} ${KERNEL_BIN} > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 

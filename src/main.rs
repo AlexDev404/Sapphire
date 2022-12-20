@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-mod vga;
+mod graphics;
 use core::panic::PanicInfo;
 
 // This function is called on panic.
@@ -35,10 +35,6 @@ pub unsafe extern "C" fn _rust() -> ! {
     // Pixel FMT: x+y*screen_x
     // Setting the unit of the memory to units
     // let vga = 0xa0000 as *mut u8;
-    
-    use core::fmt::Write;
-    vga::WRITER.lock().write_str("Hello again").unwrap();
-    write!(vga::WRITER.lock(), ", some numbers: {} {}", 42, 1.337).unwrap();
 
 
     // END
