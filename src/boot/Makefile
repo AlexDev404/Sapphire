@@ -7,12 +7,13 @@ VENDOR=SPPH
 
 mbr: chainloader/chainloader.asm always
 	echo Building bootloader (chainloader.elf)
-	nasm -f elf32 chainloader/chainloader.asm -o chainloader.elf
+	nasm -f bin chainloader/chainloader.asm -o chainloader.bin
+	nasm -f elf32 chainloader/stage2.asm -o stage2.elf
 	echo Building kernel image (kernel.a)
 	cargo build --release
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ./kernel.a
-	wsl ld -T linker.ld -m elf_i386 -o image.elf chainloader.elf kernel.a
-	objcopy -O binary -R .note -R .comment -R .note.gnu.property image.elf image.bin
+	wsl ld -o loader.bin -m elf_i386 -Ttext 0x1000 stage2.elf kernel.a --oformat binary
+	cat chainloader.bin loader.bin > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
 kernel:

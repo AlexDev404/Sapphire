@@ -4,11 +4,6 @@ SECTIONS {
         /* *(.text) */
         chainloader.elf(.text)
     }
-    . = 0x8C00;
-    .text._start : {
-        kernel.a(.text)
-    }
-    
     /DISCARD/ : {
         *(.comment)
         *(.eh_frame)

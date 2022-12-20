@@ -20,7 +20,7 @@
 
 ; GDT TABLE LOCATION
 
-%DEFINE KERNEL_CODE 0x8C00
+%DEFINE KERNEL_CODE 0x1000
 %DEFINE IDT_FLAG_GATE_TASK 0x5
 %DEFINE IDT_FLAG_GATE_16BIT_INT 0x6
 %DEFINE IDT_FLAG_GATE_16BIT_TRAP 0x7
@@ -33,8 +33,7 @@
 %DEFINE IDT_FLAG_PRESENT 0x80
 
 [BITS 16]
-[EXTERN _start]
-; [ORG 0x7C00]
+[ORG 0x7C00]
 
 ; Initialize the segment registers
 xor ax, ax
@@ -226,9 +225,14 @@ main:
     ; int 10h
     
     ; Load the kernel into memory
+    mov [BOOT_DRIVE], dl
+    pusha
     mov bx, KERNEL_CODE    ; set address to bx
+    mov dh, 15
+    mov dl, [BOOT_DRIVE]
     call disk_read    ; read our binaries and store by offset above
-
+    popa
+    
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
 
     
@@ -303,7 +307,7 @@ main:
         ; jmp hang
         ; Kernel jump into offset (???)
         
-        call _start     ; give execution to our loaded binaries
+        call KERNEL_CODE
         ; jmp long _start
     hang:
         cli
@@ -323,4 +327,5 @@ times 510-($-$$) db 0
 .rodata:
     DISK_READ_ERROR db "DISK READ ERROR", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
     STATMSG db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    BOOT_DRIVE: db 0
 dw 0xAA55
