@@ -50,45 +50,43 @@ BIOS_UTIL:
             or al, al
             je .done
             mov ah, 0x0E
-            int 0x10
+            int 10h
             .repeat:
                 jmp .print
             .done:
                 ret
-                
     disk_read:
-	    ;; store all register values
+	    ; store all register values
 	    pusha
 	    push dx
 
-	    ;; prepare data for reading the disk
-	    ;; al = number of sectors to read (1 - 128)
-	    ;; ch = track/cylinder number
-	    ;; dh = head number
-	    ;; cl = sector number
+	    ; prepare data for reading the disk
+	    ; al = number of sectors to read (1 - 128)
+	    ; ch = track/cylinder number
+	    ; dh = head number
+	    ; cl = sector number
 	    mov ah, 0x02
 	    mov al, dh
 	    mov ch, 0x00
 	    mov dh, 0x00
 	    mov cl, 0x02
-	    int 0x13
+	    int 13h
 
-	    ;; in case of read error
-	    ;; show the message about it
+	    ; in case of read error
+	    ; show the message about it
 	    jc disk_read_error
     
-    	;; check if we read expected count of sectors
-    	;; if not, show the message with error
+    	; check if we read expected count of sectors
+    	; if not, show the message with error
 	    pop dx
 	    cmp dh, al
 	    jne disk_read_error
     
-    	;; restore register values and ret
+    	; restore register values and ret
     	popa
 	    ret
 
     disk_read_error:
-    
 	    mov si, DISK_READ_ERROR
 	    call Print
 	    hlt
@@ -220,9 +218,9 @@ main:
 
     ; Set video mode
     ; Switch out of text mode and into to graphics mode
-    ; mov al, 13h ; 320x200 @ 256
-    ; mov ah, 00h
-    ; int 10h
+    mov al, 13h ; 320x200 @ 256
+    mov ah, 00h
+    int 10h
     
     ; Load the kernel into memory
     pusha
@@ -306,7 +304,7 @@ main:
         ; jmp hang
         ; Kernel jump into offset (???)
         
-        call KERNEL_CODE
+        jmp long KERNEL_CODE
     hang:
         cli
         hlt
