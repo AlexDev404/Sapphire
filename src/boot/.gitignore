@@ -1,5 +1,7 @@
 out/
-chainloader.elf
+chainloader.bin
+kernel_stub.elf
+kernel.bin
 image.bin
 image.elf
 kernel.a

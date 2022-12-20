@@ -1,12 +1,7 @@
 SECTIONS {
-    . = 0x7C00;
+    . = 0x1000;
     .text : {
-        /* *(.text) */
-        chainloader.elf(.text)
-    }
-    . = 0x7C00;
-    .text : {
-        kernel.a(.text)
+        *(.text)
     }
     
     /DISCARD/ : {

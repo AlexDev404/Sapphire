@@ -20,7 +20,7 @@
 
 ; GDT TABLE LOCATION
 
-%DEFINE KERNEL_CODE 0x7E00
+%DEFINE KERNEL_CODE 0x1000
 %DEFINE IDT_FLAG_GATE_TASK 0x5
 %DEFINE IDT_FLAG_GATE_16BIT_INT 0x6
 %DEFINE IDT_FLAG_GATE_16BIT_TRAP 0x7
@@ -31,10 +31,9 @@
 %DEFINE IDT_FLAG_RING2 64
 %DEFINE IDT_FLAG_RING3 96
 %DEFINE IDT_FLAG_PRESENT 0x80
-extern _start
 
 [BITS 16]
-; [ORG 0x7C00]
+[ORG 0x7C00]
 
 ; Initialize the segment registers
 xor ax, ax
@@ -51,11 +50,46 @@ BIOS_UTIL:
             or al, al
             je .done
             mov ah, 0x0E
-            int 0x10
+            int 10h
             .repeat:
                 jmp .print
             .done:
                 ret
+    disk_read:
+	    ; store all register values
+	    pusha
+	    push dx
+
+	    ; prepare data for reading the disk
+	    ; al = number of sectors to read (1 - 128)
+	    ; ch = track/cylinder number
+	    ; dh = head number
+	    ; cl = sector number
+	    mov ah, 0x02
+	    mov al, dh
+	    mov ch, 0x00
+	    mov dh, 0x00
+	    mov cl, 0x02
+	    int 13h
+
+	    ; in case of read error
+	    ; show the message about it
+	    jc disk_read_error
+    
+    	; check if we read expected count of sectors
+    	; if not, show the message with error
+	    pop dx
+	    cmp dh, al
+	    jne disk_read_error
+    
+    	; restore register values and ret
+    	popa
+	    ret
+
+    disk_read_error:
+	    mov si, DISK_READ_ERROR
+	    call Print
+	    hlt
 
 ; STRUCT - ONE ENTRY OF THE GDT TABLE
 STRUC gdt_entry
@@ -184,17 +218,24 @@ main:
 
     ; Set video mode
     ; Switch out of text mode and into to graphics mode
-    ; mov al, 13h ; 320x200 @ 256
-    ; mov ah, 00h
-    ; int 10h
-
+    mov al, 13h ; 320x200 @ 256
+    mov ah, 00h
+    int 10h
+    
+    ; Load the kernel into memory
+    pusha
+    mov bx, KERNEL_CODE    ; set address to bx
+    mov dh, 15
+    mov dl, [BOOTDRIVE]
+    call disk_read    ; read our binaries and store by offset above
+    popa
+    
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
 
     
     ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
-    ; statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
-    ; mov si, statmsg
+    ; mov si, STATMSG
     ; call Print
 
     ; INITIALIZE A20 LINE
@@ -242,7 +283,7 @@ main:
         ; mov [ebx], eax  ; Put the character into the video memory by turning the
         ;                  ; video memory address into a pointer
         
-        mov [ds:0B8000h], byte 48h ; 'H' <- Works
+        ; mov [ds:0B8000h], byte 48h ; 'H' <- Works
         
         ; HANG IF THE KERNEL DECIDES TO RETURN
         ; PIXELS
@@ -250,18 +291,20 @@ main:
         ; Pixel FMT: Color
         ; Placing a pixel: The location is the address offset
         
-        ; mov ebx, 0xA0000 ; Graphics mode video address - Copy the video address to a general purpose register
-        ; mov al, 0x0A     ; the color of the pixel - Black (0) on Green (A) - Easy way to get video colors on Windows -> `color /?`
-        ; mov [ebx], al    ; Offset of X, Y of pixel - Put the character into the video memory by turning the
-        ;                  ; video memory address into a pointer and adding an x, y offset
-        ; ; FMT: x+y*screen_x
-        ; mov [ebx+((0)+(0)*320)], al ; beginning of screen
-        ; ; mov [ebx+((320/2)+(200/2)*320)], al ; center of screen
-        ; mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
+        mov ebx, 0xA0000 ; Graphics mode video address - Copy the video address to a general purpose register
+        mov al, 0x0A     ; the color of the pixel - Black (0) on Green (A) - Easy way to get video colors on Windows -> `color /?`
+        mov [ebx], al    ; Offset of X, Y of pixel - Put the character into the video memory by turning the
+                         ; video memory address into a pointer and adding an x, y offset
+        ; FMT: x+y*screen_x
+        mov [ebx+((0)+(0)*320)], al ; beginning of screen
+        ; mov [ebx+((320/2)+(200/2)*320)], al ; center of screen
+        ; mov[0A7DA0h], al
+        mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
         
         ; jmp hang
         ; Kernel jump into offset (???)
-        jmp long _start
+        
+        jmp long KERNEL_CODE
     hang:
         cli
         hlt
@@ -275,6 +318,10 @@ main:
 ;        space I have left in the binary
 
 ; WHY DOES THIS CAUSE AN ERROR? =================================
-; times 510-($-$$) db 0
+times 510-($-$$) db 0
 ; ================================= WHY DOES THIS CAUSE AN ERROR?
+.rodata:
+    DISK_READ_ERROR db "DISK READ ERROR", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    STATMSG db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    BOOTDRIVE db 0x00
 dw 0xAA55
