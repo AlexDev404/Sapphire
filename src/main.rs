@@ -24,7 +24,7 @@ static HELLO: &[u8] = b"Hello World!";
 
 #[no_mangle]
 // #[link_section = ".text.init"]
-pub unsafe extern "C" fn _start() -> ! {
+pub unsafe extern "C" fn _rust() -> ! {
     // Pixel FMT: x+y*screen_x
     // Setting the unit of the memory to units
     // let vga = 0xa0000 as *mut u8;

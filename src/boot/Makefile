@@ -6,23 +6,34 @@ VENDOR=SPPH
 
 
 mbr: chainloader/chainloader.asm always
-	echo Building bootloader (chainloader.elf)
-	nasm -f elf32 chainloader/chainloader.asm -o chainloader.elf
-	echo Building kernel image (kernel.a)
+	@echo.
+	@echo.
+	@echo Building bootloader (chainloader.elf)
+	@echo.
+	nasm -f bin chainloader/chainloader.asm -o chainloader.bin
+	nasm -f elf32 chainloader/stage2.asm -o kernel_stub.elf
+	@echo.
+	@echo.
+	@echo Building kernel image (kernel.a)
+	@echo.
 	cargo build --release
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ./kernel.a
-	wsl ld -T linker.ld -m elf_i386 -o image.elf chainloader.elf kernel.a
-	objcopy -O binary -R .note -R .comment -R .note.gnu.property image.elf image.bin
+	@echo.
+	@echo.
+	@echo Building disk image (floppy.img)
+	@echo.
+	wsl ld -T linker.ld -m elf_i386 -o kernel.bin kernel_stub.elf kernel.a --oformat binary
+	cat chainloader.bin kernel.bin > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
 kernel:
-	echo Building kernel image (kernel.a)
+	@echo Building kernel image (kernel.a)
 	cargo build --release
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ./kernel.a
-	wsl ld -T linker.ld -m elf_i386 -o image.elf chainloader.elf kernel.a
-	objcopy -O binary -R .note -R .comment -R .note.gnu.property image.elf image.bin
-	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
+	wsl ld -o kernel.bin -m elf_i386 -Ttext 0x1000 kernel_stub.elf kernel.a --oformat binary
+	cat chainloader.bin kernel.bin > image.bin
+	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 # Make example boootloader programs
 
 # Example one
