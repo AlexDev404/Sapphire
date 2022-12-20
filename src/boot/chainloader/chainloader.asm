@@ -20,7 +20,7 @@
 
 ; GDT TABLE LOCATION
 
-%DEFINE KERNEL_CODE 0x7E00
+%DEFINE KERNEL_CODE 0x8C00
 %DEFINE IDT_FLAG_GATE_TASK 0x5
 %DEFINE IDT_FLAG_GATE_16BIT_INT 0x6
 %DEFINE IDT_FLAG_GATE_16BIT_TRAP 0x7
@@ -31,9 +31,9 @@
 %DEFINE IDT_FLAG_RING2 64
 %DEFINE IDT_FLAG_RING3 96
 %DEFINE IDT_FLAG_PRESENT 0x80
-extern _start
 
 [BITS 16]
+[EXTERN _start]
 ; [ORG 0x7C00]
 
 ; Initialize the segment registers
@@ -56,6 +56,43 @@ BIOS_UTIL:
                 jmp .print
             .done:
                 ret
+                
+    disk_read:
+	    ;; store all register values
+	    pusha
+	    push dx
+
+	    ;; prepare data for reading the disk
+	    ;; al = number of sectors to read (1 - 128)
+	    ;; ch = track/cylinder number
+	    ;; dh = head number
+	    ;; cl = sector number
+	    mov ah, 0x02
+	    mov al, dh
+	    mov ch, 0x00
+	    mov dh, 0x00
+	    mov cl, 0x02
+	    int 0x13
+
+	    ;; in case of read error
+	    ;; show the message about it
+	    jc disk_read_error
+    
+    	;; check if we read expected count of sectors
+    	;; if not, show the message with error
+	    pop dx
+	    cmp dh, al
+	    jne disk_read_error
+    
+    	;; restore register values and ret
+    	popa
+	    ret
+
+    disk_read_error:
+    
+	    mov si, DISK_READ_ERROR
+	    call Print
+	    hlt
 
 ; STRUCT - ONE ENTRY OF THE GDT TABLE
 STRUC gdt_entry
@@ -184,17 +221,20 @@ main:
 
     ; Set video mode
     ; Switch out of text mode and into to graphics mode
-    mov al, 13h ; 320x200 @ 256
-    mov ah, 00h
-    int 10h
+    ; mov al, 13h ; 320x200 @ 256
+    ; mov ah, 00h
+    ; int 10h
+    
+    ; Load the kernel into memory
+    mov bx, KERNEL_CODE    ; set address to bx
+    call disk_read    ; read our binaries and store by offset above
 
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
 
     
     ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
-    ; statmsg db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
-    ; mov si, statmsg
+    ; mov si, STATMSG
     ; call Print
 
     ; INITIALIZE A20 LINE
@@ -262,7 +302,9 @@ main:
         
         ; jmp hang
         ; Kernel jump into offset (???)
-        jmp long _start
+        
+        call _start     ; give execution to our loaded binaries
+        ; jmp long _start
     hang:
         cli
         hlt
@@ -276,6 +318,9 @@ main:
 ;        space I have left in the binary
 
 ; WHY DOES THIS CAUSE AN ERROR? =================================
-; times 510-($-$$) db 0
+times 510-($-$$) db 0
 ; ================================= WHY DOES THIS CAUSE AN ERROR?
+.rodata:
+    DISK_READ_ERROR db "DISK READ ERROR", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    STATMSG db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
 dw 0xAA55

@@ -10,32 +10,32 @@ fn panic(_info: &PanicInfo) -> ! {
     }
 }
 
-fn fill_screen(vga: *mut u8, screen_x: isize, screen_y: isize, color: u8) {
-    for x in 0..screen_x {
-        for y in 0..screen_y {
-            unsafe {
-                *vga.offset(x + y * 320) = color;
-            }
-        }
-    }
-}
+// fn fill_screen(vga: *mut u8, screen_x: isize, screen_y: isize, color: u8) {
+//     for x in 0..screen_x {
+//         for y in 0..screen_y {
+//             unsafe {
+//                 *vga.offset(x + y * 320) = color;
+//             }
+//         }
+//     }
+// }
 
-// static HELLO: &[u8] = b"Hello World!";
+static HELLO: &[u8] = b"Hello World!";
 
 #[no_mangle]
 // #[link_section = ".text.init"]
 pub unsafe extern "C" fn _start() -> ! {
     // Pixel FMT: x+y*screen_x
     // Setting the unit of the memory to units
-    let vga = 0xa0000 as *mut u8;
+    // let vga = 0xa0000 as *mut u8;
 
-    for _h in 0..8 {
-        // Fill the screen (rainbow)
-        for i in 0..0xff {
-            fill_screen(vga, 320, 200, i);
-            // Beyond the 512K barrier we crash
-        }
-    }
+    // for _h in 0..8 {
+    //     // Fill the screen (rainbow)
+    //     for i in 0..0xff {
+    //         fill_screen(vga, 320, 200, i);
+    //         // Beyond the 512K barrier we crash
+    //     }
+    // }
 
     // Draw a horizonal line from the center of the screen
     // for x in 0..100 {
@@ -56,14 +56,14 @@ pub unsafe extern "C" fn _start() -> ! {
 
     // loop {
     // }
-    // let vga_buffer = 0xb8000 as *mut u8;
+    let vga_buffer = 0xb8000 as *mut u8;
 
-    // for (i, &byte) in HELLO.iter().enumerate() {
-    //     unsafe {
-    //         *vga_buffer.offset(i as isize * 2) = byte;
-    //         *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
-    //     }
-    // }
+    for (i, &byte) in HELLO.iter().enumerate() {
+        unsafe {
+            *vga_buffer.offset(i as isize * 2) = byte;
+            *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
+        }
+    }
     loop {
     }
 }
