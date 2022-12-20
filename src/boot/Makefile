@@ -20,13 +20,13 @@ mbr: chainloader/chainloader.asm always
 	@echo.
 	@echo Building kernel image (kernel.a)
 	@echo.
-	cargo build --release
+	cargo build --release --lib
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ${KERNEL_O}
 	@echo.
 	@echo.
 	@echo Building disk image (floppy.img)
 	@echo.
-	wsl ld -T linker.ld -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} ${KERNEL_O} --oformat binary
+	wsl ld -T -no-PIE linker.ld -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} ${KERNEL_O} --oformat binary
 	cat ${CHAINLOADER} ${KERNEL_BIN} > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 

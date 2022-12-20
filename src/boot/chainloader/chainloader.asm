@@ -218,9 +218,9 @@ main:
 
     ; Set video mode
     ; Switch out of text mode and into to graphics mode
-    mov al, 13h ; 320x200 @ 256
-    mov ah, 00h
-    int 10h
+    ; mov al, 13h ; 320x200 @ 256
+    ; mov ah, 00h
+    ; int 10h
     
     ; Load the kernel into memory
     pusha
