@@ -3,9 +3,9 @@ The Sapphire Operating System
 
 ## To Build [WIP]
 
-### Bootloader
+### Main Project
 
 ```shell
 cd src/boot
-make chainloader
+make mbr
 ```
