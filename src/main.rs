@@ -21,6 +21,12 @@ fn fill_screen(vga: *mut u8, screen_x: isize, screen_y: isize, color: u8) {
     }
 }
 
+fn putpixel(vga: *mut u8, color: u8, x: isize, y: isize) {
+    unsafe {
+        *vga.offset(x + y * 320) = color;
+    }
+}
+
 // static HELLO: &[u8] = b"Hello World!";
 
 #[no_mangle]
@@ -30,28 +36,22 @@ pub unsafe extern "C" fn _rust() -> ! {
     // Setting the unit of the memory to units
     let vga = 0xa0000 as *mut u8;
 
-    for _h in 0..8 {
-        // Fill the screen (rainbow)
-        for i in 0..0xff {
-            fill_screen(vga, 320, 200, i);
-            // Beyond the 512K barrier we crash
-        }
-    }
+    // for _h in 0..8 {
+    //     // Fill the screen (rainbow)
+    //     for i in 0..0xff {
+    //         fill_screen(vga, 320, 200, i);
+    //         // Beyond the 512K barrier we crash
+    //     }
+    // }
 
     // Draw a horizonal line from the center of the screen
-    for x in 0..100 {
-        *vga.offset(320 / 2 + x + 200 / 2 * 320) = 0x0a;
-    }
-
-    // Draw a vertical line from the center of the screen
-    for y in 0..100 {
-    *vga.offset(320 / 2 + 200 / 2 + y * 320) = 0x0a;
-    }
+    // for x in 0..100 {
+    //     *vga.offset(320 / 2 + x + (200 / 2) * 320) = 0x0a;
+    // }
 
     // Draw a diagonal line from the center of the screen
-    for xy in 0..100 {
-    *vga.offset(320 / 2 + xy + 200 / 2 + xy * 320) = 0x0a;
-    }
+
+    // putpixel(vga, 0x0a, 320, 200);
 
     // END
 
