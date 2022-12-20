@@ -4,9 +4,9 @@
 ;
 ; 2. Determine where your kernel image is located on the boot partition
 ;    (either by interpreting the file system, or by loading the image from
-;    a fixed position) **[WILL LOAD FROM FIXED POSITION IN MEMORY]**
+;    a fixed position) **[WILL LOAD FROM FIXED POSITION IN MEMORY]** ✅
 ;
-; 3. Load the kernel image into memory (requires basic disk I/O); **[TODO]**
+; 3. Load the kernel image into memory (requires basic disk I/O); ✅
 ;
 ; 4. Enable protected mode; ✅
 ;
@@ -235,8 +235,8 @@ main:
     
     ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
     ; [PMODE STARTS] ENABLE PROTECTED MODE
-    ; mov si, STATMSG
-    ; call Print
+    mov si, STATMSG
+    call Print
 
     ; INITIALIZE A20 LINE
     .initA20:
@@ -273,36 +273,7 @@ main:
         mov fs, eax
         mov gs, eax
         mov ss, eax
-        ; JUMP TO KERNEL
-        ; call _start
-        ; [TEST] Print Exclamation mark to scren
-
-        ; mov ebx, ds:0xb8000 ; Text mode video address - Copy the video address to a general purpose register (this register supports color)
-        ; mov eax, 0x48     ; Copy the character to print to a general purpose register
-        ; mov ah, 0x2F     ; Aqua (3) on White (F)
-        ; mov [ebx], eax  ; Put the character into the video memory by turning the
-        ;                  ; video memory address into a pointer
-        
-        ; mov [ds:0B8000h], byte 48h ; 'H' <- Works
-        
-        ; HANG IF THE KERNEL DECIDES TO RETURN
-        ; PIXELS
-        ; =======
-        ; Pixel FMT: Color
-        ; Placing a pixel: The location is the address offset
-        
-        mov ebx, 0xA0000 ; Graphics mode video address - Copy the video address to a general purpose register
-        mov al, 0x0A     ; the color of the pixel - Black (0) on Green (A) - Easy way to get video colors on Windows -> `color /?`
-        mov [ebx], al    ; Offset of X, Y of pixel - Put the character into the video memory by turning the
-                         ; video memory address into a pointer and adding an x, y offset
-        ; FMT: x+y*screen_x
-        mov [ebx+((0)+(0)*320)], al ; beginning of screen
-        ; mov [ebx+((320/2)+(200/2)*320)], al ; center of screen
-        ; mov[0A7DA0h], al
-        mov [ebx+((320-1)+(200-1)*320)], al ; end of screen (had to subtract one - guessing it has something to do with the screen size)
-        
-        ; jmp hang
-        ; Kernel jump into offset (???)
+        ; JUMP TO KERNEL OFFSET
         
         jmp long KERNEL_CODE
     hang:
@@ -313,13 +284,8 @@ main:
         jmp hang
 
 
-; Fill up empty space with zeroes to meet 512KB
-; [EDIT] I disabled this so that I can keep an eye on how much
-;        space I have left in the binary
-
-; WHY DOES THIS CAUSE AN ERROR? =================================
+; Fill up empty space with zeroes to meet 512B
 times 510-($-$$) db 0
-; ================================= WHY DOES THIS CAUSE AN ERROR?
 .rodata:
     DISK_READ_ERROR db "DISK READ ERROR", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
     STATMSG db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y

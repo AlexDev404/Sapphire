@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
 
-mod vga_buffer;
+mod vga;
 use core::panic::PanicInfo;
 
 // This function is called on panic.
@@ -34,24 +34,9 @@ fn putpixel(vga: *mut u8, color: u8, x: isize, y: isize) {
 pub unsafe extern "C" fn _rust() -> ! {
     // Pixel FMT: x+y*screen_x
     // Setting the unit of the memory to units
-    let vga = 0xa0000 as *mut u8;
-
-    // for _h in 0..8 {
-    //     // Fill the screen (rainbow)
-    //     for i in 0..0xff {
-    //         fill_screen(vga, 320, 200, i);
-    //         // Beyond the 512K barrier we crash
-    //     }
-    // }
-
-    // Draw a horizonal line from the center of the screen
-    // for x in 0..100 {
-    //     *vga.offset(320 / 2 + x + (200 / 2) * 320) = 0x0a;
-    // }
-
-    // Draw a diagonal line from the center of the screen
-
-    // putpixel(vga, 0x0a, 320, 200);
+    // let vga = 0xa0000 as *mut u8;
+    
+    vga::print_something();
 
     // END
 
