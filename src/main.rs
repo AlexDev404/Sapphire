@@ -20,7 +20,7 @@ fn fill_screen(vga: *mut u8, screen_x: isize, screen_y: isize, color: u8) {
     }
 }
 
-static HELLO: &[u8] = b"Hello World!";
+// static HELLO: &[u8] = b"Hello World!";
 
 #[no_mangle]
 // #[link_section = ".text.init"]
@@ -56,14 +56,4 @@ pub unsafe extern "C" fn _rust() -> ! {
 
     loop {
     }
-    // let vga_buffer = 0xb8000 as *mut u8;
-
-    // for (i, &byte) in HELLO.iter().enumerate() {
-    //     unsafe {
-    //         *vga_buffer.offset(i as isize * 2) = byte;
-    //         *vga_buffer.offset(i as isize * 2 + 1) = 0xb;
-    //     }
-    // }
-    // loop {
-    // }
 }
