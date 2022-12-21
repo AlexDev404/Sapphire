@@ -57,9 +57,9 @@ pub unsafe extern "C" fn _rust() -> ! {
     // Setting the unit of the memory to units
     // let vga = vga_addr as *mut u8;
     // putpixel(vga, 0x0a, 0, 0);
-    drawchar('H', 0, 0, 0x0a, 0x00);
-    drawchar('E', 30, 30, 0x0a, 0x00);
-    drawchar('A', 60, 60, 0x0a, 0x00);
+    drawchar('H', 30, 30, 0x0a, 0x00);
+    drawchar('E', 60, 60, 0x0a, 0x00);
+    drawchar('A', 90, 90, 0x0a, 0x00);
     // END
 
     loop {
