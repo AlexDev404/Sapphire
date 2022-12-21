@@ -23,9 +23,10 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
         let c: u8 = chr as u8;
         let vga = VGA_ADDR as *mut u8;
         let font: *const u8 = &F_DATA as *const u8;
-        const MASK_BASE: u8 = 0x80;
         let glyph = font.offset((c as isize)*F_HEIGHT);
 
+
+        const MASK_BASE: u8 = 0x80;
 
         for cy in 0..F_HEIGHT {
             for cx in 0..F_WIDTH {
