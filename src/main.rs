@@ -2,13 +2,13 @@
 #![no_main]
 
 mod graphics;
-mod tvga;
+mod chunkymonkey_z80;
 use core::panic::PanicInfo;
 use graphics::putpixel;
 
 static VGA_ADDR: u32 = 0xa0000;
-static F_DATA: [u8; 4096] = tvga::TVGA8800CS__8X16;
-static F_HEIGHT: isize = 16;
+static F_DATA: [u8; 768] = chunkymonkey_z80::CHUNKYMONKEY_Z80;
+static F_HEIGHT: isize = 8;
 static F_WIDTH: isize = 8;
 
 // This function is called on panic.
