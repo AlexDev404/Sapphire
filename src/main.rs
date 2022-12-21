@@ -2,11 +2,14 @@
 #![no_main]
 
 mod graphics;
-mod ibm_vga8x16;
+mod tvga;
 use core::panic::PanicInfo;
 use graphics::putpixel;
 
-static vga_addr: u32 = 0xa0000;
+static VGA_ADDR: u32 = 0xa0000;
+static F_DATA: [u8; 4096] = tvga::TVGA8800CS__8X16;
+static F_HEIGHT: isize = 16;
+static F_WIDTH: isize = 8;
 
 // This function is called on panic.
 #[panic_handler]
@@ -18,32 +21,17 @@ fn panic(_info: &PanicInfo) -> ! {
 fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     unsafe {
         let c: u8 = chr as u8;
-        let vga = vga_addr as *mut u8;
-        let font: *const u8 = &ibm_vga8x16::IBM_VGA_8x16 as *const u8;
-        let mask: [i32; 8] = [1, 2, 4, 8, 16, 32, 64, 128];
-        let glyph = font.offset((c as isize)*16);
+        let vga = VGA_ADDR as *mut u8;
+        let font: *const u8 = &F_DATA as *const u8;
+        const MASK_BASE: u8 = 0x80;
+        let glyph = font.offset((c as isize)*F_HEIGHT);
 
-        // Initialize cx and cy to zero
-        let mut cx: usize = 0;
-        let mut cy: isize = 0;
 
-        while cy < 16 {
-            while cx < 8 {
-                putpixel(
-                    vga,
-                    if (*glyph.offset(cy) & (mask[cx] as u8)) != 0x00 {
-                        fgcolor
-                    } else {
-                        bgcolor
-                    },
-                    x + (cx as isize),
-                    y + cy - 12
-                );
-                cx += 1;
+        for cy in 0..F_HEIGHT {
+            for cx in 0..F_WIDTH {
+                let color = if *glyph.offset(cy) & MASK_BASE >> cx != 0x00 { fgcolor } else { bgcolor };
+                putpixel(vga, color, x + cx, y + cy - 12);
             }
-            // Reset cx for the next row
-            cx = 0;
-            cy += 1;
         }
     }
 }
