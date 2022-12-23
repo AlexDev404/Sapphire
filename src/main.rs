@@ -5,7 +5,7 @@ mod graphics;
 mod ibm_vga8x16;
 use core::panic::PanicInfo;
 use graphics::putpixel;
-use tinyvec_string::arraystring;
+use tinyvec_string::ArrayString;
 
 static VGA_ADDR: u32 = 0xa0000;
 static F_DATA: [u8; 4096] = ibm_vga8x16::IBM_VGA_8X16;
@@ -41,11 +41,11 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     }
 }
 
-fn printString(str: arraystring, fgcolor: u8, bgcolor: u8) {
-    let pos: isize = 0;
-    for chr in str.bytes() {
-        drawchar(chr, pos, 32, fgcolor, bgcolor);
-        pos += 1;
+fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u8, bgcolor: u8, start_x: isize, y: isize) { // Stack is max 13?? Why?
+    let mut pos: isize = start_x;
+    for chr in str.chars() {
+        drawchar(chr, pos, y, fgcolor, bgcolor);
+        pos += 9; // Each character is 8 bytes wide and we need at least 1 byte of separation
     }
 }
 
@@ -59,12 +59,12 @@ pub unsafe extern "C" fn _rust() -> ! {
     // let vga = vga_addr as *mut u8;
     // putpixel(vga, 0x0a, 0, 0);
     // drawchar('H', 30, 30, 0x0a, 0x00);
-    // drawchar('E', 60, 60, 0x0a, 0x00);
-    // drawchar('L', 90, 90, 0x0a, 0x00);
-    // drawchar('L', 120, 120, 0x0a, 0x00);
-    // drawchar('O', 150, 150, 0x0a, 0x00);
-    // drawchar('!', 180, 180, 0x0a, 0x00);
-    printString("HELLO!", 0x0a, 0x00);
+    // drawchar('E', 39, 30, 0x0a, 0x00);
+    // drawchar('L', 48, 30, 0x0a, 0x00);
+    // drawchar('L', 57, 30, 0x0a, 0x00);
+    // drawchar('O', 66, 30, 0x0a, 0x00);
+    // drawchar('!', 75, 30, 0x0a, 0x00);
+    print_string(ArrayString::<[u8; 13]>::from("HELLO!"), 0x0a, 0x00, 1, 17);
     // END
 
     loop {
