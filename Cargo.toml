@@ -16,10 +16,10 @@ panic = "abort"
 alloc = []
 
 [dependencies]
-tinyvec_string = "0.3.2"
+tinyvec_string = { version = "0.3.2", features = ["tinyvec_macros"] }
 
 [lib]
-name = "sapphire"           # The name of the target.
-path = "src/main.rs"    # The source file of the target.
-edition = "2021"       # The edition of the target.
-crate-type = ["staticlib"]   # The crate types to generate.
+name = "sapphire"          # The name of the target.
+path = "src/main.rs"       # The source file of the target.
+edition = "2021"           # The edition of the target.
+crate-type = ["staticlib"] # The crate types to generate.
