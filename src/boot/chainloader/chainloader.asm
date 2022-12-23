@@ -43,6 +43,29 @@ mov es, ax
 ; JUMP TO THE MAIN LABEL
 init: jmp short main
 
+fat12_oem:                    db 'MSWIN4.1'           ; 8 bytes
+fat12_bytes_per_sector:       dw 512
+fat12_sectors_per_cluster:    db 1
+fat12_reserved_sectors:       dw 1
+fat12_fat_count:              db 2
+fat12_dir_entries_count:      dw 0E0h
+fat12_total_sectors:          dw 2880                 ; 2880 * 512 = 1.44MB
+fat12_media_descriptor_type:  db 0F0h                 ; F0 = 3.5" floppy disk
+fat12_sectors_per_fat:        dw 9                    ; 9 sectors/fat12
+fat12_sectors_per_track:      dw 18
+fat12_heads:                  dw 2
+fat12_hidden_sectors:         dd 0
+fat12_large_sector_count:     dd 0
+
+; extended boot record
+ebr_drive_number:           db 0                    ; 0x00 floppy, 0x80 hdd, useless
+                            db 0                    ; reserved
+ebr_signature:              db 29h
+ebr_volume_id:              db 12h, 34h, 56h, 78h   ; serial number, value doesn't matter
+ebr_volume_label:           db 'SPPH       '        ; 11 bytes, padded with spaces
+ebr_system_id:              db 'fat12   '           ; 8 bytes
+
+
 BIOS_UTIL:
     Print:
         .print:
@@ -91,7 +114,57 @@ BIOS_UTIL:
 	    call Print
 	    hlt
 
-; STRUCT - ONE ENTRY OF THE GDT TABLE
+; CHAINLOADER
+; JUMP TO MAIN
+
+main:
+
+    ; Set video mode
+    ; Switch out of text mode and into to graphics mode
+    mov al, 13h ; 320x200 @ 256
+    mov ah, 00h
+    int 10h
+    
+    ; Load the kernel into memory
+    pusha
+    mov bx, KERNEL_CODE    ; set address to bx
+    mov dh, 15
+    mov dl, [BOOTDRIVE]
+    call disk_read    ; read our binaries and store by offset above
+    popa
+    lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
+    ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
+    ; [PMODE STARTS] ENABLE PROTECTED MODE
+    ; mov si, STATMSG
+    ; call Print
+
+    ; INITIALIZE A20 LINE
+    .initA20:
+        in al, 0x92
+        test al, 2
+        jmp .startPM ; Initialize Protected Mode right after enabling A20 line
+        or al, 2
+        and al, 0xFE
+        out 0x92, al
+
+.startPM:
+    jmp long KERNEL_CODE
+    
+    hang:
+        cli
+        hlt
+        ; If for some cursed reason the CPU decides to exit anyway,
+        ; we jump back to hang
+        jmp hang
+
+
+; Fill up empty space with zeroes to meet 512B
+.rodata:
+    DISK_READ_ERROR db "DISK READ ERROR", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    STATMSG db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
+    BOOTDRIVE db 0x00
+    
+    ; STRUCT - ONE ENTRY OF THE GDT TABLE
 STRUC gdt_entry
 	.limit_low:   resw 1
 	.base_low:    resw 1
@@ -211,83 +284,5 @@ gdtr:
                     AT gdt_entry.base_high, db 0
                 IEND
 gdt_end:
-; CHAINLOADER
-; JUMP TO MAIN
-
-main:
-
-    ; Set video mode
-    ; Switch out of text mode and into to graphics mode
-    mov al, 13h ; 320x200 @ 256
-    mov ah, 00h
-    int 10h
-    
-    ; Load the kernel into memory
-    pusha
-    mov bx, KERNEL_CODE    ; set address to bx
-    mov dh, 15
-    mov dl, [BOOTDRIVE]
-    call disk_read    ; read our binaries and store by offset above
-    popa
-    
-    lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
-
-    
-    ; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
-    ; [PMODE STARTS] ENABLE PROTECTED MODE
-    mov si, STATMSG
-    call Print
-
-    ; INITIALIZE A20 LINE
-    .initA20:
-        in al, 0x92
-        test al, 2
-        jmp .startPM ; Initialize Protected Mode right after enabling A20 line
-        or al, 2
-        and al, 0xFE
-        out 0x92, al
-    .startPM:
-    
-
-        cli            ; Disable interrupts
-        pusha
-        mov eax, cr0
-        or al, 1       ; Set PE (Protection Enable) bit in CR0 (Control Register 0)
-        mov cr0, eax
-        popa
-
-        ; END ENABLE PROTECTED MODE - INTERRUPTS INACCESSIBLE
-
-        ; Perform far jump to selector 0x8 (offset into GDT, pointing at a 32bit PM code segment descriptor)
-        ; to load CS with proper PM32 descriptor)
-        
-        jmp long 0x8:PModeMain ; Jump to Protected Mode Main in the code segment
-
-    [BITS 32]
-    PModeMain:
-        ; load DS, ES, FS, GS, SS, ESP
-        ; Flush GDT + Initialize it + load segment registers
-        mov eax, 0x10 ; Initialize the segment descriptors with the data segment
-        mov ds, eax
-        mov es, eax
-        mov fs, eax
-        mov gs, eax
-        mov ss, eax
-        ; JUMP TO KERNEL OFFSET
-        
-        jmp long KERNEL_CODE
-    hang:
-        cli
-        hlt
-        ; If for some cursed reason the CPU decides to exit anyway,
-        ; we jump back to hang
-        jmp hang
-
-
-; Fill up empty space with zeroes to meet 512B
 times 510-($-$$) db 0
-.rodata:
-    DISK_READ_ERROR db "DISK READ ERROR", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
-    STATMSG db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
-    BOOTDRIVE db 0x00
 dw 0xAA55

@@ -48,7 +48,10 @@ pub unsafe extern "C" fn _rust() -> ! {
     // putpixel(vga, 0x0a, 0, 0);
     drawchar('H', 30, 30, 0x0a, 0x00);
     drawchar('E', 60, 60, 0x0a, 0x00);
-    drawchar('A', 90, 90, 0x0a, 0x00);
+    drawchar('L', 90, 90, 0x0a, 0x00);
+    drawchar('L', 120, 120, 0x0a, 0x00);
+    drawchar('O', 150, 150, 0x0a, 0x00);
+    drawchar('!', 180, 180, 0x0a, 0x00);
     // END
 
     loop {
