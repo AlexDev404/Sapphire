@@ -3,5 +3,40 @@
 version = 3
 
 [[package]]
+name = "alloc-shim"
+version = "0.3.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4392fbff7ea0805eb8aafdde07c751ead1c860f8b616142eda652e0ff69eb6aa"
+
+[[package]]
 name = "sapphire"
 version = "0.1.0"
+dependencies = [
+ "alloc-shim",
+ "tinyvec_string",
+]
+
+[[package]]
+name = "tinyvec"
+version = "1.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87cc5ceb3875bb20c2890005a4e226a4651264a5c75edb2421b52861a0a0cb50"
+dependencies = [
+ "tinyvec_macros",
+]
+
+[[package]]
+name = "tinyvec_macros"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c"
+
+[[package]]
+name = "tinyvec_string"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "be28110ab94064f103a2a24597ed8f556f831d7334751ab991967de16c12d18f"
+dependencies = [
+ "tinyvec",
+ "tinyvec_macros",
+]
