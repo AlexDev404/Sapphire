@@ -2,7 +2,7 @@
  * file './font-bin/IBM_VGA_8x8.bin', filesize 2048bytes, linewidth=8bytes
  * array created from bin-file by bin2header
  * bin2header (c) 2013 Nils Stec, <nils.stec@gmail.com>
- *
+ * https://github.com/spacerace/romfont
  */
 
 

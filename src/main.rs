@@ -4,10 +4,18 @@
 mod graphics;
 mod ibm_vga8x16;
 use core::panic::PanicInfo;
+use core::arch::asm;
 use graphics::putpixel;
 use tinyvec_string::ArrayString;
 
 static VGA_ADDR: u32 = 0xa0000;
+
+#[no_mangle]
+#[allow(dead_code)]
+pub unsafe extern "C" fn _testvbe() {
+    asm!("mov byte ptr [ebx+10], 0x0A");
+}
+
 static F_DATA: [u8; 4096] = ibm_vga8x16::IBM_VGA_8X16;
 static F_HEIGHT: isize = 16;
 static F_WIDTH: isize = 8;
@@ -41,7 +49,8 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     }
 }
 
-fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u8, bgcolor: u8, start_x: isize, y: isize) { // Stack is max 13?? Why?
+fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u8, bgcolor: u8, start_x: isize, y: isize) {
+    // Stack is max 13?? Why?
     let mut pos: isize = start_x;
     for chr in str.chars() {
         drawchar(chr, pos, y, fgcolor, bgcolor);
