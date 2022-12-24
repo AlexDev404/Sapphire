@@ -103,7 +103,7 @@ vbe_set_mode:
  
 	cmp ax, 0x4F
 	jne error
- 
+
  ; Go to start
 	jmp _start
  
@@ -151,8 +151,9 @@ _start:
       mov gs, eax
       mov ss, eax
       ; JUMP TO KERNEL
-      mov ebx, vbe_current_mode.framebuffer
-      call _testvbe
+      ; mov ebx, vbe_current_mode.framebuffer
+      mov [vbe_current_mode.framebuffer], byte 0x0A
+      ; call _testvbe
       jmp $
 
 
@@ -169,7 +170,7 @@ _start:
 vbe_current_mode: ; Current mode
    .height: dw 0
    .width: dw 0
-   .framebuffer: dd 0
+   .framebuffer: dw 0
    .pitch: dw 0
    .bpp: db 0
    .bytes_per_pixel: dw 0
