@@ -170,7 +170,7 @@ _start:
 vbe_current_mode: ; Current mode
    .height: dw 0
    .width: dw 0
-   .framebuffer: dw 0
+   .framebuffer: dd 0
    .pitch: dw 0
    .bpp: db 0
    .bytes_per_pixel: dw 0
