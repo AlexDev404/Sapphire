@@ -8,7 +8,6 @@ CHAINLOADER=./objects/bin/chainloader.bin
 
 .PHONY: mbr test test2 clean clean-cargo always
 
-
 mbr: chainloader/chainloader.asm always
 	@echo.
 	@echo.
@@ -50,6 +49,11 @@ test: chainloader/example/sector_test.asm always
 test2: chainloader/example/oem_label.asm always
 	nasm -f bin chainloader/example/oem_label.asm -o chainloader.bin
 	dd if=chainloader.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
+
+
+test3: chainloader/tests/graphics.asm always
+	nasm -f bin chainloader/tests/graphics.asm -o chainloader.bin
+	wsl dd if=chainloader.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
 # Cleanup
 clean:

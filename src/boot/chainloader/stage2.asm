@@ -2,6 +2,8 @@
 [BITS 16]
 [EXTERN _rust]
 [EXTERN _testvbe]
+
+graphics:
 ; vbe_set_mode:
 ; Sets a VESA mode
 ; In\	AX = Width
@@ -14,7 +16,7 @@ vbe_set_mode:
 	push es					; some VESA BIOSes destroy ES, or so I read
 	mov ax, 0x4F00				; get VBE BIOS info
 	mov di, vbe_info_block
-	int 0x10
+	int 10h
 	pop es
  
 	cmp ax, 0x4F				; BIOS doesn't support VBE?
@@ -41,7 +43,7 @@ vbe_set_mode:
 	mov ax, 0x4F01				; get VBE mode info
 	mov cx, [vbe_query.mode]
 	mov di, vbe_mode_block
-	int 0x10
+	int 10h
 	pop es
  
 	cmp ax, 0x4F
@@ -98,13 +100,13 @@ vbe_set_mode:
 	mov bx, [vbe_query.mode]
 	or bx, 0x4000			; enable LFB
 	mov di, 0			; not sure if some BIOSes need this... anyway it doesn't hurt
-	int 0x10
+	int 10h
 	pop es
  
 	cmp ax, 0x4F
 	jne error
 
- ; Go to start
+    ; Go to start
 	jmp _start
  
 .next_mode:
@@ -126,6 +128,7 @@ error:
 mode_end:
    cli
    hlt
+
 
 _start:
    cli            ; Disable interrupts
@@ -152,15 +155,13 @@ _start:
       mov ss, eax
       ; JUMP TO KERNEL
       ; mov ebx, vbe_current_mode.framebuffer
-      mov [vbe_current_mode.framebuffer], byte 0x0A
+
+      mov [vbe_mode_block.framebuffer+10000], word 0c09h
       ; call _testvbe
       jmp $
 
 
-[BITS 16]
-
-.rodata:
-
+rodata:
 ; VBE Variables
 ; width: dw 1920
 ; height: dw 1080
@@ -174,15 +175,18 @@ vbe_current_mode: ; Current mode
    .pitch: dw 0
    .bpp: db 0
    .bytes_per_pixel: dw 0
+   
 
 vbe_query: ; Preferred mode
-   .width: dw 640
-   .height: dw 480
+   .width: dw 800
+   .height: dw 600
    .bpp: db 32
    .offset: dw 0
    .t_segment: dw 0	; "segment" is keyword in fasm
    .mode: dw 0
 
+; PADDING
+times 512-($-$$) db 0
 
 vbe_info_block:		; 'Sector' 2
 	.vbe_signature: db 'VBE2'
@@ -240,3 +244,6 @@ vbe_mode_block:	; 'Sector' 3
 	.reserved3: dw 0
 
    .reserved4: times 206 db 0      ; Remainder of mode info block
+   
+; Sector padding
+ times 1536-($-$$) db 0
