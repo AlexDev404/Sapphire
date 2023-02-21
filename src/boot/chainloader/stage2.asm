@@ -98,8 +98,8 @@ vbe_set_mode:
 	push es
 	mov ax, 0x4F02
 	mov bx, [vbe_query.mode]
-	or bx, 0x4000			; enable LFB
-	mov di, 0			; not sure if some BIOSes need this... anyway it doesn't hurt
+	; or bx, 0x4000			; enable LFB
+	; mov di, 0			; not sure if some BIOSes need this... anyway it doesn't hurt
 	int 10h
 	pop es
  
@@ -156,7 +156,11 @@ _start:
       ; JUMP TO KERNEL
       ; mov ebx, vbe_current_mode.framebuffer
 
-      mov [vbe_mode_block.framebuffer+10000], word 0c09h
+      
+      	  mov ax, 0x0F ; Pixel Color. We chose red
+      mov ebx, [vbe_mode_block.framebuffer]; Our framebuffer
+      add ebx, 180050;  pixel_offset = y * pitch + ( x * ( bpp/8 )) + framebuffer;
+      mov [ebx], ax
       ; call _testvbe
       jmp $
 
