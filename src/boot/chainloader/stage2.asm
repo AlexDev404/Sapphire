@@ -89,12 +89,12 @@ _start:
       mov ss, eax
       ; JUMP TO KERNEL
       
-	  mov ax, 0x0F ; Pixel Color. We chose red
-      mov ebx, [vbe_mode_block.framebuffer]; Our framebuffer
-      add ebx, 180050;  pixel_offset = y * pitch + ( x * ( bpp/8 )) + framebuffer;
-      mov [ebx], ax
+	;   mov ax, 0x0F ; Pixel Color. We chose red
+    ;   mov ebx, [vbe_mode_block.framebuffer]; Our framebuffer
+    ;   add ebx, 180050;  pixel_offset = y * pitch + ( x * ( bpp/8 )) + framebuffer;
+    ;   mov [ebx], ax
     
-      ; call _testvbe
+      call _testvbe
       jmp $
 
 

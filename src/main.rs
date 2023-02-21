@@ -9,11 +9,15 @@ use graphics::putpixel;
 use tinyvec_string::ArrayString;
 
 static VGA_ADDR: u32 = 0xa0000;
+static FRAMEBUFFER: u32 = 0x00000;
 
 #[no_mangle]
 #[allow(dead_code)]
 pub unsafe extern "C" fn _testvbe() {
-    asm!("mov byte ptr [ebx+10], 0x0A");
+    asm!("mov ax, 0x0F");
+       asm!("mov ebx, [{FRAMEBUFFER}]");
+       asm!("add ebx, 180050");
+       asm!("mov [ebx], ax");
 }
 
 static F_DATA: [u8; 4096] = ibm_vga8x16::IBM_VGA_8X16;
