@@ -67,8 +67,8 @@ clean:
 clean-cargo:
 	cargo clean
 
-boot:
-	qemu-system-x86_64 -fda ./out/floppy.img
+boot: out/floppy.img
+	qemu-system-x86_64 -fda out/floppy.img
 # Always clean and make the bootdisk
 always: clean
 	mkdir ${BUILD_DIR}

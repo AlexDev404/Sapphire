@@ -1,6 +1,6 @@
-BITS 16
-
+[BITS 16]
 [ORG 0x7c00]
+
 
 mov ax, ds
 mov es, ax 

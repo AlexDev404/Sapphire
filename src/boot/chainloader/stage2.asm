@@ -4,117 +4,51 @@
 [EXTERN _testvbe]
 
 graphics:
-; vbe_set_mode:
-; Sets a VESA mode
-; In\	AX = Width
-; In\	BX = Height
-; In\	CL = Bits per pixel
-; Out\	FLAGS = Carry clear on success
-; Out\	Width, height, bpp, physical buffer, all set in vbe_screen structure
- 
-vbe_set_mode:
-	push es					; some VESA BIOSes destroy ES, or so I read
-	mov ax, 0x4F00				; get VBE BIOS info
-	mov di, vbe_info_block
-	int 10h
-	pop es
- 
-	cmp ax, 0x4F				; BIOS doesn't support VBE?
-	jne error
- 
-	mov ax, word [vbe_info_block.video_modes]
-	mov [vbe_query.offset], ax
-	mov ax, word [vbe_info_block.video_modes+2]
-	mov [vbe_query.t_segment], ax
- 
-	mov fs, ax
-	mov si, [vbe_query.offset]
- 
-.find_mode:
-	mov dx, [fs:si]
-	add si, 2
-	mov [vbe_query.offset], si
-	mov [vbe_query.mode], dx
- 
-	cmp [vbe_query.mode], word 0xFFFF			; end of list?
-	je mode_end
- 
-	push es
-	mov ax, 0x4F01				; get VBE mode info
-	mov cx, [vbe_query.mode]
-	mov di, vbe_mode_block
-	int 10h
-	pop es
- 
-	cmp ax, 0x4F
-	jne error
- 
-	mov ax, [vbe_query.width]
-	cmp ax, [vbe_mode_block.width]
-	jne .next_mode
- 
-	mov ax, [vbe_query.height]
-	cmp ax, [vbe_mode_block.height]
-	jne .next_mode
- 
-	mov al, [vbe_query.bpp]
-	cmp al, [vbe_mode_block.bpp]
-	jne .next_mode
- 
-	; If we make it here, we've found the correct mode!
-	; We're moving the current mode to the screen resource
-	mov ax, [vbe_query.width]
-	mov word[vbe_current_mode.width], ax
-	
-	
-	mov ax, [vbe_query.height]
-	mov word[vbe_current_mode.height], ax
-	
-	mov eax, [vbe_mode_block.framebuffer]
-	mov dword[vbe_current_mode.framebuffer], eax
-	
-	mov ax, [vbe_mode_block.pitch]
-	mov word[vbe_current_mode.pitch], ax
-	
-	mov eax, 0
-	mov al, [vbe_query.bpp]
-	mov byte[vbe_current_mode.bpp], al
-	
-	
-	shr eax, 3
-	mov dword[vbe_current_mode.bytes_per_pixel], eax
- 
-	mov ax, [vbe_query.width]
-	shr ax, 3
-	dec ax
-	mov word[vbe_mode_block.x_char], ax
- 
-	mov ax, [vbe_query.height]
-	shr ax, 4
-	dec ax
-	mov word[vbe_mode_block.y_char], ax
- 
-	; Set the mode
-	push es
-	mov ax, 0x4F02
-	mov bx, [vbe_query.mode]
-	or bx, 0x4000			; enable LFB
-	mov di, 0			; not sure if some BIOSes need this... anyway it doesn't hurt
-	int 10h
-	pop es
- 
-	cmp ax, 0x4F
-	jne error
+mov ah, 4Fh;        Super VGA support
+mov al, 00h;        Return Super VGA information
+mov di, vbe_info_block;   Pointer to buffer
+int 10h;
 
-    ; Go to start
-	jmp _start
- 
-.next_mode:
-	mov ax, [vbe_query.t_segment]
-	mov fs, ax
-	mov si, [vbe_query.offset]
-	jmp .find_mode
- 
+
+
+;Get video mode info
+mov ax, 4F01h
+mov cx, 101h ; First mode
+mov di, vbe_mode_block
+int 10h
+
+;Set video mode
+mov ah, 0
+mov ax, 4F02h
+; mov bx, 105h
+mov ebx, [vbe_info_block.video_modes]; estore de modes pointer at ebx to can access as a adress
+mov bx, [ebx+8]; 8/2 = 4th mode in the mode array!!!!!!!
+int 10h
+
+
+;Assume first window is valid
+mov ax, WORD [es:vbe_mode_block.window_a_segment]
+mov es, ax
+
+;Example of how to change the window 
+mov ax, 4f05h
+xor bx, bx
+mov dx, 5       ;This is granularity units
+int 10h
+
+; xor di, di ; Clear di
+; mov al, 0f1h
+; mov cx, 3*1024*20
+
+; rep stosb
+
+mov eax, [vbe_mode_block.framebuffer]
+mov dword[vbe_current_mode.framebuffer], eax
+
+
+
+jmp _start
+
 error:
    lodsb
    or al, al
@@ -154,9 +88,12 @@ _start:
       mov gs, eax
       mov ss, eax
       ; JUMP TO KERNEL
-      ; mov ebx, vbe_current_mode.framebuffer
-
-      mov [vbe_mode_block.framebuffer+10000], word 0c09h
+      
+	  mov ax, 0x0F ; Pixel Color. We chose red
+      mov ebx, [vbe_mode_block.framebuffer]; Our framebuffer
+      add ebx, 180050;  pixel_offset = y * pitch + ( x * ( bpp/8 )) + framebuffer;
+      mov [ebx], ax
+    
       ; call _testvbe
       jmp $
 
