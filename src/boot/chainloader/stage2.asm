@@ -13,11 +13,11 @@ graphics:
 ; Out\	Width, height, bpp, physical buffer, all set in vbe_screen structure
  
 vbe_set_mode:
-	push es					; some VESA BIOSes destroy ES, or so I read
+	; push es					; some VESA BIOSes destroy ES, or so I read
 	mov ax, 0x4F00				; get VBE BIOS info
 	mov di, vbe_info_block
 	int 10h
-	pop es
+	; pop es
  
 	cmp ax, 0x4F				; BIOS doesn't support VBE?
 	jne error
@@ -39,12 +39,12 @@ vbe_set_mode:
 	cmp [vbe_query.mode], word 0xFFFF			; end of list?
 	je mode_end
  
-	push es
+	; push es
 	mov ax, 0x4F01				; get VBE mode info
 	mov cx, [vbe_query.mode]
 	mov di, vbe_mode_block
 	int 10h
-	pop es
+	; pop es
  
 	cmp ax, 0x4F
 	jne error
@@ -95,13 +95,24 @@ vbe_set_mode:
 	mov word[vbe_mode_block.y_char], ax
  
 	; Set the mode
-	push es
+	; push es
+	mov ah, 0
 	mov ax, 0x4F02
 	mov bx, [vbe_query.mode]
 	; or bx, 0x4000			; enable LFB
 	; mov di, 0			; not sure if some BIOSes need this... anyway it doesn't hurt
 	int 10h
-	pop es
+	; pop es
+ 
+ ;Assume first window is valid
+mov ax, WORD [es:vbe_mode_block.window_a_segment]
+mov es, ax
+
+;Example of how to change the window 
+mov ax, 4f05h
+xor bx, bx
+mov dx, 5       ;This is granularity units
+int 10h
  
 	cmp ax, 0x4F
 	jne error
