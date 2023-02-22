@@ -7,7 +7,7 @@ mod graphics;
 mod ibm_vga8x16;
 use core::panic::PanicInfo;
 use core::arch::asm;
-use graphics::{putpixel, fill_screen};
+use graphics::{ putpixel, fill_screen };
 use tinyvec_string::ArrayString;
 
 // static VGA_ADDR: u32 = 0xa0000;
