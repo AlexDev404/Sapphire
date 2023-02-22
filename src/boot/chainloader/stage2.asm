@@ -42,8 +42,8 @@ graphics:
 
 	; rep stosb
 
-	mov eax, [vbe_mode_block.framebuffer]
-	mov dword[vbe_current_mode.framebuffer], eax
+	; mov eax, [vbe_mode_block.framebuffer]
+	; mov dword[vbe_current_mode.framebuffer], eax
 	jmp _start
 
 error:
@@ -87,7 +87,9 @@ PModeMain:
 	; JUMP TO KERNEL
 
 	; mov ax, 0x0F ; Pixel Color. We chose red
+	mov eax, vbe_mode_block.pitch; Our PITCH
 	mov ebx, [vbe_mode_block.framebuffer]; Our framebuffer
+	mov ecx, vbe_mode_block.bpp; Our BPP
 	; add ebx, 180050; pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
 	; mov [ebx], ax
 

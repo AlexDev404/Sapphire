@@ -11,7 +11,7 @@ use graphics::putpixel;
 use tinyvec_string::ArrayString;
 
 // static VGA_ADDR: u32 = 0xa0000;
-lazy_static!(
+lazy_static! {
     static ref VGA_ADDR: u32 = {
         let fb: *const u32;
         unsafe {
@@ -19,7 +19,7 @@ lazy_static!(
         }
         fb as u32
     };
-);
+}
 
 #[no_mangle]
 #[allow(dead_code)]
@@ -45,11 +45,11 @@ fn panic(_info: &PanicInfo) -> ! {
     }
 }
 
-fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
+fn drawchar(chr: char, x: isize, y: isize, fgcolor: u32, bgcolor: u32) {
     unsafe {
         let c: u8 = chr as u8;
         let fb_addr: u32 = *VGA_ADDR;
-        let vga = fb_addr as *mut u8;
+        let vga = fb_addr as *mut u32;
         let font: *const u8 = &F_DATA as *const u8;
         let glyph = font.offset((c as isize) * F_HEIGHT);
 
@@ -68,7 +68,7 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     }
 }
 
-fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u8, bgcolor: u8, start_x: isize, y: isize) {
+fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u32, bgcolor: u32, start_x: isize, y: isize) {
     // Stack is max 13?? Why?
     let mut pos: isize = start_x;
     for chr in str.chars() {
@@ -82,6 +82,9 @@ fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u8, bgcolor: u8, start_x: i
 #[no_mangle]
 // #[link_section = ".text.init"]
 pub unsafe extern "C" fn _rust() -> ! {
+    let fb_addr: u32 = *VGA_ADDR;
+    let vga = fb_addr as *mut u8;
+    *vga.offset(2) = 0x0F;
     // Pixel FMT: x+y*screen_x
     // Setting the unit of the memory to units
     // let vga = vga_addr as *mut u8;
@@ -92,7 +95,13 @@ pub unsafe extern "C" fn _rust() -> ! {
     // drawchar('L', 57, 30, 0x0a, 0x00);
     // drawchar('O', 66, 30, 0x0a, 0x00);
     // drawchar('!', 75, 30, 0x0a, 0x00);
-    print_string(ArrayString::<[u8; 13]>::from("HELLO!"), 0x0a, 0x00, 1, 17);
+    // putpixel(vga, 0x0F, 100, 100);
+    // asm!("mov ax, 0x0F");
+    // asm!("add {}, 2", in(reg) vga);
+    
+    // *vga.offset(2) = 0x0F;
+    // asm!("mov [{}], ax", in(reg) vga);
+    // print_string(ArrayString::<[u8; 13]>::from("HELLO!"), 0x0f, 0x00, 1, 17);
     // END
 
     loop {
