@@ -1,5 +1,7 @@
 #![no_std]
 #![no_main]
+#[macro_use]
+extern crate lazy_static;
 
 mod graphics;
 mod ibm_vga8x16;
@@ -8,15 +10,28 @@ use core::arch::asm;
 use graphics::putpixel;
 use tinyvec_string::ArrayString;
 
-static VGA_ADDR: u32 = 0xa0000;
-// static FRAMEBUFFER: u32 = 0x00000;
+// static VGA_ADDR: u32 = 0xa0000;
+lazy_static!(
+    static ref VGA_ADDR: u32 = {
+        let fb: *const u32;
+        unsafe {
+            asm!("mov {}, ebx", out(reg) fb);
+        }
+        fb as u32
+    };
+);
 
 #[no_mangle]
 #[allow(dead_code)]
 pub unsafe extern "C" fn _testvbe() {
+    // @audit TODO: Assign the framebuffer variable the value of EBX or find a way to store and access the framebuffer address from code
+    // Start plot pixel
+    let fb_addr: u32 = *VGA_ADDR;
+    let fb: *const u32 = fb_addr as *const u32;
     asm!("mov ax, 0x0F");
-    asm!("add ebx, 180050");
-    asm!("mov [ebx], ax");
+    asm!("add {}, 180050", in(reg) fb);
+    asm!("mov [{}], ax", in(reg) fb);
+    // _rust();
 }
 
 static F_DATA: [u8; 4096] = ibm_vga8x16::IBM_VGA_8X16;
@@ -33,7 +48,8 @@ fn panic(_info: &PanicInfo) -> ! {
 fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     unsafe {
         let c: u8 = chr as u8;
-        let vga = VGA_ADDR as *mut u8;
+        let fb_addr: u32 = *VGA_ADDR;
+        let vga = fb_addr as *mut u8;
         let font: *const u8 = &F_DATA as *const u8;
         let glyph = font.offset((c as isize) * F_HEIGHT);
 
