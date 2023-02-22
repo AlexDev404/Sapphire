@@ -18,4 +18,5 @@ The Sapphire Operating System
 sudo apt-get update && sudo apt-get install nasm binutils dosfstools make qemu qemu-utils qemu-system-x86 qemu-system-gui
 cd src/boot
 make mbr
+make boot
 ```
