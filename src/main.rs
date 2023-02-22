@@ -45,11 +45,11 @@ fn panic(_info: &PanicInfo) -> ! {
     }
 }
 
-fn drawchar(chr: char, x: isize, y: isize, fgcolor: u32, bgcolor: u32) {
+fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     unsafe {
         let c: u8 = chr as u8;
         let fb_addr: u32 = *VGA_ADDR;
-        let vga = fb_addr as *mut u32;
+        let vga = fb_addr as *mut u8;
         let font: *const u8 = &F_DATA as *const u8;
         let glyph = font.offset((c as isize) * F_HEIGHT);
 
@@ -68,7 +68,7 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u32, bgcolor: u32) {
     }
 }
 
-fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u32, bgcolor: u32, start_x: isize, y: isize) {
+fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u8, bgcolor: u8, start_x: isize, y: isize) {
     // Stack is max 13?? Why?
     let mut pos: isize = start_x;
     for chr in str.chars() {
@@ -82,9 +82,12 @@ fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u32, bgcolor: u32, start_x:
 #[no_mangle]
 // #[link_section = ".text.init"]
 pub unsafe extern "C" fn _rust() -> ! {
+    // Works
+    /****************************************** */
     let fb_addr: u32 = *VGA_ADDR;
     let vga = fb_addr as *mut u8;
-    *vga.offset(2) = 0x0F;
+    *vga.offset(6) = 0xF;
+    /******************************* */
     // Pixel FMT: x+y*screen_x
     // Setting the unit of the memory to units
     // let vga = vga_addr as *mut u8;
@@ -95,12 +98,8 @@ pub unsafe extern "C" fn _rust() -> ! {
     // drawchar('L', 57, 30, 0x0a, 0x00);
     // drawchar('O', 66, 30, 0x0a, 0x00);
     // drawchar('!', 75, 30, 0x0a, 0x00);
-    // putpixel(vga, 0x0F, 100, 100);
-    // asm!("mov ax, 0x0F");
-    // asm!("add {}, 2", in(reg) vga);
-    
-    // *vga.offset(2) = 0x0F;
-    // asm!("mov [{}], ax", in(reg) vga);
+    // putpixel(vga, 0x0F, 0, 0);
+
     // print_string(ArrayString::<[u8; 13]>::from("HELLO!"), 0x0f, 0x00, 1, 17);
     // END
 

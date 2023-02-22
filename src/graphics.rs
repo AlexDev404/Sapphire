@@ -32,10 +32,10 @@ pub fn fill_screen(vga: *mut u8, screen_x: isize, screen_y: isize, color: u8) {
     }
 }
 
-pub fn putpixel(vga: *mut u32, color: u32, x: isize, y: isize) {
+pub fn putpixel(vga: *mut u8, color: u8, x: isize, y: isize) {
     unsafe {
-        let offset = y * *PITCH + (x * (*BPP / 8));
+        let offset = y * *PITCH + x * *BPP;
         *vga.offset(offset) = color;
     }
-    // pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
+    // pixel = framebuffer + y * bytes_per_scan_line + x * bytes_per_pixel
 }
