@@ -27,7 +27,8 @@ pub fn fill_screen(vga: *mut u8, screen_x: isize, screen_y: isize, color: u8) {
         for y in 0..screen_y {
             unsafe {
                 // let offset = y * *PITCH + x * *BPP;
-                // *vga.offset(offset) = color;
+                let offset = x + y * 640; // Hardcode - Bad
+                *vga.offset(offset) = color;
             }
         }
     }
@@ -39,8 +40,14 @@ pub fn putpixel(vga: *mut u8, color: u8, x: isize, y: isize) {
         // let pitch = p as isize;
         // let b: usize = *BPP;
         // let bpp = b as isize;
-        let offset = y as u32 * *PITCH + x as u32 * *BPP;
+
+        // @audit @todo NEEDS FIXING!!!
+        // Actual Pixel FMT = framebuffer + y * bytes_per_scan_line + x * bytes_per_pixel
+        // let offset = y as u32 * *PITCH + x as u32 * *BPP;
+
+        // @audit PATCH
+        // TEMP Pixel FMT: x+y*screen_x
+        let offset = x + y * 640; // Hardcode - Bad
         *vga.offset(offset as isize) = color;
     }
-    // pixel = framebuffer + y * bytes_per_scan_line + x * bytes_per_pixel
 }

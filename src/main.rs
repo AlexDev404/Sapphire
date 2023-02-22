@@ -92,9 +92,9 @@ pub unsafe extern "C" fn _rust() -> ! {
     // Setting the unit of the memory to units
     // let vga = vga_addr as *mut u8;
     putpixel(vga, 0x0a, 0, 0);
-    putpixel(vga, 0x0a, 1, 1);
+    putpixel(vga, 0x0a, 10, 10);
     // fill_screen(vga, 640, 480, 0x0A);
-    // drawchar('H', 30, 30, 0x0a, 0x00);
+    drawchar('H', 30, 30, 0x0a, 0x00);
     // drawchar('E', 39, 30, 0x0a, 0x00);
     // drawchar('L', 48, 30, 0x0a, 0x00);
     // drawchar('L', 57, 30, 0x0a, 0x00);

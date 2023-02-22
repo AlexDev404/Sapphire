@@ -16,27 +16,27 @@ graphics:
     mov di, vbe_mode_block
     int 10h
 
-    ; Set video mode to 101h
+    ; Set video mode to 101h (640x480), 105h (800x600)
     mov ah, 0
     mov ax, 4F02h
     mov bx, 101h ; Mode 101h
     int 10h
 
-   ;  ; Assume first window is valid
-   ;  mov ax, WORD [es:vbe_mode_block.window_a_segment]
-   ;  mov es, ax
+    ; ; Assume first window is valid
+    ; mov ax, WORD [es:vbe_mode_block.window_a_segment]
+    ; mov es, ax
 
-   ;  ; Example of how to change the window
-   ;  mov ax, 4F05h
-   ;  xor bx, bx
-   ;  mov dx, 5 ; Granularity units
-   ;  int 10h
+    ; ; Example of how to change the window
+    ; mov ax, 4F05h
+    ; xor bx, bx
+    ; mov dx, 5 ; Granularity units
+    ; int 10h
 
-   ;  ; Clear window A
-   ;  xor di, di
-   ;  mov al, 0 ; Value to clear with
-   ;  mov cx, 3 * 1024 * 20 ; Number of bytes to clear
-   ;  rep stosb
+    ; ; Clear window A
+    ; xor di, di
+    ; mov al, 0 ; Value to clear with
+    ; mov cx, 3 * 1024 * 20 ; Number of bytes to clear
+    ; rep stosb
 
 
 	; mov eax, [vbe_mode_block.framebuffer]
