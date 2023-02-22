@@ -91,8 +91,8 @@ pub unsafe extern "C" fn _rust() -> ! {
     // Pixel FMT: x+y*screen_x
     // Setting the unit of the memory to units
     // let vga = vga_addr as *mut u8;
-    // putpixel(vga, 0x0a, 0, 0);
-    fill_screen(vga, 480, 640, 0x0F);
+    putpixel(vga, 0x0a, 0, 0);
+    // fill_screen(vga, 640, 480, 0x0A);
     // drawchar('H', 30, 30, 0x0a, 0x00);
     // drawchar('E', 39, 30, 0x0a, 0x00);
     // drawchar('L', 48, 30, 0x0a, 0x00);
