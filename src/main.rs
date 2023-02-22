@@ -45,19 +45,25 @@ fn panic(_info: &PanicInfo) -> ! {
     }
 }
 
+
+
 fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     unsafe {
         let c: u8 = chr as u8;
         let fb_addr: u32 = *VGA_ADDR;
         let vga = fb_addr as *mut u8;
         let font: *const u8 = &F_DATA as *const u8;
-        let glyph = font.offset((c as isize) * F_HEIGHT);
 
-        const MASK_BASE: u8 = 0x80;
+        // Calculate the offset of the glyph data for the given character
+        let glyph_size = (F_WIDTH as usize * F_HEIGHT as usize + F_WIDTH as usize) / F_HEIGHT as usize; // Number of bytes per glyph
+        let glyph_offset = c as usize * glyph_size; // Offset of the glyph data for this character
+        let glyph = font.offset(glyph_offset as isize);
 
+        // Iterate over each pixel in the glyph data and draw it to the screen
         for cy in 0..F_HEIGHT {
             for cx in 0..F_WIDTH {
-                let color = if (*glyph.offset(cy) & (MASK_BASE >> cx)) != 0x00 {
+                let mask = 0x80 >> (cx % 8);
+                let color = if *glyph.offset(cy as isize * glyph_size as isize + cx as isize / F_HEIGHT) & mask != 0 {
                     fgcolor
                 } else {
                     bgcolor
@@ -67,6 +73,7 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
         }
     }
 }
+
 
 fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u8, bgcolor: u8, start_x: isize, y: isize) {
     // Stack is max 13?? Why?
@@ -94,13 +101,13 @@ pub unsafe extern "C" fn _rust() -> ! {
     putpixel(vga, 0x0a, 0, 0);
     putpixel(vga, 0x0a, 10, 10);
     // putpixel(vga, 0x0a, 10, 10);
-    fill_screen(vga, 640, 480, 0x0A);
+    fill_screen(vga, 640, 480, 0x0f); // Fill the screen with white
     drawchar('H', 30, 30, 0x0a, 0x00);
-    drawchar('E', 39, 30, 0x0a, 0x00);
-    drawchar('L', 48, 30, 0x0a, 0x00);
-    drawchar('L', 57, 30, 0x0a, 0x00);
-    drawchar('O', 66, 30, 0x0a, 0x00);
-    drawchar('!', 75, 30, 0x0a, 0x00);
+    // drawchar('E', 39, 30, 0x0a, 0x00);
+    // drawchar('L', 48, 30, 0x0a, 0x00);
+    // drawchar('L', 57, 30, 0x0a, 0x00);
+    // drawchar('O', 66, 30, 0x0a, 0x00);
+    // drawchar('!', 75, 30, 0x0a, 0x00);
     // putpixel(vga, 0x0F, 0, 0);
 
     // print_string(ArrayString::<[u8; 13]>::from("HELLO!"), 0x0f, 0x00, 1, 17);
