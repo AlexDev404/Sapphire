@@ -84,9 +84,9 @@ PModeMain:
 	; JUMP TO KERNEL
 
 	; mov ax, 0x0F ; Pixel Color. We chose red
-	mov eax, vbe_mode_block.pitch; Our PITCH
-	mov ebx, [vbe_mode_block.framebuffer]; Our framebuffer
-	mov ecx, vbe_mode_block.bpp; Our BPP
+	mov esi, DWORD [vbe_mode_block.pitch] ; The pitch is at offset 12h in the mode information block
+	mov ebx, DWORD [vbe_mode_block.framebuffer]; Our framebuffer
+	mov edi, DWORD [vbe_mode_block.bpp]; Our BPP
 	; add ebx, 180050; pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
 	; mov [ebx], ax
 
