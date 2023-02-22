@@ -4,43 +4,40 @@
 [EXTERN _testvbe]
 
 graphics:
-	mov ah, 4Fh                  ; Super VGA support
-	mov al, 00h                  ; Return Super VGA information
-	mov di, vbe_info_block       ; Pointer to buffer
-	int 10h                      ;
+    ; Get VBE information
+    mov ah, 4Fh
+    mov al, 00h ; Return Super VGA information
+    mov di, vbe_info_block ; Pointer to buffer
+    int 10h
 
+    ; Get video mode info
+    mov ax, 4F01h
+    mov cx, 101h ; First mode
+    mov di, vbe_mode_block
+    int 10h
 
+    ; Set video mode to 101h
+    mov ah, 0
+    mov ax, 4F02h
+    mov bx, 101h ; Mode 101h
+    int 10h
 
-	; Get video mode info
-	mov ax, 4F01h
-	mov cx, 101h                 ; First mode
-	mov di, vbe_mode_block
-	int 10h
+   ;  ; Assume first window is valid
+   ;  mov ax, WORD [es:vbe_mode_block.window_a_segment]
+   ;  mov es, ax
 
-	; Set video mode
-	mov ah, 0
-	mov ax, 4F02h
-	; mov bx, 105h
-	mov ebx, [vbe_info_block.video_modes]; estore de modes pointer at ebx to can access as a adress
-	mov bx, [ebx + 8]            ; 8 / 2 = 4th mode in the mode array!!!!!!!
-	int 10h
+   ;  ; Example of how to change the window
+   ;  mov ax, 4F05h
+   ;  xor bx, bx
+   ;  mov dx, 5 ; Granularity units
+   ;  int 10h
 
+   ;  ; Clear window A
+   ;  xor di, di
+   ;  mov al, 0 ; Value to clear with
+   ;  mov cx, 3 * 1024 * 20 ; Number of bytes to clear
+   ;  rep stosb
 
-	; Assume first window is valid
-	mov ax, WORD [es:vbe_mode_block.window_a_segment]
-	mov es, ax
-
-	;Example of how to change the window
-	mov ax, 4f05h
-	xor bx, bx
-	mov dx, 5                    ;This is granularity units
-	int 10h
-
-	; xor di, di ; Clear di
-	; mov al, 0f1h
-	; mov cx, 3 * 1024 * 20
-
-	; rep stosb
 
 	; mov eax, [vbe_mode_block.framebuffer]
 	; mov dword[vbe_current_mode.framebuffer], eax

@@ -7,7 +7,7 @@ mod graphics;
 mod ibm_vga8x16;
 use core::panic::PanicInfo;
 use core::arch::asm;
-use graphics::putpixel;
+use graphics::{putpixel, fill_screen};
 use tinyvec_string::ArrayString;
 
 // static VGA_ADDR: u32 = 0xa0000;
@@ -86,12 +86,13 @@ pub unsafe extern "C" fn _rust() -> ! {
     /****************************************** */
     let fb_addr: u32 = *VGA_ADDR;
     let vga = fb_addr as *mut u8;
-    *vga.offset(6) = 0xF;
+    // *vga.offset(6) = 0xF;
     /******************************* */
     // Pixel FMT: x+y*screen_x
     // Setting the unit of the memory to units
     // let vga = vga_addr as *mut u8;
     // putpixel(vga, 0x0a, 0, 0);
+    fill_screen(vga, 480, 640, 0x0F);
     // drawchar('H', 30, 30, 0x0a, 0x00);
     // drawchar('E', 39, 30, 0x0a, 0x00);
     // drawchar('L', 48, 30, 0x0a, 0x00);
