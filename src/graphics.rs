@@ -26,8 +26,8 @@ pub fn fill_screen(vga: *mut u8, screen_x: isize, screen_y: isize, color: u8) {
     for x in 0..screen_x {
         for y in 0..screen_y {
             unsafe {
-                let offset = (y as u32) * *PITCH + (x as u32) * *BPP; // framebuffer_base + (y * bytes_per_scanline) + (x * bytes_per_pixel)
-                // let offset = x + y * 640; // @audit-issue Hardcode - Bad
+                // let offset = (y as u32) * *PITCH + (x as u32) * *BPP; // framebuffer_base + (y * bytes_per_scanline) + (x * bytes_per_pixel)
+                let offset = x + y * 640; // @audit-issue Hardcode - Bad
                 *vga.offset(offset as isize) = color;
             }
         }
