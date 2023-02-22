@@ -35,8 +35,8 @@ pub unsafe extern "C" fn _testvbe() {
 }
 
 static F_DATA: [u8; 4096] = ibm_vga8x16::IBM_VGA_8X16;
-static F_HEIGHT: isize = 16;
-static F_WIDTH: isize = 8;
+static F_HEIGHT: isize = 8;
+static F_WIDTH: isize = 16;
 
 // This function is called on panic.
 #[panic_handler]
@@ -94,13 +94,13 @@ pub unsafe extern "C" fn _rust() -> ! {
     putpixel(vga, 0x0a, 0, 0);
     putpixel(vga, 0x0a, 10, 10);
     // putpixel(vga, 0x0a, 10, 10);
-    // fill_screen(vga, 640, 480, 0x0A);
+    fill_screen(vga, 640, 480, 0x0A);
     drawchar('H', 30, 30, 0x0a, 0x00);
-    // drawchar('E', 39, 30, 0x0a, 0x00);
-    // drawchar('L', 48, 30, 0x0a, 0x00);
-    // drawchar('L', 57, 30, 0x0a, 0x00);
-    // drawchar('O', 66, 30, 0x0a, 0x00);
-    // drawchar('!', 75, 30, 0x0a, 0x00);
+    drawchar('E', 39, 30, 0x0a, 0x00);
+    drawchar('L', 48, 30, 0x0a, 0x00);
+    drawchar('L', 57, 30, 0x0a, 0x00);
+    drawchar('O', 66, 30, 0x0a, 0x00);
+    drawchar('!', 75, 30, 0x0a, 0x00);
     // putpixel(vga, 0x0F, 0, 0);
 
     // print_string(ArrayString::<[u8; 13]>::from("HELLO!"), 0x0f, 0x00, 1, 17);
