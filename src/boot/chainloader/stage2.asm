@@ -84,6 +84,7 @@ PModeMain:
 	; JUMP TO KERNEL
 
 	; mov ax, 0x0F ; Pixel Color. We chose red
+	; @audit-issue PITCH + BPP Reassignment
 	mov esi, DWORD [vbe_mode_block.pitch] ; The pitch is at offset 12h in the mode information block
 	mov ebx, DWORD [vbe_mode_block.framebuffer]; Our framebuffer
 	mov edi, DWORD [vbe_mode_block.bpp]; Our BPP

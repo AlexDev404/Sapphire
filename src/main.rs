@@ -35,8 +35,8 @@ pub unsafe extern "C" fn _testvbe() {
 }
 
 static F_DATA: [u8; 4096] = ibm_vga8x16::IBM_VGA_8X16;
-static F_HEIGHT: isize = 8;
-static F_WIDTH: isize = 16;
+static F_WIDTH: isize = 8; // Columns
+static F_HEIGHT: isize = 16; // Rows
 
 // This function is called on panic.
 #[panic_handler]
@@ -45,25 +45,22 @@ fn panic(_info: &PanicInfo) -> ! {
     }
 }
 
-
-
 fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     unsafe {
         let c: u8 = chr as u8;
         let fb_addr: u32 = *VGA_ADDR;
         let vga = fb_addr as *mut u8;
-        let font: *const u8 = &F_DATA as *const u8;
+        let font = &F_DATA;
 
         // Calculate the offset of the glyph data for the given character
-        let glyph_size = (F_WIDTH as usize * F_HEIGHT as usize + F_WIDTH as usize) / F_HEIGHT as usize; // Number of bytes per glyph
-        let glyph_offset = c as usize * glyph_size; // Offset of the glyph data for this character
-        let glyph = font.offset(glyph_offset as isize);
-
+        let glyph_size: isize = ((F_WIDTH as isize) * (F_HEIGHT as isize)) / (8 as isize); // Number of bytes per glyph
+        let glyph_offset: isize = (c as isize) * glyph_size; // Offset of the glyph data for this character
+        let glyph = &font[glyph_offset as usize] as *const u8;
+        const MASK: u8 = 0x80;
         // Iterate over each pixel in the glyph data and draw it to the screen
         for cy in 0..F_HEIGHT {
             for cx in 0..F_WIDTH {
-                let mask = 0x80 >> (cx % 8);
-                let color = if *glyph.offset(cy as isize * glyph_size as isize + cx as isize / F_HEIGHT) & mask != 0 {
+                let color = if (*glyph.offset(cy as isize) & (MASK >> cx)) != 0x00 {
                     fgcolor
                 } else {
                     bgcolor
@@ -73,7 +70,6 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
         }
     }
 }
-
 
 fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u8, bgcolor: u8, start_x: isize, y: isize) {
     // Stack is max 13?? Why?
@@ -98,11 +94,11 @@ pub unsafe extern "C" fn _rust() -> ! {
     // Pixel FMT: x+y*screen_x
     // Setting the unit of the memory to units
     // let vga = vga_addr as *mut u8;
-    putpixel(vga, 0x0a, 0, 0);
-    putpixel(vga, 0x0a, 10, 10);
+    // putpixel(vga, 0x0a, 0, 0);
+    // putpixel(vga, 0x0a, 10, 10);
     // putpixel(vga, 0x0a, 10, 10);
     fill_screen(vga, 640, 480, 0x0f); // Fill the screen with white
-    drawchar('H', 30, 30, 0x0a, 0x00);
+    drawchar('A', 30, 30, 0x0a, 0x00);
     // drawchar('E', 39, 30, 0x0a, 0x00);
     // drawchar('L', 48, 30, 0x0a, 0x00);
     // drawchar('L', 57, 30, 0x0a, 0x00);
