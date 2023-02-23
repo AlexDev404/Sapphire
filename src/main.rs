@@ -35,8 +35,8 @@ pub unsafe extern "C" fn _testvbe() {
 }
 
 static F_DATA: [u8; 4096] = ibm_vga8x16::IBM_VGA_8X16;
-static F_HEIGHT: isize = 8;
-static F_WIDTH: isize = 16;
+static F_HEIGHT: isize = 16;
+static F_WIDTH: isize = 6;
 
 // This function is called on panic.
 #[panic_handler]
