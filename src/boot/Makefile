@@ -35,6 +35,9 @@ kernel:
 	cargo build --release
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ./kernel.a
 
+	@echo Moving debug symbols (sapphire.a)
+	mv ../../target/x86-unknown-bare-metal/debug/sapphire.a ./sapphire.a
+
 	wsl ld -o ${KERNEL_BIN} -m elf_i386 -Ttext 0x1000 ${KERNEL_STUB} ${KERNEL_O} --oformat binary
 	cat chainloader.bin ${KERNEL_BIN} > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
@@ -69,7 +72,13 @@ clean-cargo:
 	cargo clean
 
 boot: out/floppy.img
-	qemu-system-x86_64 -fda out/floppy.img
+	qemu-system-x86_64 -s -S -fda out/floppy.img
+
+debug: build-gdb
+	gdb "boot/image.bin" -ex "target remote :1234"
+
+build-gdb: 
+
 # Always clean and make the bootdisk
 always: clean
 	mkdir ${BUILD_DIR}
