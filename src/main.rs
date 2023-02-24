@@ -45,22 +45,50 @@ fn panic(_info: &PanicInfo) -> ! {
     }
 }
 
+/**
+@brief Very simple and less complicated than OSDev's implementation
+
+How the font is stored:
+            row, row, row, ...
+character... x,   x,   x,   x,  x,  x,  x,  x
+
+Each character is represented by a row and each column represents a row of the character
+Eight columns in the row for the eight rows in the character
+
+|- 8 columns for every dimension's row representing a character as hex with each bit representing a character
+|----------------|
+  x x x x x x x
+x               x   --- 8 rows
+x     x   x     x   |
+x   x x x       x   |
+x     x x       x   |
+x              x    |
+  x x x x x x x     ---
+
+
+What it does:
+1. Read the font from the array
+2. Get the character's offset
+3. Loop through the [character][row] and taking the element and converting from hex to binary
+4. offset into the array???
+
+*/
 fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     unsafe {
         let c: u8 = chr as u8;
         let fb_addr: u32 = *VGA_ADDR;
         let vga = fb_addr as *mut u8;
-        let font = &F_DATA;
+        let font = &F_DATA as *const u8;
 
         // Calculate the offset of the glyph data for the given character
         let glyph_size: isize = ((F_WIDTH as isize) * (F_HEIGHT as isize)) / (8 as isize); // Number of bytes per glyph
         let glyph_offset: isize = (c as isize) * glyph_size; // Offset of the glyph data for this character
-        let glyph = &font[glyph_offset as usize] as *const u8;
-        const MASK: u8 = 0x80;
+        let glyph = *font.offset(glyph_offset as isize) as *const u8;
+        
         // Iterate over each pixel in the glyph data and draw it to the screen
         for cy in 0..F_HEIGHT {
             for cx in 0..F_WIDTH {
-                let color = if (*glyph.offset(cy as isize) & (MASK >> cx)) != 0x00 {
+                let color = if (*glyph.offset(cx as isize) & (0x80 >> cx)) != 0x00 {
                     fgcolor
                 } else {
                     bgcolor
@@ -98,12 +126,12 @@ pub unsafe extern "C" fn _rust() -> ! {
     // putpixel(vga, 0x0a, 10, 10);
     // putpixel(vga, 0x0a, 10, 10);
     fill_screen(vga, 640, 480, 0x0f); // Fill the screen with white
-    drawchar('A', 30, 30, 0x0a, 0x00);
-    // drawchar('E', 39, 30, 0x0a, 0x00);
-    // drawchar('L', 48, 30, 0x0a, 0x00);
-    // drawchar('L', 57, 30, 0x0a, 0x00);
-    // drawchar('O', 66, 30, 0x0a, 0x00);
-    // drawchar('!', 75, 30, 0x0a, 0x00);
+    drawchar('H', 30, 30, 0x0a, 0x00);
+    drawchar('E', 39, 30, 0x0a, 0x00);
+    drawchar('L', 48, 30, 0x0a, 0x00);
+    drawchar('L', 57, 30, 0x0a, 0x00);
+    drawchar('O', 66, 30, 0x0a, 0x00);
+    drawchar('!', 75, 30, 0x0a, 0x00);
     // putpixel(vga, 0x0F, 0, 0);
 
     // print_string(ArrayString::<[u8; 13]>::from("HELLO!"), 0x0f, 0x00, 1, 17);
