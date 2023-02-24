@@ -6,9 +6,9 @@ build-std-features = ["compiler-builtins-mem"]
 target = "x86-unknown-bare-metal.json"
 rustflags = [
     "-Crelocation-model=static",
-    "-Clink-arg=-nostartfiles",
-    "-Clink-arg=-no-pic",
-    "-Clink-arg=-no-pie",
+    # "-Clink-arg=-nostartfiles",
+    # "-Clink-arg=-no-pic",
+    #"-Clink-arg=-no-pie",
 ]
 
 [profile.release]

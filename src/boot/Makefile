@@ -21,6 +21,11 @@ mbr: chainloader/chainloader.asm always
 	@echo.
 	cargo build --release --lib
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ${KERNEL_O}
+
+	@echo Building debug symbols (sapphire.a)
+	cargo build --bin sapphire
+	mv ../../target/x86-unknown-bare-metal/debug/sapphire ./sapphire.a
+
 	@echo.
 	@echo.
 	@echo Building disk image (floppy.img)
@@ -36,7 +41,7 @@ kernel:
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ./kernel.a
 
 	@echo Moving debug symbols (sapphire.a)
-	mv ../../target/x86-unknown-bare-metal/debug/sapphire.a ./sapphire.a
+	mv ../../target/x86-unknown-bare-metal/debug/sapphire ./sapphire.a
 
 	wsl ld -o ${KERNEL_BIN} -m elf_i386 -Ttext 0x1000 ${KERNEL_STUB} ${KERNEL_O} --oformat binary
 	cat chainloader.bin ${KERNEL_BIN} > image.bin
