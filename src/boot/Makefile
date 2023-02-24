@@ -69,7 +69,10 @@ clean-cargo:
 	cargo clean
 
 boot: out/floppy.img
-	qemu-system-x86_64 -fda out/floppy.img
+	qemu-system-x86_64 -s -S -fda out/floppy.img
+
+debug:
+	gdb "boot/image.bin" -ex "target remote :1234"
 # Always clean and make the bootdisk
 always: clean
 	mkdir ${BUILD_DIR}
