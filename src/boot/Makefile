@@ -34,6 +34,9 @@ kernel:
 	@echo Building kernel image (kernel.a)
 	cargo build --release
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ./kernel.a
+	
+	@echo Moving debug symbols (sapphire.a)
+	mv ../../target/x86-unknown-bare-metal/debug/sapphire.a ./sapphire.a
 
 	wsl ld -o ${KERNEL_BIN} -m elf_i386 -Ttext 0x1000 ${KERNEL_STUB} ${KERNEL_O} --oformat binary
 	cat chainloader.bin ${KERNEL_BIN} > image.bin
