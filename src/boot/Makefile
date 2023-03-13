@@ -86,7 +86,7 @@ debug: build-gdb
 	gdb "boot/image.bin" -ex "target remote :1234"
 
 build-gdb:
-	echo "Nothing specified for target 'build-gdb'"
+	@echo "Nothing specified for target 'build-gdb'"
 
 # Always clean and make the bootdisk
 always: clean
