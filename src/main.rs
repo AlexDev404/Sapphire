@@ -125,7 +125,14 @@ pub unsafe extern "C" fn _rust() -> ! {
     // putpixel(vga, 0x0a, 0, 0);
     // putpixel(vga, 0x0a, 10, 10);
     // putpixel(vga, 0x0a, 10, 10);
-    fill_screen(vga, 640, 480, 0x0f); // Fill the screen with white
+    // fill_screen(vga, 640, 480, 0x0f); // Fill the screen with white
+    for _h in 0..8 {
+        // Fill the screen (rainbow)
+        for i in 0..0xff {
+            fill_screen(vga, 640, 480, i);
+            // Beyond the 512K barrier we crash
+        }
+    }
     drawchar('H', 30, 30, 0x0a, 0x00);
     drawchar('E', 39, 30, 0x0a, 0x00);
     drawchar('L', 48, 30, 0x0a, 0x00);

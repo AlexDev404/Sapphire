@@ -79,6 +79,9 @@ clean-cargo:
 boot: out/floppy.img
 	qemu-system-i386 -s -S -fda out/floppy.img
 
+boot-debug: out/floppy.img
+	qemu-system-i386 -s -S -fda out/floppy.img
+
 debug: build-gdb
 	gdb "boot/image.bin" -ex "target remote :1234"
 
