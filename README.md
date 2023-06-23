@@ -15,7 +15,7 @@ The Sapphire Operating System
 ### Main Project
 
 ```shell
-sudo apt-get update && sudo apt-get install nasm binutils dosfstools make qemu qemu-utils qemu-system-x86 qemu-system-gui
+sudo apt-get update && sudo apt-get install nasm binutils dosfstools make qemu qemu-utils qemu-system-x86 qemu-system-gui build-essential
 cd src/boot
 make mbr
 make boot
