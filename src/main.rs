@@ -77,7 +77,7 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8) {
     unsafe {
         let c: u8 = chr as u8;
         let fb_addr: u32 = *VGA_ADDR;
-        let vga = fb_addr as *mut u8;
+        let vga = fb_addr as *mut _;
         let font = &F_DATA as *const u8;
 
         // Calculate the offset of the glyph data for the given character
