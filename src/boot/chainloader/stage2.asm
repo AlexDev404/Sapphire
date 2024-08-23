@@ -1,7 +1,6 @@
 [GLOBAL _start]
 [BITS 16]
 [EXTERN _rust]
-[EXTERN _testvbe]
 
 graphics:
     ; Get VBE information

@@ -59,14 +59,15 @@ pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8, vbe_dat
                 } else {
                     bgcolor
                 };
-                putpixel(vbe_data, color, x + cx, y + cy - 12);
+                putpixel(vbe_data, color, x + cx, y + cy);
             }
         }
     }
 }
 
+#[no_mangle]
 pub fn print_string(
-    str: ArrayString<[u8; 13]>,
+    str: ArrayString<[u8; 10]>,
     fgcolor: u8,
     bgcolor: u8,
     start_x: isize,
@@ -77,6 +78,7 @@ pub fn print_string(
     let mut pos: isize = start_x;
     for chr in str.chars() {
         drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
+        // drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
         pos += 9; // Each character is 8 bytes wide and we need at least 1 byte of separation
     }
 }
