@@ -73,6 +73,15 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8, vbe_data: &
     }
 }
 
+fn print_string(str: ArrayString<[u8; 13]>, fgcolor: u8, bgcolor: u8, start_x: isize, y: isize, vbe_data: &VbeModeInfo) {
+    // Stack is max 13?? Why?
+    let mut pos: isize = start_x;
+    for chr in str.chars() {
+        drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
+        pos += 9; // Each character is 8 bytes wide and we need at least 1 byte of separation
+    }
+}
+
 // This function is called on panic.
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
@@ -113,6 +122,7 @@ pub unsafe extern "C" fn _rust(vbe_mode_info: *const VbeModeInfo) -> ! {
     drawchar('A', 30, 30, 0x0a, 0x00, vbe_data);
     drawchar('B', 38, 30, 0x0a, 0x00, vbe_data);
     drawchar('C', 46, 30, 0x0a, 0x00, vbe_data);
+    print_string(ArrayString::<[u8; 13]>::from("HELLO!"), 0x0f, 0x00, 1, 17, vbe_data);
 
     // END
     loop {
