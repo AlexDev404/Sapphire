@@ -88,11 +88,25 @@ PModeMain:
 	mov esi, DWORD [vbe_mode_block.pitch] ; The pitch is at offset 12h in the mode information block
 	mov ebx, DWORD [vbe_mode_block.framebuffer]; Our framebuffer
 	mov edi, DWORD [vbe_mode_block.bpp]; Our BPP
-	; add ebx, 180050; pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
-	; mov [ebx], ax
+	; ; add ebx, 180050; pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
+	; ; mov [ebx], ax
 
-	call _rust
-	jmp $
+	; call _rust
+	; jmp $
+	; Load the address of `vbe_current_mode` into EAX
+	; We pass this address and then convert it into a pointer later
+    lea eax, [vbe_mode_block]
+    
+    ; Push the address onto the stack
+	; Rust uses the C calling convention which grabs whatever's on the stack as the arguments
+    push eax
+	
+	; Call the Rust kernel entry point (`kmain`) with arguments in EAX
+	; Since this uses the C calling convention, we can place arguments in reverse 
+    call _rust
+
+    ; Infinite loop after returning from the kernel
+    jmp $
 
 
 rodata:
