@@ -7,12 +7,12 @@ static F_DATA: [u8; 4096] = ibm_vga8x16::IBM_VGA_8X16;
 static F_HEIGHT: isize = 16; // Rows
 static F_WIDTH: isize = 8; // Columns
 
-pub fn putpixel(vbe_data: &VbeModeInfo, color: u8, x: isize, y: isize) {
+pub fn putpixel(vbe_data: &VbeModeInfo, color: u64, x: isize, y: isize) {
     // Pixel FMT = framebuffer + (y * bytes_per_scan_line) + (x * (bytes_per_pixel / 8))
     let framebuffer = vbe_data.framebuffer as *mut u8;
     let offset = y * (vbe_data.pitch as isize) + x * ((vbe_data.bpp as isize) / 8); // framebuffer_base + (y * bytes_per_scanline) + (x * (bytes_per_pixel / 8))
     unsafe {
-        *framebuffer.offset(offset as isize) = color;
+        *framebuffer.offset(offset as isize) = color as u8;
     }
 }
 
@@ -44,7 +44,7 @@ What it does:
 4. offset into the array???
 
 */
-pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8, vbe_data: &VbeModeInfo) {
+pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_data: &VbeModeInfo) {
     unsafe {
         let c: u8 = chr as u8;
         let font: *const u8 = &F_DATA as *const u8;
@@ -59,7 +59,7 @@ pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8, vbe_dat
                 } else {
                     bgcolor
                 };
-                if color == bgcolor {
+                if (*glyph.offset(cy) & (MASK_BASE >> cx)) == 0x00 {
                     continue; // "Transparency"
                 }
                 putpixel(vbe_data, color, x + cx, y + cy);
@@ -70,8 +70,8 @@ pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8, vbe_dat
 
 pub fn print_string(
     str: ArrayString<[u8; 10]>,
-    fgcolor: u8,
-    bgcolor: u8,
+    fgcolor: u64,
+    bgcolor: u64,
     start_x: isize,
     y: isize,
     vbe_data: &VbeModeInfo

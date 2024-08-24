@@ -20,8 +20,8 @@ static F_WIDTH: isize = 8; // Columns
 
 pub fn print_string(
     str: ArrayString<[u8; 10]>,
-    fgcolor: u8,
-    bgcolor: u8,
+    fgcolor: u64,
+    bgcolor: u64,
     start_x: isize,
     y: isize,
     vbe_data: &VbeModeInfo
@@ -35,7 +35,7 @@ pub fn print_string(
     }
 }
 
-pub fn fill_screen(vbe_data: &VbeModeInfo, color: u8) {
+pub fn fill_screen(vbe_data: &VbeModeInfo, color: u64) {
     let screen_x: isize = vbe_data.width as isize;
     let screen_y: isize = vbe_data.height as isize;
     let framebuffer = vbe_data.framebuffer as *mut u8;
@@ -44,7 +44,7 @@ pub fn fill_screen(vbe_data: &VbeModeInfo, color: u8) {
         for x in 0..screen_x {
             unsafe {
                 let offset = y * (vbe_data.pitch as isize) + x * ((vbe_data.bpp as isize) / 8);
-                *framebuffer.wrapping_offset(offset as isize) = color;
+                *framebuffer.wrapping_offset(offset as isize) = color as u8;
             }
         }
     }
@@ -54,7 +54,7 @@ pub fn fill_screen(vbe_data: &VbeModeInfo, color: u8) {
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
     unsafe {
-        drawchar('E', 0, 0, 0x4, 0x0, &*VBE_DATA);
+        drawchar('E', 0, 0, 0x04, 0x00, &*VBE_DATA);
     }
     loop {
     }
@@ -76,7 +76,7 @@ pub unsafe extern "C" fn _rust(vbe_mode_info: *const VbeModeInfo) -> ! {
 fn kmain() -> ! {
     unsafe {
         let vbe_data: &VbeModeInfo = &*VBE_DATA;
-        // fill_screen(vbe_data, 0x2);
+        fill_screen(vbe_data, 0xF);
         // for _h in 0..8 {
         //     // Fill the screen (rainbow)
         //     for i in 0..0xff {
@@ -89,13 +89,13 @@ fn kmain() -> ! {
         putpixel(vbe_data, 0x2, 2, 0);
         putpixel(vbe_data, 0x2, 3, 0);
         putpixel(vbe_data, 0x2, 4, 0);
-        drawchar('A', 30, 30, 0x0a, 0x00, vbe_data);
-        drawchar('B', 38, 30, 0x0a, 0x00, vbe_data);
-        drawchar('C', 46, 30, 0x0a, 0x00, vbe_data);
-        // drawchar('A', 40, 30, 0x0a, 0x00, &*VBE_DATA);
-        // drawchar('B', 48, 30, 0x0a, 0x00, vbe_data);
-        // drawchar('C', 56, 30, 0x0a, 0x00, vbe_data);
-        print_string(ArrayString::<[u8; 10]>::from("HE"), 0x0f, 0x00, 50, 30, vbe_data);
+        drawchar('A', 30, 30, 0xa, 0x00, vbe_data);
+        drawchar('B', 38, 30, 0x00, 0x00, vbe_data);
+        drawchar('C', 46, 30, 0x00, 0x00, vbe_data);
+        drawchar('A', 60, 30, 0x00, 0x00, &*VBE_DATA);
+        drawchar('B', 68, 30, 0x00, 0x00, vbe_data);
+        drawchar('C', 76, 30, 0x00, 0x00, vbe_data);
+        print_string(ArrayString::<[u8; 10]>::from("TEST"), 0x00, 0x00, 30, 10, vbe_data);
         // x_string(ArrayString::<[u8; 10]>::from("HE"), 0x0f, 0x00, 60, 30, vbe_data); // <--- This code is giving trouble @todo Fix.
     }
     loop {

@@ -2,6 +2,9 @@
 [BITS 16]
 [EXTERN _rust]
 
+; %DEFINE MODE 115h
+%DEFINE MODE 103h
+
 graphics: ; Using the Real Mode interface
     ; Get VBE information
     mov ax, 4F00h
@@ -11,14 +14,14 @@ graphics: ; Using the Real Mode interface
     ; Get video mode info for the one we want
     mov ax, 4F01h
     ; mov cx, 101h ; First mode
-    mov cx, 101h ; First mode
+    mov cx, MODE ; First mode
     mov di, vbe_mode_block
     int 10h
 
     ; Set video mode to 101h (640x480)
     mov ah, 0
     mov ax, 4F02h
-    mov bx, 101h ; Mode 101h
+    mov bx, MODE ; Mode 101h
     int 10h
 	
 	jmp _start
