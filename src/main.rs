@@ -67,29 +67,37 @@ pub unsafe extern "C" fn _rust(vbe_mode_info: *const VbeModeInfo) -> ! {
     /****************************************** */
     let vbe_data = &*vbe_mode_info;
     VBE_DATA = vbe_mode_info;
-    // fill_screen(vbe_data, 0x2);
-    // for _h in 0..8 {
-        // Fill the screen (rainbow)
-        // for i in 0..0xff {
-        //     fill_screen(vbe_data, i);
-        //     // Beyond the 512K barrier we crash
-        // }
-    // }
-    // putpixel(vbe_data, 0x2, 0, 0);
-    // putpixel(vbe_data, 0x2, 1, 0);
-    // putpixel(vbe_data, 0x2, 2, 0);
-    // putpixel(vbe_data, 0x2, 3, 0);
-    // putpixel(vbe_data, 0x2, 4, 0);
-    drawchar('A', 30, 30, 0x0a, 0x00, &*VBE_DATA);
-    drawchar('B', 38, 30, 0x0a, 0x00, vbe_data);
-    drawchar('C', 46, 30, 0x0a, 0x00, vbe_data);
-    // drawchar('A', 40, 30, 0x0a, 0x00, &*VBE_DATA);
-    // drawchar('B', 48, 30, 0x0a, 0x00, vbe_data);
-    // drawchar('C', 56, 30, 0x0a, 0x00, vbe_data);
-    // print_string(ArrayString::<[u8; 10]>::from("HE"), 0x0f, 0x00, 50, 50, vbe_data);
-    // x_string(ArrayString::<[u8; 10]>::from("HE"), 0x0f, 0x00, 70, 50, vbe_data); // <--- This code is giving trouble @todo Fix.
-
+    kmain();
     // END
+    loop {
+    }
+}
+
+fn kmain() -> ! {
+    unsafe {
+        let vbe_data: &VbeModeInfo = &*VBE_DATA;
+        // fill_screen(vbe_data, 0x2);
+        // for _h in 0..8 {
+        //     // Fill the screen (rainbow)
+        //     for i in 0..0xff {
+        //         fill_screen(vbe_data, i);
+        //         // Beyond the 512K barrier we crash
+        //     }
+        // }
+        putpixel(vbe_data, 0x2, 0, 0);
+        putpixel(vbe_data, 0x2, 1, 0);
+        putpixel(vbe_data, 0x2, 2, 0);
+        putpixel(vbe_data, 0x2, 3, 0);
+        putpixel(vbe_data, 0x2, 4, 0);
+        drawchar('A', 30, 30, 0x0a, 0x00, vbe_data);
+        drawchar('B', 38, 30, 0x0a, 0x00, vbe_data);
+        drawchar('C', 46, 30, 0x0a, 0x00, vbe_data);
+        // drawchar('A', 40, 30, 0x0a, 0x00, &*VBE_DATA);
+        // drawchar('B', 48, 30, 0x0a, 0x00, vbe_data);
+        // drawchar('C', 56, 30, 0x0a, 0x00, vbe_data);
+        print_string(ArrayString::<[u8; 10]>::from("HE"), 0x0f, 0x00, 50, 30, vbe_data);
+        // x_string(ArrayString::<[u8; 10]>::from("HE"), 0x0f, 0x00, 60, 30, vbe_data); // <--- This code is giving trouble @todo Fix.
+    }
     loop {
     }
 }

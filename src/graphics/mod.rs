@@ -59,6 +59,9 @@ pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8, vbe_dat
                 } else {
                     bgcolor
                 };
+                if color == bgcolor {
+                    continue; // "Transparency"
+                }
                 putpixel(vbe_data, color, x + cx, y + cy);
             }
         }
