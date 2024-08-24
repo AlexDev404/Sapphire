@@ -3,7 +3,15 @@ SECTIONS {
     .text : {
         *(.text)
     }
-    
+    .data : {
+        *(.data .data.*)
+        }
+    .rodata : {
+        *(.rodata .rodata.*)
+    }
+    .bss : {
+        *(.bss .bss.*)
+    }
     /DISCARD/ : {
         *(.comment)
         *(.eh_frame)

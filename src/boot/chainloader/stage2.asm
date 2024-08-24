@@ -2,60 +2,26 @@
 [BITS 16]
 [EXTERN _rust]
 
-graphics:
+graphics: ; Using the Real Mode interface
     ; Get VBE information
-    mov ah, 4Fh
-    mov al, 00h ; Return Super VGA information
+    mov ax, 4F00h
     mov di, vbe_info_block ; Pointer to buffer
     int 10h
 
-    ; Get video mode info
+    ; Get video mode info for the one we want
     mov ax, 4F01h
+    ; mov cx, 101h ; First mode
     mov cx, 101h ; First mode
     mov di, vbe_mode_block
     int 10h
 
-    ; Set video mode to 101h (640x480), 105h (800x600)
+    ; Set video mode to 101h (640x480)
     mov ah, 0
     mov ax, 4F02h
     mov bx, 101h ; Mode 101h
     int 10h
-
-    ; ; Assume first window is valid
-    ; mov ax, WORD [es:vbe_mode_block.window_a_segment]
-    ; mov es, ax
-
-    ; ; Example of how to change the window
-    ; mov ax, 4F05h
-    ; xor bx, bx
-    ; mov dx, 5 ; Granularity units
-    ; int 10h
-
-    ; ; Clear window A
-    ; xor di, di
-    ; mov al, 0 ; Value to clear with
-    ; mov cx, 3 * 1024 * 20 ; Number of bytes to clear
-    ; rep stosb
-
-
-	; mov eax, [vbe_mode_block.framebuffer]
-	; mov dword[vbe_current_mode.framebuffer], eax
+	
 	jmp _start
-
-error:
-	lodsb
-	or al, al
-	je mode_end
-	mov ah, 0x0e
-	ERR db "ERROR", 13, 10, 0
-	mov al, [ERR]
-	int 10h
-	jmp error
-
-mode_end:
-	cli
-	hlt
-
 
 _start:
 	cli                          ; Disable interrupts
@@ -70,7 +36,8 @@ _start:
 	; to load CS with proper PM32 descriptor)
 	jmp long 0x8:PModeMain        ; Jump to Protected Mode Main in the code segment
 
-	[BITS 32]
+
+[BITS 32]
 PModeMain:
 	; load DS, ES, FS, GS, SS, ESP
 	; Flush GDT + Initialize it + load segment registers
@@ -80,19 +47,11 @@ PModeMain:
 	mov fs, eax
 	mov gs, eax
 	mov ss, eax
+
 	; JUMP TO KERNEL
+	; pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
 
-	; mov ax, 0x0F ; Pixel Color. We chose red
-	; @audit-issue PITCH + BPP Reassignment
-	; mov esi, DWORD [vbe_mode_block.pitch] ; The pitch is at offset 12h in the mode information block
-	; mov ebx, DWORD [vbe_mode_block.framebuffer]; Our framebuffer
-	; mov edi, DWORD [vbe_mode_block.bpp]; Our BPP
-	; ; add ebx, 180050; pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
-	; ; mov [ebx], ax
-
-	; call _rust
-	; jmp $
-	; Load the address of `vbe_current_mode` into EAX
+	; Load the address of `vbe_mode_block` into EAX
 	; We pass this address and then convert it into a pointer later
     lea eax, [vbe_mode_block]
     
@@ -102,38 +61,15 @@ PModeMain:
 	
 	; Call the Rust kernel entry point (`kmain`) with arguments in EAX
 	; Since this uses the C calling convention, we can place arguments in reverse 
-    call _rust
+    call _rust ; should be call
 
     ; Infinite loop after returning from the kernel
     jmp $
 
+; PADDING
+times 512 - ($ - $$) db 0
 
 rodata:
-	; VBE Variables
-	; width: dw 1920
-	; height: dw 1080
-	; width: dw 1024
-	; height: dw 768
-
-vbe_current_mode:             ; Current mode
-.height: dw 0
-.width: dw 0
-.framebuffer: dd 0
-.pitch: dw 0
-.bpp: db 0
-.bytes_per_pixel: dw 0
-
-
-vbe_query:                    ; Preferred mode
-.width: dw 800
-.height: dw 600
-.bpp: db 32
-.offset: dw 0
-.t_segment: dw 0              ; "segment" is keyword in fasm
-.mode: dw 0
-
-	; PADDING
-	times 512 - ($ - $$) db 0
 
 vbe_info_block:               ; 'Sector' 2
 .vbe_signature: db 'VBE2'
