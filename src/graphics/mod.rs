@@ -65,7 +65,6 @@ pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u8, bgcolor: u8, vbe_dat
     }
 }
 
-#[no_mangle]
 pub fn print_string(
     str: ArrayString<[u8; 10]>,
     fgcolor: u8,
