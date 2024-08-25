@@ -24,6 +24,10 @@ graphics: ; Using the Real Mode interface
     mov bx, MODE ; Mode 101h
     int 10h
 	
+	; mov dx, 0xE9 ; Debug port
+	; mov al, 41h  ; Letter 'A'
+	; out dx, al   ; Send letter 'A' to debug port 0xE9
+
 	jmp _start
 
 _start:

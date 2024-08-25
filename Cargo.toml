@@ -11,7 +11,8 @@ debug = true
 
 [profile.release]
 panic = "abort"
-debug = true
+strip = "debuginfo"
+debug = false
 
 [features]
 # std = ["alloc-shim/std"]

@@ -1,10 +1,11 @@
 BUILD_DIR=out
 BUILD=floppy
+OBJECTS_DIR=./objects
 VENDOR=SPPH
 KERNEL_BIN=kernel.bin
 KERNEL_O=./objects/kernel.a
-KERNEL_STUB=./objects/kernel_stub.elf
-CHAINLOADER=./objects/bin/chainloader.bin
+KERNEL_STUB=${OBJECTS_DIR}/kernel_stub.elf
+CHAINLOADER=${OBJECTS_DIR}/bin/chainloader.bin
 
 .PHONY: mbr test test2 clean clean-cargo always
 
@@ -21,23 +22,29 @@ mbr: chainloader/chainloader.asm always
 	@echo.
 	cargo build --release --lib
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ${KERNEL_O}
-
+	@echo.
+	@echo.
 	@echo Building debug symbols (for: sapphire.a)
-	cargo build --bin sapphire
-	mv ../../target/x86-unknown-bare-metal/debug/sapphire ./objects/sapphire.a
-
+	@echo.
+	cargo build --profile=dev --lib
+	mv ../../target/x86-unknown-bare-metal/debug/libsapphire.a ./objects/sapphire.a
+	@echo.
+	@echo.
 	@echo Building debug symbols (for: sapphire.elf)	
-	wsl ld -T linker.ld -no-PIE -no-PIC -m elf_i386 -o kernel_debug.elf ${KERNEL_STUB} ${KERNEL_O}
-	mv kernel_debug.elf ./objects/kernel_debug.elf
-
+	@echo.
+	wsl ld -T linker.ld -no-PIE -no-PIC -m elf_i386 -o kernel_debug.elf ${KERNEL_STUB} ${OBJECTS_DIR}/sapphire.a
+	mv kernel_debug.elf ./tools/kernel_debug.elf
+	@echo.
+	@echo.
 	@echo Building debug symbols (for: kernel.debug)
-	wsl objcopy --only-keep-debug ./objects/kernel_debug.elf ./objects/kernel.debug
-
+	@echo.
+	wsl objcopy --only-keep-debug ./tools/kernel_debug.elf ./tools/kernel.debug
+	@echo.
+	@echo.
 	@echo Stripping debug symbols (for: kernel.bin)
-	objcopy --strip-debug {KERNEL_STUB} {KERNEL_STUB}
-	objcopy --strip-debug {KERNEL_O} {KERNEL_O}
-
-
+	@echo.
+	objcopy --strip-debug ${KERNEL_STUB} ${KERNEL_STUB}.1
+	objcopy --strip-debug ${KERNEL_O} ${KERNEL_O}.1
 	@echo.
 	@echo.
 	@echo Building disk image (floppy.img)
@@ -78,32 +85,43 @@ test3: chainloader/tests/graphics.asm always
 
 # Cleanup
 clean:
+	@echo Cleaning up...
+	@echo.
 	rm -rf *.bin
 	rm -rf *.elf
 	rm -rf *.a
 	rm -rf out
 	rm -rf objects
-
+	rm -rf tools
+	@echo Project Output: Clean.
+	@echo.
+	@echo.
 # Don't clean cargo by default (for faster builds)
 clean-cargo:
 	cargo clean
 
 boot: out/floppy.img
-	qemu-system-i386 -s -fda out/floppy.img
+	qemu-system-i386 -debugcon stdio -s -fda out/floppy.img
 
 boot-debug: out/floppy.img
-	qemu-system-i386 -s -S -fda out/floppy.img
+	qemu-system-i386 -debugcon stdio -s -S -fda out/floppy.img
 
 debug: build-gdb
-	gdb "objects/kernel.debug" -ex "target remote :1234"
+	gdb -ex "file tools/kernel.debug" -ex "set architecture i386" -ex "target remote :1234" -ex "b _rust"
 
 build-gdb:
 	@echo "Nothing specified for target 'build-gdb'"
 
 # Always clean and make the bootdisk
 always: clean
+	@echo Preparing...
+	@echo.
 	mkdir ${BUILD_DIR}
+	mkdir tools
 	mkdir objects
 	mkdir "objects/bin"
 	wsl dd if=/dev/zero of=${BUILD_DIR}/${BUILD}.img bs=512 count=2880
+	@echo Project Structure: Ready.
+	@echo.
+	@echo.
 # wsl mkfs.fat -F 12 -n "${VENDOR}" $(BUILD_DIR)/${BUILD}.img

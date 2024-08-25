@@ -8,3 +8,4 @@ kernel.a
 sapphire.a
 kernel_debug.elf
 kernel.debug
+*\.1
