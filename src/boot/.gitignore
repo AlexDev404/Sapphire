@@ -6,3 +6,5 @@ image.bin
 image.elf
 kernel.a
 sapphire.a
+kernel_debug.elf
+kernel.debug

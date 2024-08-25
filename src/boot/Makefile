@@ -26,6 +26,13 @@ mbr: chainloader/chainloader.asm always
 	cargo build --bin sapphire
 	mv ../../target/x86-unknown-bare-metal/debug/sapphire ./objects/sapphire.a
 
+	@echo Building debug symbols (sapphire.elf)	
+	wsl ld -T linker.ld -no-PIE -no-PIC -m elf_i386 -o kernel_debug.elf ${KERNEL_STUB} ${KERNEL_O}
+	mv kernel_debug.elf ./objects/kernel_debug.elf
+
+	@echo Building debug symbols (kernel.debug)
+	wsl objcopy --only-keep-debug ./objects/kernel_debug.elf ./objects/kernel.debug
+
 	@echo.
 	@echo.
 	@echo Building disk image (floppy.img)
