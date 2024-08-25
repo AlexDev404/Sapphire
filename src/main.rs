@@ -96,7 +96,7 @@ fn kmain() -> ! {
         drawchar('B', 68, 30, 0x00, 0x00, vbe_data);
         drawchar('C', 76, 30, 0x00, 0x00, vbe_data);
         print_string(ArrayString::<[u8; 10]>::from("TEST"), 0x00, 0x00, 30, 10, vbe_data);
-        // x_string(ArrayString::<[u8; 10]>::from("HE"), 0x0f, 0x00, 60, 30, vbe_data); // <--- This code is giving trouble @todo Fix.
+        x_string(ArrayString::<[u8; 10]>::from("HE"), 0x0f, 0x00, 60, 30, vbe_data); // <--- This code is giving trouble @todo Fix.
     }
     loop {
     }

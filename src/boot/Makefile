@@ -83,7 +83,7 @@ boot-debug: out/floppy.img
 	qemu-system-i386 -s -S -fda out/floppy.img
 
 debug: build-gdb
-	gdb "boot/image.bin" -ex "target remote :1234"
+	gdb "objects/sapphire.a" -ex "target remote :1234"
 
 build-gdb:
 	@echo "Nothing specified for target 'build-gdb'"
