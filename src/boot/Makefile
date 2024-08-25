@@ -11,27 +11,32 @@ CHAINLOADER=./objects/bin/chainloader.bin
 mbr: chainloader/chainloader.asm always
 	@echo.
 	@echo.
-	@echo Building bootloader (chainloader.elf)
+	@echo Building bootloader (for: chainloader.elf)
 	@echo.
 	nasm -f bin chainloader/chainloader.asm -o ${CHAINLOADER}
 	nasm -f elf32 chainloader/stage2.asm -o ${KERNEL_STUB}
 	@echo.
 	@echo.
-	@echo Building kernel image (kernel.a)
+	@echo Building kernel image (for: kernel.a)
 	@echo.
 	cargo build --release --lib
 	mv ../../target/x86-unknown-bare-metal/release/libsapphire.a ${KERNEL_O}
 
-	@echo Building debug symbols (sapphire.a)
+	@echo Building debug symbols (for: sapphire.a)
 	cargo build --bin sapphire
 	mv ../../target/x86-unknown-bare-metal/debug/sapphire ./objects/sapphire.a
 
-	@echo Building debug symbols (sapphire.elf)	
+	@echo Building debug symbols (for: sapphire.elf)	
 	wsl ld -T linker.ld -no-PIE -no-PIC -m elf_i386 -o kernel_debug.elf ${KERNEL_STUB} ${KERNEL_O}
 	mv kernel_debug.elf ./objects/kernel_debug.elf
 
-	@echo Building debug symbols (kernel.debug)
+	@echo Building debug symbols (for: kernel.debug)
 	wsl objcopy --only-keep-debug ./objects/kernel_debug.elf ./objects/kernel.debug
+
+	@echo Stripping debug symbols (for: kernel.bin)
+	objcopy --strip-debug {KERNEL_STUB} {KERNEL_STUB}
+	objcopy --strip-debug {KERNEL_O} {KERNEL_O}
+
 
 	@echo.
 	@echo.
@@ -90,7 +95,7 @@ boot-debug: out/floppy.img
 	qemu-system-i386 -s -S -fda out/floppy.img
 
 debug: build-gdb
-	gdb "objects/sapphire.a" -ex "target remote :1234"
+	gdb "objects/kernel.debug" -ex "target remote :1234"
 
 build-gdb:
 	@echo "Nothing specified for target 'build-gdb'"

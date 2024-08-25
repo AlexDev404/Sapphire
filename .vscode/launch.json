@@ -5,10 +5,10 @@
       "name": "Debug",
       "type": "gdb",
       "request": "attach",
-      "executable": "${workspaceRoot}\\src\\boot\\objects\\sapphire.a",
+      "executable": "${workspaceRoot}\\src\\boot\\objects\\kernel.debug",
       "target": "localhost:1234",
       "remote": true,
-      "cwd": "${workspaceRoot}\\src\\boot",
+      "cwd": "${workspaceRoot}",
       "gdbpath": "gdb",
       "valuesFormatting": "prettyPrinters"
     }
