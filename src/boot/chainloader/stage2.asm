@@ -39,12 +39,20 @@ _start:
 	popa
 	; load DS, ES, FS, GS, SS, ESP
 	; Flush GDT + Initialize it + load segment registers
-	mov eax, 0x10          ; Initialize the segment descriptors with the data segment
-	mov ds, eax
-	mov es, eax
-	mov fs, eax
-	mov gs, eax
-	mov ss, eax
+    ; Initialize the data segment
+    mov eax, 0x10          ; Data segment selector (0x10 for the second segment)
+    mov ds, eax
+    mov es, eax
+    mov fs, eax
+    mov gs, eax
+
+    ; Initialize the stack segment
+    mov eax, 0x18          ; Stack segment selector (0x18 for the third segment)
+    mov ss, eax            ; Set the stack segment register
+
+    ; Initialize the stack pointer (assume top of stack is at 0x0010FFF0)
+    mov esp, 0x0010FFF0    ; Set the stack pointer to an appropriate value
+
 	; END ENABLE PROTECTED MODE - INTERRUPTS INACCESSIBLE
 
 	; Perform far jump to selector 0x8 (offset into GDT, pointing at a 32bit PM code segment descriptor)

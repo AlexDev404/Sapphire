@@ -188,7 +188,7 @@ ENDSTRUC
 
 gdtr:
     GLimit dw (gdt_end - gdt) + 1 ; length of GDT (end - start + 1)
-    GBase dd GNULL_SEGMENT ; where the GDT starts
+    GBase dd gdt ; where the GDT starts
 ; idtr:
 ;     ; ILimit dw 0xFF * 8 ; length of GDT (6 Entries * 8 bytes)
 ;     ; IBase dd INULL_GATE ; where the GDT starts
@@ -248,12 +248,12 @@ gdtr:
                 IEND
             STACK_SEGMENT: ; 0x18 - Access using "mov al, [label + struc.byte]"
                 ISTRUC gdt_entry
-                    AT gdt_entry.limit_low, dw 0
-                    AT gdt_entry.base_low, dw 0
-                    AT gdt_entry.base_middle, db 0
-                    AT gdt_entry.access, db 10011110b
-                    AT gdt_entry.granularity, db 11001111b
-                    AT gdt_entry.base_high, db 0
+                    AT gdt_entry.limit_low, dw 0xFFFF        ; Limit: 64KB
+                    AT gdt_entry.base_low, dw 0x0000         ; Base: Start at 0x00000000 (can adjust this based on memory layout)
+                    AT gdt_entry.base_middle, db 0x00        ; Base middle
+                    AT gdt_entry.access, db 0x92            ; Access: 10010010b (Present, ring 0, read/write)
+                    AT gdt_entry.granularity, db 0xCF       ; Granularity: 64KB limit, 32-bit operations
+                    AT gdt_entry.base_high, db 0x00         ; Base high byte
                 IEND
         USERLAND:
             UCODE_SEGMENT: ; 0x20 - Access using "mov al, [label + struc.byte]"
@@ -276,7 +276,7 @@ gdtr:
                 IEND
             USTACK_SEGMENT: ; 0x30 - Access using "mov al, [label + struc.byte]"
                 ISTRUC gdt_entry
-                    AT gdt_entry.limit_low, dw 0
+                    AT gdt_entry.limit_low, dw 0xFFFF
                     AT gdt_entry.base_low, dw 0
                     AT gdt_entry.base_middle, db 0
                     AT gdt_entry.access, db 11111110b
