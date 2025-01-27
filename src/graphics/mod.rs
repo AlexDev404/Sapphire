@@ -1,5 +1,4 @@
 pub mod fonts;
-use tinyvec_string::ArrayString;
 use crate::types::graphics::VbeModeInfo;
 use fonts::ibm_vga8x16;
 
@@ -69,7 +68,7 @@ pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_d
 }
 
 pub fn print_string(
-    str: ArrayString<[u8; 10]>,
+    str: &str,
     fgcolor: u64,
     bgcolor: u64,
     start_x: isize,
