@@ -14,6 +14,8 @@ The Sapphire Operating System
 
 ### Main Project
 
+> The latest Makefile will always be the Windows one. So you can `cd` into `/src/boot` and just run `make mbr` and `make boot` without any issues.
+
 ```shell
 sudo apt-get update && sudo apt-get install nasm binutils dosfstools make qemu qemu-utils qemu-system-x86 qemu-system-gui build-essential curl
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
