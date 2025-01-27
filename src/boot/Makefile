@@ -41,10 +41,10 @@ mbr: chainloader/chainloader.asm always
 	wsl objcopy --only-keep-debug ./tools/kernel_debug.elf ./tools/kernel.debug
 	@echo.
 	@echo.
-	@echo Stripping debug symbols (for: kernel.bin)
+	@echo [SKIPPED]: Stripping debug symbols (for: kernel.bin)
 	@echo.
-	objcopy --strip-debug ${KERNEL_STUB} ${KERNEL_STUB}.1
-	objcopy --strip-debug ${KERNEL_O} ${KERNEL_O}.1
+	@echo [SKIPPED]: objcopy --strip-debug ${KERNEL_STUB} ${KERNEL_STUB}.1
+	@echo [SKIPPED]: objcopy --strip-debug ${KERNEL_O} ${KERNEL_O}.1
 	@echo.
 	@echo.
 	@echo Building disk image (floppy.img)

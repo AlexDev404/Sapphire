@@ -37,6 +37,7 @@ _start:
 	or al, 1                     ; Set PE (Protection Enable) bit in CR0 (Control Register 0)
 	mov cr0, eax
 	popa
+	; Now that Protected Mode is enabled, we safely access the GDT
 	; load DS, ES, FS, GS, SS, ESP
 	; Flush GDT + Initialize it + load segment registers
     ; Initialize the data segment
