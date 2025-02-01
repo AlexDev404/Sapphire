@@ -78,6 +78,7 @@ pub fn print_string(
     // Stack is max 13?? Why?
     let mut pos: isize = start_x;
     for chr in str.chars() {
+        drawchar('?', pos, y, 0xa, 0x0, vbe_data); // Fall back to a question mark if the character is not found or if there is an error
         drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
         // drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
         pos += 9; // Each character is 8 bytes wide and we need at least 1 byte of separation
