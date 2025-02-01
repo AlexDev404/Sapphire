@@ -22,19 +22,20 @@ static FONT_WIDTH: isize = 8; // Columns
  * ISSUES PRESENT
  * ==============
  *
- * The issue lies when importing functions. They are working properly, but once
- * imported, the code gets skipped.
+ * Strings aren't being passed to the function `print_string` correctly
+ *    --> Strings are being passed to the function as blanks but yet
+ *        the function is able to know how many characters are in the string
  */
 
-fn u16_to_str(value: u16) -> &'static str {
-    static mut BUFFER: [u8; 5] = [0; 5];
-    let mut buffer = itoa::Buffer::new();
-    let s = buffer.format(value);
-    unsafe {
-        BUFFER[..s.len()].copy_from_slice(s.as_bytes());
-        core::str::from_utf8_unchecked(&BUFFER[..s.len()])
-    }
-}
+// fn u16_to_str(value: u16) -> &'static str {
+//     static mut BUFFER: [u8; 5] = [0; 5];
+//     let mut buffer = itoa::Buffer::new();
+//     let s = buffer.format(value);
+//     unsafe {
+//         BUFFER[..s.len()].copy_from_slice(s.as_bytes());
+//         core::str::from_utf8_unchecked(&BUFFER[..s.len()])
+//     }
+// }
 
 fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_data: &VbeModeInfo) {
     unsafe {
@@ -58,6 +59,12 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_data:
                 putpixel(vbe_data, color, x + cx, y + cy);
             }
         }
+        unsafe {
+            // Used to debug current character being drawn to the screen
+            asm!("mov dx, 0xE9");
+            asm!("mov al, {}", in(reg_byte) (chr as u8)); // 41h
+            asm!("out dx, al");
+        }
     }
 }
 
@@ -72,11 +79,9 @@ fn print_string(
     // Stack is max 13?? Why?
     let mut pos: isize = start_x;
     for chr in str.chars() {
-    //         asm!("mov dx, 0xE9");
-    // asm!("mov al, {}", in(reg_byte) ('A' as u8)); // 41h
-    // asm!("out dx, al");
-        drawchar('X', 30 + pos, 200, 0xa, 0x0, &vbe_data);
+        x_drawchar('?', 30 + pos, 200, 0xa, 0x0, &vbe_data);
         drawchar(chr, 30 + pos, 200, 0xa, 0x0, &vbe_data);
+
         // drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
         pos += 9; // Each character is 8 bytes wide and we need at least 1 byte of separation
     }
@@ -142,7 +147,7 @@ pub unsafe extern "C" fn _rust(vbe_mode_info: &VbeModeInfo) -> ! {
 }
 
 #[no_mangle]
-unsafe fn kmain(vbe_mode_info: &VbeModeInfo) -> () {
+fn kmain(vbe_mode_info: &VbeModeInfo) -> () {
     // fill_screen(vbe_data, 0xA);
     // for _h in 0..8 {
     //     // Fill the screen (rainbow)
@@ -189,6 +194,7 @@ unsafe fn kmain(vbe_mode_info: &VbeModeInfo) -> () {
         110,
         &vbe_mode_info
     ); // <--- Code gets skipped
-    // print_string("Width", 0x2, 0x00, 30, 140, &vbe_mode_info);
-    print_string(&hello_world, 0x2, 0x00, 30, 170, &vbe_mode_info);  // <--- Code gets skipped
+
+    print_string("Width", 0x2, 0x00, 30, 140, &vbe_mode_info);
+    print_string(&hello_world, 0x2, 0x00, 30, 170, &vbe_mode_info);
 }
