@@ -23,6 +23,7 @@ debug = false
 alloc = []
 
 [dependencies]
+itoa = "1.0.14"
 
 [dependencies.lazy_static]
 version = "1.4.0"

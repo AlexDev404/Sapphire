@@ -1,3 +1,4 @@
+#[derive(Copy, Clone)]
 #[repr(C, packed)]
 pub struct VbeModeInfo {
     pub mode_attributes: u16,

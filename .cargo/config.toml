@@ -5,6 +5,12 @@ build-std-features = ["compiler-builtins-mem"]
 [build]
 target = "x86-unknown-bare-metal.json"
 
+[profile.debug]
+opt-level = 0
+rustflags = [
+    "-Crelocation-model=static",
+]
+
 [profile.release]
 opt-level = 2
 strip = "debuginfo"

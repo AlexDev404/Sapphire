@@ -67,6 +67,8 @@ PModeMain:
 	; JUMP TO KERNEL
 	; pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
 
+	; Set up the stack
+	sub esp, 4   ; Align the stack before pushing the argument
 	; Load the address of `vbe_mode_block` into EAX
 	; We pass this address and then convert it into a pointer later
     lea eax, [vbe_mode_block]
