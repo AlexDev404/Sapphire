@@ -121,8 +121,8 @@ pub unsafe extern "C" fn _rust(vbe_mode_info: &VbeModeInfo) -> ! {
     VBE_DATA = vbe_mode_info;
     x_drawchar('A', 30, 50, 0x2, 0x00, &vbe_mode_info);
     drawchar('A', 30, 80, 0x2, 0x00, &vbe_data);
-    print_string("Width", 0x2, 0x00, 30, 50, &vbe_data);
-    x_string("Height", 0x2, 0x00, 30, 60, &vbe_mode_info);
+    print_string("Width", 0x2, 0x00, 30, 110, &vbe_data);
+    x_string("Height", 0x2, 0x00, 30, 140, &vbe_mode_info);
     // print_string(&u16_to_str(vbe_mode_info.width), 0x2, 0x00, 60, 80, &vbe_data);
     
     // x_string("Height", 0x2, 0x00, 30, 100, &vbe_mode_info);
