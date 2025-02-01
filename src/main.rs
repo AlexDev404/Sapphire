@@ -10,7 +10,7 @@ use core::arch::asm;
 use crate::graphics::putpixel;
 use crate::graphics::print_string as x_string;
 use crate::graphics::drawchar as x_drawchar;
-static mut VBE_DATA: *const VbeModeInfo = 0 as *const _;
+// static mut VBE_DATA: *const VbeModeInfo = 0 as *const _;
 
 use crate::graphics::fonts::ibm_vga8x16;
 
@@ -36,16 +36,17 @@ fn u16_to_str(value: u16) -> &'static str {
     }
 }
 
-pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_data: &VbeModeInfo) {
+fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_data: &VbeModeInfo) {
     unsafe {
         let c: u8 = chr as u8;
         let font: *const u8 = &FONT_DATA as *const u8;
         let glyph = font.offset((c as isize) * FONT_HEIGHT);
 
         const MASK_BASE: u8 = 0x80;
-
         for cy in 0..FONT_HEIGHT {
+            // x_drawchar('H', 30 + cy + 16, 200, 0xa, 0x0, &vbe_data);
             for cx in 0..FONT_WIDTH {
+                // x_drawchar('H', 30, 200 + cx + 16, 0xa, 0x0, &vbe_data);
                 let color = if (*glyph.offset(cy) & (MASK_BASE >> cx)) != 0x00 {
                     fgcolor
                 } else {
@@ -60,7 +61,7 @@ pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_d
     }
 }
 
-pub fn print_string(
+fn print_string(
     str: &str,
     fgcolor: u64,
     bgcolor: u64,
@@ -71,7 +72,11 @@ pub fn print_string(
     // Stack is max 13?? Why?
     let mut pos: isize = start_x;
     for chr in str.chars() {
-        drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
+    //         asm!("mov dx, 0xE9");
+    // asm!("mov al, {}", in(reg_byte) ('A' as u8)); // 41h
+    // asm!("out dx, al");
+        drawchar('X', 30 + pos, 200, 0xa, 0x0, &vbe_data);
+        drawchar(chr, 30 + pos, 200, 0xa, 0x0, &vbe_data);
         // drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
         pos += 9; // Each character is 8 bytes wide and we need at least 1 byte of separation
     }
@@ -115,76 +120,75 @@ fn panic(_info: &PanicInfo) -> ! {
 #[no_mangle]
 // #[link_section = ".text.init"]
 pub unsafe extern "C" fn _rust(vbe_mode_info: &VbeModeInfo) -> ! {
-    // Works
-    /****************************************** */
-    let vbe_data: VbeModeInfo = *vbe_mode_info;
-    VBE_DATA = vbe_mode_info;
-    x_drawchar('A', 30, 50, 0x2, 0x00, &vbe_mode_info);
-    drawchar('A', 30, 80, 0x2, 0x00, &vbe_data);
-    print_string("Width", 0x2, 0x00, 30, 110, &vbe_data);
-    x_string("Height", 0x2, 0x00, 30, 140, &vbe_mode_info);
-    // print_string(&u16_to_str(vbe_mode_info.width), 0x2, 0x00, 60, 80, &vbe_data);
-    
-    // x_string("Height", 0x2, 0x00, 30, 100, &vbe_mode_info);
-    // print_string(&u16_to_str(vbe_mode_info.height), 0x2, 0x00, 60, 100, &vbe_mode_info);
-    // kmain(*VBE_DATA);
-    // ---------- UNDEFINED BEHAVIOR ----------
-    asm!("mov dx, 0xE9");
-    asm!("mov al, {}", in(reg_byte) ('A' as u8)); // 41h
-    asm!("out dx, al");
+    // Internal function
+    // x_string(
+    //     "HELLO WORLD THESE ARE SOME WORDS HELLO WORLD THESE ARE SOME WORDS HELLO",
+    //     0x02,
+    //     0x00,
+    //     30,
+    //     110,
+    //     &vbe_mode_info
+    // ); // <--- Code gets skipped
+    kmain(&vbe_mode_info);
+    // print_string(u16_to_str(vbe_mode_info.width), 0x2, 0x00, 60, 80, &vbe_data);
+    // ---------- UNDEFINED BEHAVIOR: Run after ----------
+    // asm!("mov dx, 0xE9");
+    // asm!("mov al, {}", in(reg_byte) ('A' as u8)); // 41h
+    // asm!("out dx, al");
     // ---------- UNDEFINED BEHAVIOR ----------
     // END
     loop {
     }
 }
 
-// #[no_mangle]
-// unsafe fn kmain(vbe_mode_info: VbeModeInfo) -> () {
-//     // fill_screen(vbe_data, 0xA);
-//     // for _h in 0..8 {
-//     //     // Fill the screen (rainbow)
-//     //     for i in 0..0xff {
-//     //         fill_screen(vbe_data, i);
-//     //         // Beyond the 512K barrier we crash
-//     //     }
-//     // }
-//     // Output to emulated serial port
-//     // asm!("mov dx, 0xE9");
-//     // asm!("mov al, {}", in(reg_byte) ('A' as u8)); // 41h
-//     // asm!("out dx, al");
-//     // asm!("mov al, {}", in(reg_byte) ('B' as u8)); // 41h
-//     // asm!("out dx, al");
-//     // asm!("mov al, {}", in(reg_byte) ('C' as u8)); // 41h
-//     // asm!("out dx, al");
-//     // asm!("mov al, {}", in(reg_byte) ('D' as u8)); // 41h
-//     // asm!("out dx, al");
-//     // asm!("mov al, {}", in(reg_byte) ('E' as u8)); // 41h
-//     // asm!("out dx, al");
-//     // asm!("mov al, {}", in(reg_byte) (' ' as u8)); // 41h
-//     // asm!("out dx, al");
-//     // asm!("mov al, {}", in(reg_byte) ('F' as u8)); // 41h
-//     // asm!("out dx, al");
-//     // asm!("mov al, {}", in(reg_byte) ('G' as u8)); // 41h
-//     // asm!("out dx, al");
-//     // putpixel(vbe_data, 0x2, 0, 0);
-//     // putpixel(vbe_data, 0x2, 1, 0);
-//     // putpixel(vbe_data, 0x2, 2, 0);
-//     // putpixel(vbe_data, 0x2, 3, 0);
-//     // putpixel(vbe_data, 0x2, 4, 0);
-//     let hello_world: &'static str = "Hello, world!";
-//     x_string(
-//         "HELLO WORLD THESE ARE SOME WORDS HELLO WORLD THESE ARE SOME WORDS HELLO",
-//         0x02,
-//         0x00,
-//         60,
-//         30,
-//         &vbe_mode_info
-//     ); // <--- Code gets skipped
-//     x_drawchar('A', 30, 50, 0x2, 0x00, &vbe_mode_info); // <--- Code gets skipped
-//     x_drawchar('B', 38, 50, 0x2, 0x00, &vbe_mode_info); // <--- Code gets skipped
-//     x_drawchar('C', 46, 50, 0x2, 0x00, &vbe_mode_info); // <--- Code gets skipped
-//     drawchar('A', 60, 50, 0x2, 0x00, &*VBE_DATA);
-//     drawchar('B', 68, 50, 0x2, 0x00, &vbe_mode_info);
-//     drawchar('C', 76, 50, 0x2, 0x00, &vbe_mode_info);
-//     print_string(&hello_world, 0x2, 0x00, 30, 80, &vbe_mode_info);
-// }
+#[no_mangle]
+unsafe fn kmain(vbe_mode_info: &VbeModeInfo) -> () {
+    // fill_screen(vbe_data, 0xA);
+    // for _h in 0..8 {
+    //     // Fill the screen (rainbow)
+    //     for i in 0..0xff {
+    //         fill_screen(vbe_data, i);
+    //         // Beyond the 512K barrier we crash
+    //     }
+    // }
+    // Output to emulated serial port
+    // asm!("mov dx, 0xE9");
+    // asm!("mov al, {}", in(reg_byte) ('A' as u8)); // 41h
+    // asm!("out dx, al");
+    // asm!("mov al, {}", in(reg_byte) ('B' as u8)); // 41h
+    // asm!("out dx, al");
+    // asm!("mov al, {}", in(reg_byte) ('C' as u8)); // 41h
+    // asm!("out dx, al");
+    // asm!("mov al, {}", in(reg_byte) ('D' as u8)); // 41h
+    // asm!("out dx, al");
+    // asm!("mov al, {}", in(reg_byte) ('E' as u8)); // 41h
+    // asm!("out dx, al");
+    // asm!("mov al, {}", in(reg_byte) (' ' as u8)); // 41h
+    // asm!("out dx, al");
+    // asm!("mov al, {}", in(reg_byte) ('F' as u8)); // 41h
+    // asm!("out dx, al");
+    // asm!("mov al, {}", in(reg_byte) ('G' as u8)); // 41h
+    // asm!("out dx, al");
+    // putpixel(vbe_data, 0x2, 0, 0);
+    // putpixel(vbe_data, 0x2, 1, 0);
+    // putpixel(vbe_data, 0x2, 2, 0);
+    // putpixel(vbe_data, 0x2, 3, 0);
+    // putpixel(vbe_data, 0x2, 4, 0);
+    let hello_world: &'static str = "Hello, world!";
+    x_drawchar('A', 30, 50, 0x2, 0x00, &vbe_mode_info);
+    x_drawchar('B', 38, 50, 0x2, 0x00, &vbe_mode_info);
+    x_drawchar('C', 46, 50, 0x2, 0x00, &vbe_mode_info);
+    x_drawchar('X', 30, 70, 0x2, 0x00, &vbe_mode_info);
+    x_drawchar('Y', 38, 70, 0x2, 0x00, &vbe_mode_info);
+    x_drawchar('Z', 46, 70, 0x2, 0x00, &vbe_mode_info);
+    x_string(
+        "HELLO WORLD THESE ARE SOME WORDS HELLO WORLD THESE ARE SOME WORDS HELLO",
+        0x02,
+        0x00,
+        30,
+        110,
+        &vbe_mode_info
+    ); // <--- Code gets skipped
+    // print_string("Width", 0x2, 0x00, 30, 140, &vbe_mode_info);
+    print_string(&hello_world, 0x2, 0x00, 30, 170, &vbe_mode_info);  // <--- Code gets skipped
+}
