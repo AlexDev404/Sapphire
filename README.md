@@ -2,6 +2,11 @@
 
 The Sapphire Operating System
 
+![GitHub top language](https://img.shields.io/github/languages/top/alexdev404/sapphire?logo=c&label=)
+[![GitHub license](https://img.shields.io/github/license/alexdev404/sapphire)](https://github.com/alexdev404/sapphire/blob/master/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/alexdev404/sapphire)](https://github.com/alexdev404/sapphire/graphs/contributors)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/alexdev404/sapphire)](https://github.com/alexdev404/sapphire/commits)
+
 ## To Build [WIP]
 
 ## Depends on
@@ -39,3 +44,68 @@ The codebase is organized as follows:
 - `src/boot` - Contains bootloader and build system
 - `src/graphics` - Graphics rendering code including fonts and text display
 - `src/main.cpp` - Kernel entry point
+
+## Base x86 TODO
+
+- [x] Build
+- [ ] Locking
+- [ ] GFX (flanterm)
+- [ ] PMM 
+- [ ] Paging
+- [ ] Some heap
+- [x] GDT
+- [x] IDT
+- [ ] TSS
+- [ ] ACPI
+- [ ] HPET
+- [ ] LAPIC 
+- [ ] MP
+- [ ] IOAPIC
+- [ ] Initrd support
+- [ ] ELF parsing
+- [ ] Scheduling
+- [ ] End of x86 pain
+
+## Unix-like TODO
+
+- [ ] Syscalls
+- [ ] Start libc porting
+- [ ] End libc porting
+
+## Porting TODO
+
+- [ ] bash
+- [ ] coreutils
+- [ ] doom2
+- [ ] nasm
+- [ ] gcc
+- [ ] lua
+- [ ] python
+- [ ] etc. apps
+
+## Driver TODO
+
+- [ ] IO
+- [x] Serial
+- [ ] PCI
+- [ ] CMOS
+- [ ] PS2 Keyboard 
+- [ ] Speaker
+- [ ] AHCI
+- [ ] XHCI/HID/USB
+- [ ] NVME
+- [ ] Networking
+- [ ] Intel HDA
+- [ ] End of driver pain
+
+## Filesystem TODO
+
+- [ ] FAT32
+- [ ] VFS
+- [ ] EXT4
+- [ ] TMPFS
+- [ ] End of filesystem pain
+
+## Final TODO
+
+- [ ] TBP
