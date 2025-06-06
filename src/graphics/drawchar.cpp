@@ -12,7 +12,8 @@ void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcol
     }
 
     // Get character index in the font table
-    unsigned char* char_data = (unsigned char*)&IBM_VGA_8X8[(unsigned char)chr * 8];
+    // Multiply 16 characters across
+    unsigned char* char_data = (unsigned char*)&IBM_VGA_8X16[(unsigned char)chr * 16];
     
     // Calculate base address in the framebuffer
     unsigned char* framebuffer = (unsigned char*)vbe_data->framebuffer;
@@ -22,7 +23,7 @@ void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcol
     
     // Character dimensions
     const int CHAR_WIDTH = 8;
-    const int CHAR_HEIGHT = 8;
+    const int CHAR_HEIGHT = 16;
     
     // Draw each row of the character
     for (int cy = 0; cy < CHAR_HEIGHT; cy++) {

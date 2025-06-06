@@ -121,6 +121,18 @@ void fillrect(int x1, int y1, int x2, int y2, unsigned long color, const VbeMode
     }
 }
 
+// Fill the entire screen with a color
+void fill_screen(const VbeModeInfo* vbe_data, unsigned long color) {
+    int screen_x = vbe_data->width;
+    int screen_y = vbe_data->height;
+    
+    for (int y = 0; y < screen_y; y++) {
+        for (int x = 0; x < screen_x; x++) {
+            putpixel(x, y, color, vbe_data);
+        }
+    }
+}
+
 #ifdef __cplusplus
 }
 #endif

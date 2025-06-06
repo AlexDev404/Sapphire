@@ -26,6 +26,9 @@ void rect(int x1, int y1, int x2, int y2, unsigned long color, const VbeModeInfo
 // Draw a filled rectangle
 void fillrect(int x1, int y1, int x2, int y2, unsigned long color, const VbeModeInfo* vbe_data);
 
+// Fill the entire screen with a color
+void fill_screen(const VbeModeInfo* vbe_data, unsigned long color);
+
 #ifdef __cplusplus
 }
 #endif
