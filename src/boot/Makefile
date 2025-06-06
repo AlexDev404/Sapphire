@@ -9,7 +9,7 @@ CHAINLOADER=${OBJECTS_DIR}/bin/chainloader.bin
 # C++ compiler settings
 CXX=g++
 CXXFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32 -fno-pic -fno-pie -I../
-CPP_SOURCES=$(wildcard ../*.cpp ../graphics/*.cpp)
+CPP_SOURCES=$(wildcard ../*.cpp ../graphics/*.cpp ../devices/**/*.cpp)
 CPP_OBJECTS=$(patsubst ../%.cpp,${OBJECTS_DIR}/%.o,$(CPP_SOURCES))
 
 .PHONY: all clean boot boot-debug always
@@ -41,6 +41,11 @@ ${OBJECTS_DIR}/main.o: ../main.cpp
 
 ${OBJECTS_DIR}/graphics/%.o: ../graphics/%.cpp
 	@echo Compiling $<
+	wsl $(CXX) $(CXXFLAGS) -c $< -o $@
+
+${OBJECTS_DIR}/%.o: ../%.cpp
+	@echo Compiling $<
+	@wsl mkdir -p $(dir $@)
 	wsl $(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Cleanup

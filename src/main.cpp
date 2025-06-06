@@ -5,6 +5,7 @@
 
 #include "graphics/graphics.h"
 #include "graphics/print_text.h"
+#include "devices/debug/debug.h"
 
 extern "C" {
     // This is our kernel entry point that will be called from the bootloader
@@ -93,6 +94,9 @@ extern "C" void kmain(const VbeModeInfo* vbe_mode_info) {
     print_at(row_1, COLOR_WHITE, COLOR_DARK_BLUE, 0, 0, vbe_mode_info);
     print_at(row_2, COLOR_WHITE, COLOR_DARK_BLUE, 70, 0, vbe_mode_info);
     print_at(row_3, COLOR_WHITE, COLOR_DARK_BLUE, 0, 28, vbe_mode_info);
+
+    send_debug("Sapphire OS v0.1 (C++ Edition) initialized successfully.\n");
+    send_debug("Hey, what's up!");
     
     // Draw a smooth, vibrant gradient showing off the color capabilities
     int gradient_height = 80;
