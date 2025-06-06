@@ -78,7 +78,7 @@ PModeMain:
     push eax
 	
 	; Call the C++ kernel entry point (`kmain`) with vbe_mode_block as argument
-    call kmain  ; Changed from _rust to kmain
+    call kmain  ; Entrypoint for the kernel
 
     ; Infinite loop after returning from the kernel
     jmp $

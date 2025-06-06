@@ -7,12 +7,15 @@
 #include "graphics/print_text.h"
 #include "devices/debug/debug.h"
 
-extern "C" {
+void main(const VbeModeInfo* vbe_mode_info);
+void panic(const VbeModeInfo* vbe_mode_info);
+
+extern "C" void kmain(const VbeModeInfo* vbe_mode_info) {
     // This is our kernel entry point that will be called from the bootloader
-    void kmain(const VbeModeInfo* vbe_mode_info);
+    main(vbe_mode_info);
     
     // This function will be called on system panic
-    void panic();
+    panic(vbe_mode_info);
 }
 
 // Define true color RGB values (works with 16-bit, 24-bit, and 32-bit color modes)
@@ -38,7 +41,7 @@ extern "C" {
 #define COLOR_WHITE      RGB(255, 255, 255)
 
 // Kernel main function - entry point from bootloader
-extern "C" void kmain(const VbeModeInfo* vbe_mode_info) {
+void main(const VbeModeInfo* vbe_mode_info) {
     // Fill screen with dark blue background
     fill_screen(vbe_mode_info, COLOR_DARK_BLUE);
     
@@ -56,16 +59,16 @@ extern "C" void kmain(const VbeModeInfo* vbe_mode_info) {
     // Convert width to string and display
     unsigned char width_str[6];
     u16_to_string(vbe_mode_info->width, width_str, 6);
-    print_text(width_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 120, 60, vbe_mode_info);
+    print_text(width_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 138, 60, vbe_mode_info);
     
     // Add 'x' between width and height
     const unsigned char x_char[] = "x";
-    print_text(x_char, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 160, 60, vbe_mode_info);
+    print_text(x_char, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 168, 60, vbe_mode_info);
     
     // Convert height to string and display
     unsigned char height_str[6];
     u16_to_string(vbe_mode_info->height, height_str, 6);
-    print_text(height_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 170, 60, vbe_mode_info);
+    print_text(height_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 178, 60, vbe_mode_info);
     
     // Display color depth
     const unsigned char bpp_text[] = "Color depth: ";
@@ -74,11 +77,11 @@ extern "C" void kmain(const VbeModeInfo* vbe_mode_info) {
     // Convert bpp to string and display
     unsigned char bpp_str[6];
     u16_to_string(vbe_mode_info->bpp, bpp_str, 6);
-    print_text(bpp_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 138, 80, vbe_mode_info);
+    print_text(bpp_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 146, 80, vbe_mode_info);
     
     // Add "bits" after the number
     const unsigned char bits_text[] = "bits";
-    print_text(bits_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 148, 80, vbe_mode_info);
+    print_text(bits_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 164, 80, vbe_mode_info);
     
     // Add millions of colors text
     const unsigned char color_text[] = "Supporting millions of colors!";
@@ -148,17 +151,22 @@ extern "C" void kmain(const VbeModeInfo* vbe_mode_info) {
         vline(x, vbe_mode_info->height - gradient_height, vbe_mode_info->height - 20, color, vbe_mode_info);
     }
     
-    // Infinite loop to keep the system running
+    // Infinite loop to prevent a kernel panic
     while (1) {
-        // Idle loop
+        // Busy loop
     }
 }
 
 // Panic handler
-extern "C" void panic() {
+void panic(const VbeModeInfo* vbe_mode_info) {
     // In a real system, we'd want to display an error message
     // For now, just an infinite loop
+    send_debug("Kernel panic: An unrecoverable error occurred.\n");
+    fill_screen(vbe_mode_info, COLOR_BLACK); // Fill screen with red to indicate panic
+    print_text((const unsigned char*)"Kernel panic: An unrecoverable error occurred.", COLOR_RED, COLOR_BLACK, 30, 30, vbe_mode_info);
+    // Draw some simple shapes to indicate panic state
+    hline(30, 500, 50, COLOR_RED, vbe_mode_info); // Draw a horizontal line for visibility
     while (1) {
-        // Idle loop
+        // Busy loop
     }
 }
