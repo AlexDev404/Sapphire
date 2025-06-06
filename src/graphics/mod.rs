@@ -1,6 +1,7 @@
 pub mod fonts;
 use crate::types::graphics::VbeModeInfo;
 use fonts::ibm_vga8x16;
+use core::arch::asm;
 
 static F_DATA: [u8; 4096] = ibm_vga8x16::IBM_VGA_8X16;
 static F_HEIGHT: isize = 16; // Rows
@@ -45,7 +46,7 @@ What it does:
 */
 pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_data: &VbeModeInfo) {
     unsafe {
-        let c: u8 = chr as u8;
+        let c: u8 = (chr as u32 & 0xFF) as u8;
         let font: *const u8 = &F_DATA as *const u8;
         let glyph = font.offset((c as isize) * F_HEIGHT);
 
@@ -67,7 +68,7 @@ pub fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_d
     }
 }
 
-pub fn print_string(
+pub unsafe fn print_string(
     str: &str,
     fgcolor: u64,
     bgcolor: u64,
@@ -78,6 +79,9 @@ pub fn print_string(
     // Stack is max 13?? Why?
     let mut pos: isize = start_x;
     for chr in str.chars() {
+        asm!("mov dx, 0xE9");
+        asm!("mov al, {}", in(reg_byte) (chr as u8));
+        asm!("out dx, al");
         drawchar('?', pos, y, 0xa, 0x0, vbe_data); // Fall back to a question mark if the character is not found or if there is an error
         drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
         // drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
