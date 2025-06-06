@@ -36,10 +36,10 @@ static FONT_WIDTH: isize = 8; // Columns
 //         core::str::from_utf8_unchecked(&BUFFER[..s.len()])
 //     }
 // }
-
+/*
 fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_data: &VbeModeInfo) {
     unsafe {
-        let c: u8 = chr as u8;
+        let c: u8 = (chr as u32 & 0xFF) as u8;
         let font: *const u8 = &FONT_DATA as *const u8;
         let glyph = font.offset((c as isize) * FONT_HEIGHT);
 
@@ -66,27 +66,7 @@ fn drawchar(chr: char, x: isize, y: isize, fgcolor: u64, bgcolor: u64, vbe_data:
             asm!("out dx, al");
         }
     }
-}
-
-fn print_string(
-    str: &str,
-    fgcolor: u64,
-    bgcolor: u64,
-    start_x: isize,
-    y: isize,
-    vbe_data: &VbeModeInfo
-) {
-    // Stack is max 13?? Why?
-    let mut pos: isize = start_x;
-    for chr in str.chars() {
-        x_drawchar('?', 30 + pos, 200, 0xa, 0x0, &vbe_data);
-        drawchar(chr, 30 + pos, 200, 0xa, 0x0, &vbe_data);
-
-        // drawchar(chr, pos, y, fgcolor, bgcolor, vbe_data);
-        pos += 9; // Each character is 8 bytes wide and we need at least 1 byte of separation
-    }
-}
-
+}*/
 pub fn fill_screen(vbe_data: &VbeModeInfo, color: u64) {
     let screen_x: isize = vbe_data.width as isize;
     let screen_y: isize = vbe_data.height as isize;
@@ -186,6 +166,7 @@ fn kmain(vbe_mode_info: &VbeModeInfo) -> () {
     x_drawchar('X', 30, 70, 0x2, 0x00, &vbe_mode_info);
     x_drawchar('Y', 38, 70, 0x2, 0x00, &vbe_mode_info);
     x_drawchar('Z', 46, 70, 0x2, 0x00, &vbe_mode_info);
+    unsafe {
     x_string(
         "HELLO WORLD THESE ARE SOME WORDS HELLO WORLD THESE ARE SOME WORDS HELLO",
         0x02,
@@ -194,7 +175,8 @@ fn kmain(vbe_mode_info: &VbeModeInfo) -> () {
         110,
         &vbe_mode_info
     ); // <--- Code gets skipped
-
-    print_string("Width", 0x2, 0x00, 30, 140, &vbe_mode_info);
-    print_string(&hello_world, 0x2, 0x00, 30, 170, &vbe_mode_info);
+    
+    x_string("Width", 0x2, 0x00, 30, 140, &vbe_mode_info);
+    x_string(&hello_world, 0x2, 0x00, 30, 170, &vbe_mode_info);
+}
 }
