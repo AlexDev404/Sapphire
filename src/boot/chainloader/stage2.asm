@@ -1,6 +1,6 @@
 [GLOBAL _start]
 [BITS 16]
-[EXTERN _rust]
+[EXTERN kmain]  ; Changed from _rust to kmain
 
 ; %DEFINE MODE 115h
 %DEFINE MODE 103h
@@ -60,26 +60,19 @@ _start:
 	; to load CS with proper PM32 descriptor)
 	jmp long 0x8:PModeMain        ; Jump to Protected Mode Main in the code segment
 
-;times 5320 db 0  ; Adjust based on actual section size
-
 [BITS 32]
 PModeMain:
 	; JUMP TO KERNEL
-	; pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
-
 	; Set up the stack
 	sub esp, 4   ; Align the stack before pushing the argument
 	; Load the address of `vbe_mode_block` into EAX
-	; We pass this address and then convert it into a pointer later
     lea eax, [vbe_mode_block]
     
     ; Push the address onto the stack
-	; Rust uses the C calling convention which grabs whatever's on the stack as the arguments
     push eax
 	
-	; Call the Rust kernel entry point (`kmain`) with arguments in EAX
-	; Since this uses the C calling convention, we can place arguments in reverse 
-    call _rust ; should be call
+	; Call the C++ kernel entry point (`kmain`) with vbe_mode_block as argument
+    call kmain  ; Changed from _rust to kmain
 
     ; Infinite loop after returning from the kernel
     jmp $

@@ -1,0 +1,153 @@
+#ifndef GRAPHICS_MOD_H
+#define GRAPHICS_MOD_H
+
+#include "vbe_mode_info.h"
+#include "fonts/ibm_vga8x16.h"
+#include "graphics.h"
+#include "print_text.h"
+
+// Font data and dimensions
+static const unsigned char F_DATA[4096] = IBM_VGA_8X16;
+static const int F_HEIGHT = 16; // Rows
+static const int F_WIDTH = 8;   // Columns
+
+// More complex putpixel implementation that can handle different color depths
+void putpixel_advanced(const VbeModeInfo* vbe_data, unsigned long color, int x, int y) {
+    // Handle invalid coordinates
+    if (x < 0 || y < 0 || x >= vbe_data->width || y >= vbe_data->height) {
+        return;
+    }
+    
+    // Calculate base address in the framebuffer
+    unsigned char* framebuffer = (unsigned char*)vbe_data->framebuffer;
+    
+    // Set bytes per pixel based on color depth
+    int bytes_per_pixel = vbe_data->bpp / 8;
+    
+    // Calculate position in framebuffer
+    int fb_offset = (y * vbe_data->pitch) + (x * bytes_per_pixel);
+    
+    // Draw the pixel with appropriate color format based on bit depth
+    if (vbe_data->bpp == 32) {
+        // 32 bits per pixel (RGBA)
+        framebuffer[fb_offset + 0] = (color >> 0) & 0xFF;  // Blue
+        framebuffer[fb_offset + 1] = (color >> 8) & 0xFF;  // Green
+        framebuffer[fb_offset + 2] = (color >> 16) & 0xFF; // Red
+        framebuffer[fb_offset + 3] = (color >> 24) & 0xFF; // Alpha
+    }
+    else if (vbe_data->bpp == 24) {
+        // 24 bits per pixel (RGB)
+        framebuffer[fb_offset + 0] = (color >> 0) & 0xFF;  // Blue
+        framebuffer[fb_offset + 1] = (color >> 8) & 0xFF;  // Green
+        framebuffer[fb_offset + 2] = (color >> 16) & 0xFF; // Red
+    }
+    else if (vbe_data->bpp == 16) {
+        // 16 bits per pixel (typically 5-6-5 RGB)
+        unsigned short pixel_color = (
+            (((color >> 16) & 0xFF) >> 3) << 11 | // Red (5 bits)
+            (((color >> 8) & 0xFF) >> 2) << 5 |   // Green (6 bits)
+            (((color >> 0) & 0xFF) >> 3)          // Blue (5 bits)
+        );
+        
+        // Write the 16-bit value
+        *((unsigned short*)(framebuffer + fb_offset)) = pixel_color;
+    }
+    else if (vbe_data->bpp == 8) {
+        // 8 bits per pixel (palette-based)
+        // Using the original simple implementation for 8-bit mode
+        framebuffer[fb_offset] = color & 0xFF;
+    }
+}
+
+// Advanced character drawing that uses the multi-color depth putpixel
+void drawchar_advanced(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor, const VbeModeInfo* vbe_data) {
+    unsigned char c = (unsigned char)chr;
+    const unsigned char* glyph = &F_DATA[c * F_HEIGHT];
+    
+    const unsigned char MASK_BASE = 0x80;
+    
+    for (int cy = 0; cy < F_HEIGHT; cy++) {
+        for (int cx = 0; cx < F_WIDTH; cx++) {
+            unsigned long color = (glyph[cy] & (MASK_BASE >> cx)) ? fgcolor : bgcolor;
+            
+            // Skip "transparent" background pixels
+            if ((glyph[cy] & (MASK_BASE >> cx)) == 0x00) {
+                continue; // "Transparency"
+            }
+            
+            putpixel_advanced(vbe_data, color, x + cx, y + cy);
+        }
+    }
+}
+
+// Convert a 16-bit unsigned integer to a string
+int u16_to_string(unsigned short value, unsigned char* buffer, int buffer_size) {
+    if (buffer_size < 6) {  // Max 5 digits + null terminator
+        return 0;
+    }
+    
+    if (value == 0) {
+        buffer[0] = '0';
+        buffer[1] = 0;
+        return 2;
+    }
+    
+    unsigned short val = value;
+    int i = 0;
+    
+    while (val > 0 && i < buffer_size - 1) {
+        buffer[i] = '0' + (val % 10);
+        val /= 10;
+        i++;
+    }
+    
+    // Reverse the digits in-place
+    int start = 0;
+    int end = i - 1;
+    while (start < end) {
+        unsigned char temp = buffer[start];
+        buffer[start] = buffer[end];
+        buffer[end] = temp;
+        start++;
+        end--;
+    }
+    
+    // Add null terminator
+    buffer[i] = 0;
+    
+    return i + 1;  // Return length including null terminator
+}
+
+// Test print function with a predefined pattern
+void test_print(int start_x, int y, const VbeModeInfo* vbe_data) {
+    int pos = start_x;
+    
+    // Draw "TEST" with a marker before and after
+    drawchar('>', pos, y, 0xf, 0x0, vbe_data); // White marker
+    pos += 9;
+    
+    drawchar('T', pos, y, 0xe, 0x0, vbe_data); // Yellow T
+    pos += 9;
+    drawchar('E', pos, y, 0xe, 0x0, vbe_data); // Yellow E
+    pos += 9;
+    drawchar('S', pos, y, 0xe, 0x0, vbe_data); // Yellow S
+    pos += 9;
+    drawchar('T', pos, y, 0xe, 0x0, vbe_data); // Yellow T
+    pos += 9;
+    
+    drawchar('<', pos, y, 0xf, 0x0, vbe_data); // White marker
+}
+
+// Fill the entire screen with a color
+void fill_screen(const VbeModeInfo* vbe_data, unsigned long color) {
+    int screen_x = vbe_data->width;
+    int screen_y = vbe_data->height;
+    
+    for (int y = 0; y < screen_y; y++) {
+        for (int x = 0; x < screen_x; x++) {
+            putpixel_advanced(vbe_data, color, x, y);
+        }
+    }
+}
+
+#endif /* GRAPHICS_MOD_H */

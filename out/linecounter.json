@@ -1,0 +1,700 @@
+{
+    "extension": "linecounter",
+    "version": "0.2.7",
+    "workspace": "e:\\Data\\PROGRAMMING\\OS\\Sapphire",
+    "linecount": [
+        {
+            "version": "0.2.7",
+            "counttime": "2022-12-23 14:40:21",
+            "filesum": 99,
+            "codesum": 1665,
+            "commentsum": 134,
+            "blanksum": 85,
+            "statistics": {
+                ".json": {
+                    "code": 32,
+                    "comment": 0,
+                    "blank": 1
+                },
+                ".rs": {
+                    "code": 935,
+                    "comment": 131,
+                    "blank": 21
+                },
+                ".TAG": {
+                    "code": 6,
+                    "comment": 2,
+                    "blank": 0
+                },
+                "": {
+                    "code": 75,
+                    "comment": 0,
+                    "blank": 10
+                },
+                ".d": {
+                    "code": 435,
+                    "comment": 0,
+                    "blank": 25
+                },
+                ".ld": {
+                    "code": 30,
+                    "comment": 0,
+                    "blank": 3
+                },
+                ".asm": {
+                    "code": 73,
+                    "comment": 0,
+                    "blank": 10
+                },
+                ".timestamp": {
+                    "code": 10,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".toml": {
+                    "code": 33,
+                    "comment": 1,
+                    "blank": 8
+                },
+                ".lock": {
+                    "code": 28,
+                    "comment": 0,
+                    "blank": 4
+                },
+                ".md": {
+                    "code": 8,
+                    "comment": 0,
+                    "blank": 3
+                }
+            },
+            "filelist": [
+                {
+                    "blank": 2,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": ".cargo\\config.toml"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".gitignore"
+                },
+                {
+                    "blank": 4,
+                    "code": 28,
+                    "comment": 0,
+                    "filename": "Cargo.lock"
+                },
+                {
+                    "blank": 6,
+                    "code": 19,
+                    "comment": 1,
+                    "filename": "Cargo.toml"
+                },
+                {
+                    "blank": 2,
+                    "code": 18,
+                    "comment": 0,
+                    "filename": "kernel_layout.ld"
+                },
+                {
+                    "blank": 3,
+                    "code": 8,
+                    "comment": 0,
+                    "filename": "README.md"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "rust-toolchain"
+                },
+                {
+                    "blank": 0,
+                    "code": 7,
+                    "comment": 0,
+                    "filename": "src\\boot\\.gitignore"
+                },
+                {
+                    "blank": 7,
+                    "code": 46,
+                    "comment": 0,
+                    "filename": "src\\boot\\chainloader\\chainloader.asm"
+                },
+                {
+                    "blank": 3,
+                    "code": 27,
+                    "comment": 0,
+                    "filename": "src\\boot\\chainloader\\stage2.asm"
+                },
+                {
+                    "filename": "src\\boot\\image.bin",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src\\boot\\kernel.bin",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 1,
+                    "code": 12,
+                    "comment": 0,
+                    "filename": "src\\boot\\linker.ld"
+                },
+                {
+                    "blank": 10,
+                    "code": 52,
+                    "comment": 0,
+                    "filename": "src\\boot\\Makefile"
+                },
+                {
+                    "filename": "src\\boot\\objects\\bin\\chainloader.bin",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src\\boot\\objects\\kernel.a",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src\\boot\\objects\\kernel_stub.elf",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "src\\boot\\out\\floppy.img",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 2,
+                    "code": 98,
+                    "comment": 97,
+                    "filename": "src\\chunkymonkey_z80.rs"
+                },
+                {
+                    "blank": 2,
+                    "code": 15,
+                    "comment": 0,
+                    "filename": "src\\graphics.rs"
+                },
+                {
+                    "blank": 3,
+                    "code": 258,
+                    "comment": 6,
+                    "filename": "src\\ibm_vga8x16.rs"
+                },
+                {
+                    "blank": 2,
+                    "code": 258,
+                    "comment": 6,
+                    "filename": "src\\ibm_vga8x8.rs"
+                },
+                {
+                    "blank": 10,
+                    "code": 48,
+                    "comment": 16,
+                    "filename": "src\\main.rs"
+                },
+                {
+                    "blank": 2,
+                    "code": 258,
+                    "comment": 6,
+                    "filename": "src\\tvga.rs"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\.rustc_info.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 1,
+                    "filename": "target\\CACHEDIR.TAG"
+                },
+                {
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0,
+                    "filename": "target\\release\\.cargo-lock"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\release\\.fingerprint\\compiler_builtins-7600692325146ed4\\build-script-build-script-build"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\release\\.fingerprint\\compiler_builtins-7600692325146ed4\\build-script-build-script-build.json"
+                },
+                {
+                    "filename": "target\\release\\.fingerprint\\compiler_builtins-7600692325146ed4\\dep-build-script-build-script-build",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\release\\.fingerprint\\compiler_builtins-7600692325146ed4\\invoked.timestamp"
+                },
+                {
+                    "filename": "target\\release\\build\\compiler_builtins-7600692325146ed4\\build-script-build.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 2,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "target\\release\\build\\compiler_builtins-7600692325146ed4\\build_script_build-7600692325146ed4.d"
+                },
+                {
+                    "filename": "target\\release\\build\\compiler_builtins-7600692325146ed4\\build_script_build-7600692325146ed4.exe",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 1,
+                    "filename": "target\\x86-unknown-bare-metal\\CACHEDIR.TAG"
+                },
+                {
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.cargo-lock"
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\alloc-e0beb4bb1d71dee8\\dep-lib-alloc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\alloc-e0beb4bb1d71dee8\\invoked.timestamp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\alloc-e0beb4bb1d71dee8\\lib-alloc"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\alloc-e0beb4bb1d71dee8\\lib-alloc.json"
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\compiler_builtins-8946d12409a5c913\\dep-lib-compiler_builtins",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\compiler_builtins-8946d12409a5c913\\invoked.timestamp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\compiler_builtins-8946d12409a5c913\\lib-compiler_builtins"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\compiler_builtins-8946d12409a5c913\\lib-compiler_builtins.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\compiler_builtins-a341fbe91e41f8e0\\run-build-script-build-script-build"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\compiler_builtins-a341fbe91e41f8e0\\run-build-script-build-script-build.json"
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\core-76c9d647cc177bb7\\dep-lib-core",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\core-76c9d647cc177bb7\\invoked.timestamp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\core-76c9d647cc177bb7\\lib-core"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\core-76c9d647cc177bb7\\lib-core.json"
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\rustc-std-workspace-core-dce44a1e9cdebfff\\dep-lib-rustc-std-workspace-core",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\rustc-std-workspace-core-dce44a1e9cdebfff\\invoked.timestamp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\rustc-std-workspace-core-dce44a1e9cdebfff\\lib-rustc-std-workspace-core"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\rustc-std-workspace-core-dce44a1e9cdebfff\\lib-rustc-std-workspace-core.json"
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\sapphire-07b6ee33ef3a3ff2\\dep-lib-sapphire",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\sapphire-07b6ee33ef3a3ff2\\invoked.timestamp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\sapphire-07b6ee33ef3a3ff2\\lib-sapphire"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\sapphire-07b6ee33ef3a3ff2\\lib-sapphire.json"
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec-82afbcd6d6d82a9e\\dep-lib-tinyvec",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec-82afbcd6d6d82a9e\\invoked.timestamp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec-82afbcd6d6d82a9e\\lib-tinyvec"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec-82afbcd6d6d82a9e\\lib-tinyvec.json"
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec_macros-e3be8fa2a9fc78c4\\dep-lib-tinyvec_macros",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec_macros-e3be8fa2a9fc78c4\\invoked.timestamp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec_macros-e3be8fa2a9fc78c4\\lib-tinyvec_macros"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec_macros-e3be8fa2a9fc78c4\\lib-tinyvec_macros.json"
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec_string-fd0033607c50349e\\dep-lib-tinyvec_string",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec_string-fd0033607c50349e\\invoked.timestamp"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec_string-fd0033607c50349e\\lib-tinyvec_string"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\.fingerprint\\tinyvec_string-fd0033607c50349e\\lib-tinyvec_string.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\build\\compiler_builtins-a341fbe91e41f8e0\\invoked.timestamp"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\build\\compiler_builtins-a341fbe91e41f8e0\\output"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\build\\compiler_builtins-a341fbe91e41f8e0\\root-output"
+                },
+                {
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\build\\compiler_builtins-a341fbe91e41f8e0\\stderr"
+                },
+                {
+                    "blank": 3,
+                    "code": 60,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\alloc-e0beb4bb1d71dee8.d"
+                },
+                {
+                    "blank": 3,
+                    "code": 32,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\compiler_builtins-8946d12409a5c913.d"
+                },
+                {
+                    "blank": 3,
+                    "code": 310,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\core-76c9d647cc177bb7.d"
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\liballoc-e0beb4bb1d71dee8.rlib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\liballoc-e0beb4bb1d71dee8.rmeta",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libcompiler_builtins-8946d12409a5c913.rlib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libcompiler_builtins-8946d12409a5c913.rmeta",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libcore-76c9d647cc177bb7.rlib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libcore-76c9d647cc177bb7.rmeta",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\librustc_std_workspace_core-dce44a1e9cdebfff.rlib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\librustc_std_workspace_core-dce44a1e9cdebfff.rmeta",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libsapphire-07b6ee33ef3a3ff2.a",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libtinyvec-82afbcd6d6d82a9e.rlib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libtinyvec-82afbcd6d6d82a9e.rmeta",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libtinyvec_macros-e3be8fa2a9fc78c4.rlib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libtinyvec_macros-e3be8fa2a9fc78c4.rmeta",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libtinyvec_string-fd0033607c50349e.rlib",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\libtinyvec_string-fd0033607c50349e.rmeta",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 3,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\rustc_std_workspace_core-dce44a1e9cdebfff.d"
+                },
+                {
+                    "blank": 2,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\sapphire-07b6ee33ef3a3ff2.d"
+                },
+                {
+                    "blank": 3,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\tinyvec-82afbcd6d6d82a9e.d"
+                },
+                {
+                    "blank": 3,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\tinyvec_macros-e3be8fa2a9fc78c4.d"
+                },
+                {
+                    "blank": 3,
+                    "code": 7,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\deps\\tinyvec_string-fd0033607c50349e.d"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "target\\x86-unknown-bare-metal\\release\\libsapphire.d"
+                },
+                {
+                    "blank": 1,
+                    "code": 21,
+                    "comment": 0,
+                    "filename": "x86-unknown-bare-metal.json"
+                }
+            ]
+        }
+    ]
+}

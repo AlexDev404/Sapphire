@@ -1,0 +1,126 @@
+===============================================================================
+EXTENSION NAME : linecounter
+EXTENSION VERSION : 0.2.7
+-------------------------------------------------------------------------------
+count time : 2022-12-23 14:40:21
+count workspace : e:\Data\PROGRAMMING\OS\Sapphire
+total files : 99
+total code lines : 1665
+total comment lines : 134
+total blank lines : 85
+
+    statistics
+   |      extension|     total code|  total comment|    total blank|percent|
+   -------------------------------------------------------------------------
+   |          .json|             32|              0|              1|    1.9|
+   |            .rs|            935|            131|             21|     56|
+   |           .TAG|              6|              2|              0|   0.36|
+   |               |             75|              0|             10|    4.5|
+   |             .d|            435|              0|             25|     26|
+   |            .ld|             30|              0|              3|    1.8|
+   |           .asm|             73|              0|             10|    4.4|
+   |     .timestamp|             10|              0|              0|   0.60|
+   |          .toml|             33|              1|              8|    2.0|
+   |          .lock|             28|              0|              4|    1.7|
+   |            .md|              8|              0|              3|   0.48|
+   -------------------------------------------------------------------------
+.cargo\config.toml, code is 14, comment is 0, blank is 2.
+.gitignore, code is 1, comment is 0, blank is 0.
+Cargo.lock, code is 28, comment is 0, blank is 4.
+Cargo.toml, code is 19, comment is 1, blank is 6.
+kernel_layout.ld, code is 18, comment is 0, blank is 2.
+README.md, code is 8, comment is 0, blank is 3.
+rust-toolchain, code is 1, comment is 0, blank is 0.
+src\boot\.gitignore, code is 7, comment is 0, blank is 0.
+src\boot\chainloader\chainloader.asm, code is 46, comment is 0, blank is 7.
+src\boot\chainloader\stage2.asm, code is 27, comment is 0, blank is 3.
+src\boot\image.bin, it is a binary file.
+src\boot\kernel.bin, it is a binary file.
+src\boot\linker.ld, code is 12, comment is 0, blank is 1.
+src\boot\Makefile, code is 52, comment is 0, blank is 10.
+src\boot\objects\bin\chainloader.bin, it is a binary file.
+src\boot\objects\kernel.a, it is a binary file.
+src\boot\objects\kernel_stub.elf, it is a binary file.
+src\boot\out\floppy.img, it is a binary file.
+src\chunkymonkey_z80.rs, code is 98, comment is 97, blank is 2.
+src\graphics.rs, code is 15, comment is 0, blank is 2.
+src\ibm_vga8x16.rs, code is 258, comment is 6, blank is 3.
+src\ibm_vga8x8.rs, code is 258, comment is 6, blank is 2.
+src\main.rs, code is 48, comment is 16, blank is 10.
+src\tvga.rs, code is 258, comment is 6, blank is 2.
+target\.rustc_info.json, code is 1, comment is 0, blank is 0.
+target\CACHEDIR.TAG, code is 3, comment is 1, blank is 0.
+target\release\.cargo-lock, code is 0, comment is 0, blank is 0.
+target\release\.fingerprint\compiler_builtins-7600692325146ed4\build-script-build-script-build, code is 1, comment is 0, blank is 0.
+target\release\.fingerprint\compiler_builtins-7600692325146ed4\build-script-build-script-build.json, code is 1, comment is 0, blank is 0.
+target\release\.fingerprint\compiler_builtins-7600692325146ed4\dep-build-script-build-script-build, it is a binary file.
+target\release\.fingerprint\compiler_builtins-7600692325146ed4\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\release\build\compiler_builtins-7600692325146ed4\build-script-build.exe, it is a binary file.
+target\release\build\compiler_builtins-7600692325146ed4\build_script_build-7600692325146ed4.d, code is 3, comment is 0, blank is 2.
+target\release\build\compiler_builtins-7600692325146ed4\build_script_build-7600692325146ed4.exe, it is a binary file.
+target\x86-unknown-bare-metal\CACHEDIR.TAG, code is 3, comment is 1, blank is 0.
+target\x86-unknown-bare-metal\release\.cargo-lock, code is 0, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\alloc-e0beb4bb1d71dee8\dep-lib-alloc, it is a binary file.
+target\x86-unknown-bare-metal\release\.fingerprint\alloc-e0beb4bb1d71dee8\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\alloc-e0beb4bb1d71dee8\lib-alloc, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\alloc-e0beb4bb1d71dee8\lib-alloc.json, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\compiler_builtins-8946d12409a5c913\dep-lib-compiler_builtins, it is a binary file.
+target\x86-unknown-bare-metal\release\.fingerprint\compiler_builtins-8946d12409a5c913\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\compiler_builtins-8946d12409a5c913\lib-compiler_builtins, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\compiler_builtins-8946d12409a5c913\lib-compiler_builtins.json, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\compiler_builtins-a341fbe91e41f8e0\run-build-script-build-script-build, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\compiler_builtins-a341fbe91e41f8e0\run-build-script-build-script-build.json, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\core-76c9d647cc177bb7\dep-lib-core, it is a binary file.
+target\x86-unknown-bare-metal\release\.fingerprint\core-76c9d647cc177bb7\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\core-76c9d647cc177bb7\lib-core, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\core-76c9d647cc177bb7\lib-core.json, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\rustc-std-workspace-core-dce44a1e9cdebfff\dep-lib-rustc-std-workspace-core, it is a binary file.
+target\x86-unknown-bare-metal\release\.fingerprint\rustc-std-workspace-core-dce44a1e9cdebfff\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\rustc-std-workspace-core-dce44a1e9cdebfff\lib-rustc-std-workspace-core, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\rustc-std-workspace-core-dce44a1e9cdebfff\lib-rustc-std-workspace-core.json, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\sapphire-07b6ee33ef3a3ff2\dep-lib-sapphire, it is a binary file.
+target\x86-unknown-bare-metal\release\.fingerprint\sapphire-07b6ee33ef3a3ff2\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\sapphire-07b6ee33ef3a3ff2\lib-sapphire, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\sapphire-07b6ee33ef3a3ff2\lib-sapphire.json, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec-82afbcd6d6d82a9e\dep-lib-tinyvec, it is a binary file.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec-82afbcd6d6d82a9e\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec-82afbcd6d6d82a9e\lib-tinyvec, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec-82afbcd6d6d82a9e\lib-tinyvec.json, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec_macros-e3be8fa2a9fc78c4\dep-lib-tinyvec_macros, it is a binary file.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec_macros-e3be8fa2a9fc78c4\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec_macros-e3be8fa2a9fc78c4\lib-tinyvec_macros, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec_macros-e3be8fa2a9fc78c4\lib-tinyvec_macros.json, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec_string-fd0033607c50349e\dep-lib-tinyvec_string, it is a binary file.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec_string-fd0033607c50349e\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec_string-fd0033607c50349e\lib-tinyvec_string, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\.fingerprint\tinyvec_string-fd0033607c50349e\lib-tinyvec_string.json, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\build\compiler_builtins-a341fbe91e41f8e0\invoked.timestamp, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\build\compiler_builtins-a341fbe91e41f8e0\output, code is 3, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\build\compiler_builtins-a341fbe91e41f8e0\root-output, code is 1, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\build\compiler_builtins-a341fbe91e41f8e0\stderr, code is 0, comment is 0, blank is 0.
+target\x86-unknown-bare-metal\release\deps\alloc-e0beb4bb1d71dee8.d, code is 60, comment is 0, blank is 3.
+target\x86-unknown-bare-metal\release\deps\compiler_builtins-8946d12409a5c913.d, code is 32, comment is 0, blank is 3.
+target\x86-unknown-bare-metal\release\deps\core-76c9d647cc177bb7.d, code is 310, comment is 0, blank is 3.
+target\x86-unknown-bare-metal\release\deps\liballoc-e0beb4bb1d71dee8.rlib, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\liballoc-e0beb4bb1d71dee8.rmeta, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libcompiler_builtins-8946d12409a5c913.rlib, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libcompiler_builtins-8946d12409a5c913.rmeta, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libcore-76c9d647cc177bb7.rlib, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libcore-76c9d647cc177bb7.rmeta, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\librustc_std_workspace_core-dce44a1e9cdebfff.rlib, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\librustc_std_workspace_core-dce44a1e9cdebfff.rmeta, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libsapphire-07b6ee33ef3a3ff2.a, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libtinyvec-82afbcd6d6d82a9e.rlib, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libtinyvec-82afbcd6d6d82a9e.rmeta, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libtinyvec_macros-e3be8fa2a9fc78c4.rlib, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libtinyvec_macros-e3be8fa2a9fc78c4.rmeta, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libtinyvec_string-fd0033607c50349e.rlib, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\libtinyvec_string-fd0033607c50349e.rmeta, it is a binary file.
+target\x86-unknown-bare-metal\release\deps\rustc_std_workspace_core-dce44a1e9cdebfff.d, code is 4, comment is 0, blank is 3.
+target\x86-unknown-bare-metal\release\deps\sapphire-07b6ee33ef3a3ff2.d, code is 5, comment is 0, blank is 2.
+target\x86-unknown-bare-metal\release\deps\tinyvec-82afbcd6d6d82a9e.d, code is 9, comment is 0, blank is 3.
+target\x86-unknown-bare-metal\release\deps\tinyvec_macros-e3be8fa2a9fc78c4.d, code is 4, comment is 0, blank is 3.
+target\x86-unknown-bare-metal\release\deps\tinyvec_string-fd0033607c50349e.d, code is 7, comment is 0, blank is 3.
+target\x86-unknown-bare-metal\release\libsapphire.d, code is 1, comment is 0, blank is 0.
+x86-unknown-bare-metal.json, code is 21, comment is 0, blank is 1.
+===============================================================================
