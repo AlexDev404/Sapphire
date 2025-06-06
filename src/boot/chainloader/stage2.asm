@@ -63,12 +63,18 @@ _start:
 [BITS 32]
 PModeMain:
 	; JUMP TO KERNEL
+	; pixel_offset = y * pitch + ( x * ( bpp / 8 )) + framebuffer;
+
 	; Set up the stack
 	sub esp, 4   ; Align the stack before pushing the argument
 	; Load the address of `vbe_mode_block` into EAX
+	; We pass this address and then convert it into a pointer later
     lea eax, [vbe_mode_block]
     
     ; Push the address onto the stack
+	; We use the C calling convention which grabs whatever's on the stack as the arguments
+    ; Since this uses the C calling convention we call push the arguments in reverse order
+    ; and the first argument is at the top of the stack
     push eax
 	
 	; Call the C++ kernel entry point (`kmain`) with vbe_mode_block as argument
