@@ -2,7 +2,7 @@
  * Basic graphics primitives for the Sapphire OS
  */
 
-#include "vbe_mode_info.h"
+#include "graphics.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -53,12 +53,12 @@ void putpixel(int x, int y, unsigned long color, const VbeModeInfo* vbe_data) {
         // 8 bits per pixel (palette-based)
         // This would require a proper color palette setup
         // Using a simple grayscale approximation here
-        unsigned char gray = (
-            (((color >> 16) & 0xFF) * 30 + 
-             ((color >> 8) & 0xFF) * 59 + 
-             ((color >> 0) & 0xFF) * 11) / 100
-        );
-        framebuffer[fb_offset] = gray;
+        // unsigned char gray = (
+        //     (((color >> 16) & 0xFF) * 30 + 
+        //      ((color >> 8) & 0xFF) * 59 + 
+        //      ((color >> 0) & 0xFF) * 11) / 100
+        // );
+        framebuffer[fb_offset] = color;
     }
 }
 
@@ -71,9 +71,7 @@ void hline(int x1, int x2, int y, unsigned long color, const VbeModeInfo* vbe_da
         x2 = temp;
     }
     
-    for (int x = x1; x <= x2; x++) {
-        putpixel(x, y, color, vbe_data);
-    }
+    line(x1, y, x2, y, color, vbe_data);
 }
 
 // Draw a vertical line
@@ -86,6 +84,16 @@ void vline(int x, int y1, int y2, unsigned long color, const VbeModeInfo* vbe_da
     }
     
     for (int y = y1; y <= y2; y++) {
+        putpixel(x, y, color, vbe_data);
+    }
+}
+
+// Draw a generic line
+void line(int x1, int y1, int x2, int y2, unsigned long color, const VbeModeInfo* vbe_data) {
+    const float m = (y2 - y1) / (x2 - x1);
+
+    for (int x = x1; x <= x2; x++) {
+        const float y = (m * x) + (y1 - m);
         putpixel(x, y, color, vbe_data);
     }
 }

@@ -2,8 +2,8 @@
 [BITS 16]
 [EXTERN kmain]  ; Changed from _rust to kmain
 
-; %DEFINE MODE 115h
-%DEFINE MODE 103h
+; %DEFINE MODE 103h  ; Test mode with 256 colors (palette-based)
+%DEFINE MODE 115h  ; 16.8M colors
 
 graphics: ; Using the Real Mode interface
     ; Get VBE information

@@ -51,8 +51,8 @@ void main(const VbeModeInfo* vbe_mode_info) {
     fill_screen(vbe_mode_info, COLOR_DARK_BLUE);
     
     // Display welcome message with bright yellow on dark blue for good contrast
-    const unsigned char welcome[] = "Sapphire OS v0.1 (C++ Edition)";
-    print_text(welcome, COLOR_YELLOW, COLOR_DARK_BLUE, 30, 30, vbe_mode_info);
+    const unsigned char welcome[] = "What's up?";
+    print_text(welcome, RGB(255, 199, 44), COLOR_DARK_BLUE, 30, 30, vbe_mode_info);
     
     // Draw a box around the screen - bright white for visibility
     rect(10, 10, vbe_mode_info->width - 10, vbe_mode_info->height - 10, COLOR_WHITE, vbe_mode_info);
@@ -89,7 +89,7 @@ void main(const VbeModeInfo* vbe_mode_info) {
     print_text(bits_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 164, 80, vbe_mode_info);
     
     // Add millions of colors text
-    const unsigned char color_text[] = "Supporting millions of colors!";
+    const unsigned char color_text[] = "Color support: 16.8M colors (Mode 115h)";
     print_text(color_text, COLOR_LIGHT_GREEN, COLOR_DARK_BLUE, 30, 100, vbe_mode_info);
     
     // Display test pattern with better visibility
@@ -157,7 +157,7 @@ void main(const VbeModeInfo* vbe_mode_info) {
     }
 
     // Stuff
-    circle(vbe_mode_info->width / 2, vbe_mode_info->height / 2, 50, COLOR_BLACK, vbe_mode_info); // Draw a circle in the center
+    circle(vbe_mode_info->width / 2, vbe_mode_info->height / 2, 50, COLOR_WHITE, vbe_mode_info); // Draw a circle in the center
 
 
     // Infinite loop to prevent a kernel panic
