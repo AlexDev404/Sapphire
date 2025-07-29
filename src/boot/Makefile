@@ -21,6 +21,8 @@ all: kernel
 kernel: chainloader stage2 $(CPP_OBJECTS)
 	@echo Building C++ kernel image
 	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} $(CPP_OBJECTS) --oformat binary
+	@echo Building debug image
+	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN}.debug.elf ${KERNEL_STUB} $(CPP_OBJECTS) 
 	wsl cat ${CHAINLOADER} ${KERNEL_BIN} > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 

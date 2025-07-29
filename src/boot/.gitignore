@@ -6,6 +6,7 @@ image.bin
 image.elf
 kernel.a
 sapphire.a
-kernel_debug.elf
+kernel.debug.elf
+kernel.bin.debug.elf
 kernel.debug
 *\.1
