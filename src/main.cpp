@@ -14,7 +14,23 @@ void panic(const VbeModeInfo *vbe_mode_info);
 
 extern "C" void kmain(const VbeModeInfo *vbe_mode_info)
 {
-    send_debug("KMAIN: Entrypoint hit!\n");
+    send_debug("KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!KMAIN: Entrypoint hit!\n");
+    
+    // DEBUG: Print critical memory addresses to debug console
+    send_debug("=== MEMORY LAYOUT DEBUG ===\n");
+    send_debug("Framebuffer address: 0x");
+    // Convert framebuffer address to hex string for debugging
+    unsigned long fb_addr = (unsigned long)vbe_mode_info->framebuffer;
+    char hex_str[16];
+    for (int i = 7; i >= 0; i--) {
+        unsigned char nibble = (fb_addr >> (i * 4)) & 0xF;
+        hex_str[7-i] = (nibble < 10) ? ('0' + nibble) : ('A' + nibble - 10);
+    }
+    hex_str[8] = '\0';
+    send_debug(hex_str);
+    send_debug("\n");
+    send_debug("========================\n");
+    
     // Debug: Mark start of kmain
     putpixel(100, 50, 0xFF0000, vbe_mode_info); // Red pixel = kmain started
     
@@ -99,7 +115,7 @@ void main(const VbeModeInfo *vbe_mode_info)
     print_at(row_2, COLOR_WHITE, COLOR_DARK_BLUE, 70, 0, vbe_mode_info);
     print_at(row_3, COLOR_WHITE, COLOR_DARK_BLUE, 0, 28, vbe_mode_info);
 
-    send_debug("\n\nSapphire OS v0.1 (C++ Edition) initialized successfully.\n");
+    send_debug("\n\nOS initialized successfully.\n");
     send_debug("Hey, what's up!\n\n");
 
     // Test printing numbers
@@ -178,7 +194,7 @@ void main(const VbeModeInfo *vbe_mode_info)
     // Infinite loop to prevent a kernel panic
     while (1)
     {
-        // Busy loop
+        // Simple idle loop - removed stack monitoring that was causing issues
     }
 }
 

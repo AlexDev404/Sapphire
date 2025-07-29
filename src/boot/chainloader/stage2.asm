@@ -51,8 +51,10 @@ _start:
     mov eax, 0x18          ; Stack segment selector (0x18 for the third segment)
     mov ss, eax            ; Set the stack segment register
 
-    ; Initialize the stack pointer (assume top of stack is at 0x0010FFF0)
-    mov esp, 0x0010FFF0    ; Set the stack pointer to an appropriate value
+    ; Initialize the stack pointer (set to a safer location with more space)
+    ; Place stack at 0x00090000 (576KB) with 32KB of stack space growing downward
+    ; This is safely above the kernel (loaded at 0x1000) and VBE structures
+    mov esp, 0x00090000    ; Set the stack pointer to a better location
 
 	; END ENABLE PROTECTED MODE - INTERRUPTS INACCESSIBLE
 

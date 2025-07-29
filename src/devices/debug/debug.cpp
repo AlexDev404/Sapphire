@@ -45,11 +45,13 @@ void interrupt_debug_char(char c)
 {
 #ifndef _MSC_VER
     asm volatile(
+        "pusha; "
         "movb %0, %%al; "
         "movw $0xE9, %%dx; "
         "outb %%al, %%dx; "
+        "popa; "
         :
         : "r"(c)
-        : "al", "dx");
+        : "memory");
 #endif
 }
