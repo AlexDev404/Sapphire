@@ -30,6 +30,12 @@ sudo apt-get update && sudo apt-get install nasm binutils dosfstools make qemu q
 cd src/boot
 make        # Build the kernel
 make boot   # Run in QEMU
+
+
+# And for Linux
+cd src/boot
+make --makefile Makefile.linux  # Build the kernel
+make boot                       # Boot into QEMU
 ```
 
 ## Development

@@ -8,8 +8,8 @@ CHAINLOADER=${OBJECTS_DIR}/bin/chainloader.bin
 
 # C++ compiler settings
 CXX=g++
-CXXFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32 -I../
-CPP_SOURCES=$(wildcard ../*.cpp ../graphics/*.cpp)
+CXXFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32 -fno-pic -fno-pie -I../
+CPP_SOURCES=$(wildcard ../*.cpp ../graphics/*.cpp ../graphics/**/*.cpp ../devices/**/*.cpp)
 CPP_OBJECTS=$(patsubst ../%.cpp,${OBJECTS_DIR}/%.o,$(CPP_SOURCES))
 
 .PHONY: all clean boot boot-debug always
@@ -19,41 +19,56 @@ all: kernel
 
 # Main build target for C++ kernel
 kernel: chainloader stage2 $(CPP_OBJECTS)
-	@echo "Building C++ kernel image"
+	@echo Building C++ kernel image
 	ld -T linker.ld -no-PIE -no-PIC -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} $(CPP_OBJECTS) --oformat binary
 	cat ${CHAINLOADER} ${KERNEL_BIN} > image.bin
 	dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
 # Compile chainloader
 chainloader: chainloader/chainloader.asm always
-	@echo "Building bootloader"
+	@echo Building bootloader
 	nasm -f bin chainloader/chainloader.asm -o ${CHAINLOADER}
 
 # Compile stage 2 bootloader
 stage2: chainloader/stage2.asm always
-	@echo "Building stage2"
+	@echo Building stage2
 	nasm -f elf32 chainloader/stage2.asm -o ${KERNEL_STUB}
 
 # Compile C++ source files
+${OBJECTS_DIR}/main.o: ../main.cpp
+	@echo Compiling $<
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+${OBJECTS_DIR}/graphics/%.o: ../graphics/%.cpp
+	@echo Compiling $<
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 ${OBJECTS_DIR}/%.o: ../%.cpp
-	@echo "Compiling $<"
-	@mkdir -p $(@D)
+	@echo Compiling $<
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Cleanup
 clean:
-	@echo "Cleaning up..."
+	@echo Cleaning up...
+	
 	rm -rf *.bin
 	rm -rf *.elf
 	rm -rf *.a
 	rm -rf out
 	rm -rf objects
 	rm -rf tools
-	@echo "Project Output: Clean."
+	@echo Project Output: Clean.
+	
+	
 
 # Boot with QEMU
 boot: out/floppy.img
 	qemu-system-i386 -debugcon stdio -s -fda out/floppy.img
+
+boot-monitor: out/floppy.img
+	qemu-system-i386 -monitor stdio -s -fda out/floppy.img
 
 boot-debug: out/floppy.img
 	qemu-system-i386 -debugcon stdio -s -S -fda out/floppy.img
@@ -67,11 +82,14 @@ build-gdb:
 
 # Create directories and setup empty floppy image
 always: clean
-	@echo "Preparing..."
-	mkdir -p ${BUILD_DIR}
-	mkdir -p tools
-	mkdir -p objects
-	mkdir -p objects/graphics
-	mkdir -p "objects/bin"
+	@echo Preparing...
+	
+	mkdir ${BUILD_DIR}
+	mkdir tools
+	mkdir objects
+	mkdir "objects/graphics"
+	mkdir "objects/bin"
 	dd if=/dev/zero of=${BUILD_DIR}/${BUILD}.img bs=512 count=2880
-	@echo "Project Structure: Ready."
+	@echo Project Structure: Ready.
+	
+	
