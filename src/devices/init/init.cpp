@@ -11,15 +11,7 @@ extern "C" void isr0_c(void);
 extern "C" void isr0_c(void)
 {
     // Use interrupt-safe debug output
-    interrupt_debug_char('E');
-    interrupt_debug_char('R');
-    interrupt_debug_char('R');
-    interrupt_debug_char(':');
-    interrupt_debug_char(' ');
-    interrupt_debug_char('D');
-    interrupt_debug_char('b');
-    interrupt_debug_char('0');
-    interrupt_debug_char('\n');
+    send_debug("Interrupt 0: Divide by zero error.");
 
 
     // The regular send_debug might not work in interrupt context
