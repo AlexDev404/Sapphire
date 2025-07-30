@@ -1,5 +1,5 @@
-[GLOBAL _start]
 [BITS 16]
+[GLOBAL _start]
 [EXTERN kmain]  ; Changed from _rust to kmain
 
 ; %DEFINE MODE 103h  ; Test mode with 256 colors (palette-based)

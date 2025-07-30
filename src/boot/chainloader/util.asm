@@ -1,3 +1,4 @@
+[BITS 16]
 [GLOBAL disk_read]
 [GLOBAL hang]
 
