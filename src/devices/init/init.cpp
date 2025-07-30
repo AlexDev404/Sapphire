@@ -10,12 +10,8 @@ extern "C" void isr0_c(void);
 // Your C handler for interrupt 0 (divide by zero)
 extern "C" void isr0_c(void)
 {
-    // Use interrupt-safe debug output
-    send_debug("Interrupt 0: Divide by zero error.");
-
-
-    // The regular send_debug might not work in interrupt context
-    // send_debug("EXCEPTION: Divide by zero detected!\n");
+    // Send the debug output
+    send_debug("EXCEPTION: Divide by zero detected!\n");
 
     // In a real OS, you would:
     // 1. Check if this happened in user space or kernel space
@@ -23,8 +19,8 @@ extern "C" void isr0_c(void)
     // 3. If kernel space: kernel panic
 
     // We'll halt here once we catch the interrupt
-    while (1)
-    {
+    while (1) {
+        // Do nothing
     }
     return;
 }
