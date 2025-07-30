@@ -17,13 +17,8 @@
 ;       1. with segment descriptors suitable for code, data, ✅
 ;       2. and stack. ✅
 
-
-%DEFINE KERNEL_CODE 0x1000
-%DEFINE SECTORS_TO_READ 40
-
 [BITS 16]
 [ORG 0x7C00]
-
 
 ; JUMP TO THE MAIN LABEL
 init: jmp short main
@@ -50,56 +45,17 @@ ebr_volume_id:              db 12h, 34h, 56h, 78h   ; serial number, value doesn
 ebr_volume_label:           db 'SPPH       '        ; 11 bytes, padded with spaces
 ebr_system_id:              db 'fat12   '           ; 8 bytes
 
-
-BIOS_UTIL:
-	Print:
-		.print:
-			lodsb
-			or al, al
-			je .done
-			mov ah, 0x0E
-			int 10h
-			.repeat:
-				jmp .print
-			.done:
-				ret
-	disk_read:
-		; store all register values
-		pusha
-
-		; prepare data for reading the disk
-		; al = number of sectors to read (1 - 128)
-		; ch = track/cylinder number
-		; dh = head number
-		; cl = sector number
-		mov dh, SECTORS_TO_READ
-		mov ah, 0x02
-		mov al, dh
-		mov ch, 0x00
-		mov dh, 0x00
-		mov cl, 0x02
-		int 13h
-
-		; in case of read error
-		; show the message about it
-		jc disk_read_error
-	
-		; check if we read expected count of sectors
-		; if not, show the message with error
-		popa
-		cmp dh, al
-		jne disk_read_error
-	
-		; Return out of the function
-		ret
-
-	disk_read_error:
-		mov si, DISK_READ_ERROR
-		call Print
-		jmp hang
+; =============================================================================
+; .TEXT SECTION - Executable Code (Main Program)
+; =============================================================================
+.text:
 
 ; CHAINLOADER
 ; JUMP TO MAIN
+
+
+%DEFINE KERNEL_CODE 0x1000
+%include "chainloader/util.asm"
 
 main:
 	; Initialize the segment registers (this will zero them out)
@@ -110,50 +66,42 @@ main:
 	; Setup the stack
 	mov ss, ax
 	mov sp, 0x7C00
-
-	; Set video mode
-	; Switch out of text mode and into to graphics mode
-	; mov al, 13h ; 320x200 @ 256
-	; mov ah, 00h
-	; int 10h
 	
 	; Load the kernel into memory
 	pusha
 	mov bx, KERNEL_CODE    ; set address to bx
 	mov dl, [ebr_drive_number]
-	call disk_read    ; read our binaries and store by offset above
+	call disk_read         ; read our binaries and store by offset above
 	popa
-	lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
-	; lidt [idtr]    ; load IDT register with start address of Interrupt Descriptor Table
-	; [PMODE STARTS] ENABLE PROTECTED MODE
-	; mov si, STATMSG
-	; call Print
+	lgdt [gdtr]            ; load GDT register with start address of Global Descriptor Table
+
 
 	; INITIALIZE A20 LINE
 	.initA20:
 		in al, 0x92
 		test al, 2
-		jmp .startPM ; Initialize Protected Mode right after enabling A20 line
+		jmp .load ; Initialize Protected Mode right after enabling A20 line
 		or al, 2
 		and al, 0xFE
 		out 0x92, al
 
-.startPM:
-	jmp long KERNEL_CODE
-	jmp hang
+	.load:
+		jmp long KERNEL_CODE
+		jmp hang
 
-hang:
-	cli
-	hlt
-	; If for some cursed reason the CPU decides to exit anyway,
-	; we jump back to hang
-	jmp hang
-; Fill up empty space with zeroes to meet 512B
+; =============================================================================
+; .RODATA SECTION - Read-Only Data (Strings and Constants)
+; =============================================================================
 .rodata:
-	DISK_READ_ERROR db "DISK READ ERROR", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
-	STATMSG db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
 
-	; STRUCT - ONE ENTRY OF THE GDT TABLE
+DISK_READ_ERROR db "DISK READ ERROR", 13, 10, 0 ; Error message
+
+; =============================================================================
+; .BSS SECTION - GDT Structure Definitions
+; =============================================================================
+.bss:
+
+; STRUCT - ONE ENTRY OF THE GDT TABLE
 STRUC gdt_entry
 	.limit_low:   resw 1
 	.base_low:    resw 1
@@ -164,8 +112,12 @@ STRUC gdt_entry
 	.size:
 ENDSTRUC
 
-; STRUCT - GDT DESCRIPTION
+; =============================================================================
+; .DATA SECTION - GDT Data Structures
+; =============================================================================
+.data:
 
+; STRUCT - GDT DESCRIPTION
 gdtr:
 	GLimit dw (gdt_end - gdt) + 1 ; length of GDT (end - start + 1)
 	GBase dd gdt ; where the GDT starts
@@ -248,5 +200,12 @@ gdt:
 					AT gdt_entry.base_high, db 0
 				IEND
 gdt_end:
+
+; =============================================================================
+; .BOOT_SIGNATURE SECTION - Boot Sector Signature
+; =============================================================================
+.boot_signature:
+
+; Fill up empty space with zeroes to meet 512B and add boot signature
 times 510-($-$$) db 0
 dw 0xAA55
