@@ -32,13 +32,11 @@
 %DEFINE IDT_FLAG_RING3 96
 %DEFINE IDT_FLAG_PRESENT 0x80
 
+%DEFINE SECTORS_TO_READ 40
+
 [BITS 16]
 [ORG 0x7C00]
 
-; Initialize the segment registers
-xor ax, ax
-mov ds, ax
-mov es, ax
 
 ; JUMP TO THE MAIN LABEL
 init: jmp short main
@@ -81,13 +79,13 @@ BIOS_UTIL:
     disk_read:
 	    ; store all register values
 	    pusha
-	    push dx
 
 	    ; prepare data for reading the disk
 	    ; al = number of sectors to read (1 - 128)
 	    ; ch = track/cylinder number
 	    ; dh = head number
 	    ; cl = sector number
+        mov dh, SECTORS_TO_READ
 	    mov ah, 0x02
 	    mov al, dh
 	    mov ch, 0x00
@@ -101,23 +99,32 @@ BIOS_UTIL:
     
     	; check if we read expected count of sectors
     	; if not, show the message with error
-	    pop dx
+        popa
 	    cmp dh, al
 	    jne disk_read_error
     
-    	; restore register values and ret
-    	popa
+    	; Return out of the function
 	    ret
 
     disk_read_error:
 	    mov si, DISK_READ_ERROR
 	    call Print
-	    hlt
+        .halt
+	     hlt
+         jmp .halt
 
 ; CHAINLOADER
 ; JUMP TO MAIN
 
 main:
+    ; Initialize the segment registers (this will zero them out)
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+
+    ; Setup the stack
+    mov ss, ax
+    mov sp, 0x7C00
 
     ; Set video mode
     ; Switch out of text mode and into to graphics mode
@@ -128,8 +135,7 @@ main:
     ; Load the kernel into memory
     pusha
     mov bx, KERNEL_CODE    ; set address to bx
-    mov dh, 15
-    mov dl, [BOOTDRIVE]
+    mov dl, [ebr_drive_number]
     call disk_read    ; read our binaries and store by offset above
     popa
     lgdt [gdtr]    ; load GDT register with start address of Global Descriptor Table
@@ -162,8 +168,7 @@ main:
 .rodata:
     DISK_READ_ERROR db "DISK READ ERROR", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
     STATMSG db "Loaded GDT", 13, 10, 0 ; Bytes_right, cursor_x, junk_y
-    BOOTDRIVE db 0x00
-    
+
     ; STRUCT - ONE ENTRY OF THE GDT TABLE
 STRUC gdt_entry
 	.limit_low:   resw 1
