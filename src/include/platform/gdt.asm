@@ -1,6 +1,7 @@
 [BITS 32]
 [GLOBAL g_GDTLoad]
 
+; void CDECL g_GDTLoad(GDTDescriptor *gdt, uint16_t code_segment_selector, uint16_t data_segment_selector);
 g_GDTLoad:
 	push ebp 		; Save old call frame
 	mov ebp, esp	; Initialize new call frame

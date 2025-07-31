@@ -1,4 +1,5 @@
 #include "gdt.hpp"
+#include <devices/debug/debugcon.h>
 
 GDTEntry g_GDT[] = {
 	GDT_ENTRY(0, 0, 0, 0),                                                                                                                                                     // Null descriptor
@@ -18,7 +19,9 @@ GDTDescriptor g_GDTDescriptor = {
 };
 
 void g_GDTInit() {
+	send_debug("GDT: Initializing Global Descriptor Table...\n");
 	// Load the GDT
 	g_GDTLoad(&g_GDTDescriptor, GDT_CODE_SEGMENT, GDT_DATA_SEGMENT);
+	send_debug("GDT: Global Descriptor Table loaded successfully.\n");
 
 }
