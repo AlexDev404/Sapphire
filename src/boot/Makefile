@@ -25,9 +25,9 @@ all: kernel
 # Main build target for C++ kernel
 kernel: chainloader stage2 $(ASM_OBJECTS) $(CPP_OBJECTS)
 	@echo Building C++ kernel image
-	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} $(CPP_OBJECTS) $(ASM_OBJECTS)
+	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} $(ASM_OBJECTS) $(CPP_OBJECTS)
 	@echo Building debug image
-	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN}.debug.elf ${KERNEL_STUB} $(CPP_OBJECTS) $(ASM_OBJECTS)
+	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN}.debug.elf ${KERNEL_STUB} $(ASM_OBJECTS) $(CPP_OBJECTS)
 	wsl cat ${CHAINLOADER} ${KERNEL_BIN} > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 

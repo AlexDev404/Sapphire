@@ -3,8 +3,10 @@
 
 #ifdef __GNUC__
 #define PACKED __attribute__((packed))
+#define CDECL __attribute__((cdecl))
 #else
 #define PACKED
+#define CDECL
 #endif
 
 struct PACKED GDTEntry
@@ -74,4 +76,5 @@ enum GDT_FLAGS
 #define GDT_CODE_SEGMENT 0x08
 #define GDT_DATA_SEGMENT 0x10
 
+void CDECL g_GDTLoad(GDTDescriptor *gdt, uint16_t code_segment_selector, uint16_t data_segment_selector);
 void g_GDTInit();
