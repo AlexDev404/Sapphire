@@ -34,6 +34,7 @@ asm(
     "    call isr0_c         \n" // Call the C handler
     "    popa                \n" // Restore all registers
     "    sti                 \n" // Re-enable interrupts
+    "    add $16, %esp       \n" // Clean up the stack (vector number + EFLAGS)
     "    iret                \n" // Return from interrupt
 );
 
