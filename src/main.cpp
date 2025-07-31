@@ -53,14 +53,8 @@ extern "C" void kmain(const VbeModeInfo *vbe_mode_info)
 // Kernel main function - entry point from bootloader
 void main(const VbeModeInfo *vbe_mode_info)
 {
-    // Debug: Mark start of main function
-    putpixel(150, 50, 0xFFFF00, vbe_mode_info); // Yellow pixel = main() started
-    
     // Fill screen with dark blue background
     //fill_screen(vbe_mode_info, COLOR_DARK_BLUE);
-
-    // Debug: Mark after fill_screen
-    putpixel(152, 50, 0xFF00FF, vbe_mode_info); // Magenta pixel = after fill_screen
 
     // Display welcome message with bright yellow on dark blue for good contrast
     const unsigned char welcome[] = "What's up?";
