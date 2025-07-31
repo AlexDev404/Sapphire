@@ -10,3 +10,4 @@ kernel.debug.elf
 kernel.bin.debug.elf
 kernel.debug
 *\.1
+*.asm.elf

@@ -8,9 +8,14 @@ CHAINLOADER=${OBJECTS_DIR}/bin/chainloader.bin
 
 # C++ compiler settings
 CXX=g++
+ASM=nasm
 CXXFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32 -fno-pic -fno-pie -I../ -I../include
+
 CPP_SOURCES=$(wildcard ../*.cpp ../graphics/*.cpp ../graphics/**/*.cpp ../devices/**/*.cpp ../include/**/*.cpp)
 CPP_OBJECTS=$(patsubst ../%.cpp,${OBJECTS_DIR}/%.o,$(CPP_SOURCES))
+
+ASM_SOURCES=$(wildcard ../*.asm ../graphics/*.asm ../graphics/**/*.asm ../devices/**/*.asm ../include/**/*.asm)
+ASM_OBJECTS=$(patsubst ../%.asm,${OBJECTS_DIR}/%.asm.elf,$(ASM_SOURCES))
 
 .PHONY: all clean boot boot-debug always
 
@@ -18,38 +23,35 @@ CPP_OBJECTS=$(patsubst ../%.cpp,${OBJECTS_DIR}/%.o,$(CPP_SOURCES))
 all: kernel
 
 # Main build target for C++ kernel
-kernel: chainloader stage2 $(CPP_OBJECTS)
+kernel: chainloader stage2 $(ASM_OBJECTS) $(CPP_OBJECTS)
 	@echo Building C++ kernel image
-	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} $(CPP_OBJECTS)
+	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} $(CPP_OBJECTS) $(ASM_OBJECTS)
 	@echo Building debug image
-	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN}.debug.elf ${KERNEL_STUB} $(CPP_OBJECTS) 
+	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN}.debug.elf ${KERNEL_STUB} $(CPP_OBJECTS) $(ASM_OBJECTS)
 	wsl cat ${CHAINLOADER} ${KERNEL_BIN} > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
 # Compile chainloader
 chainloader: chainloader/chainloader.asm always
 	@echo Building bootloader
-	nasm -f bin chainloader/chainloader.asm -o ${CHAINLOADER}
+	$(ASM) -f bin chainloader/chainloader.asm -o ${CHAINLOADER}
 
 # Compile stage 2 bootloader
 stage2: chainloader/stage2.asm always
 	@echo Building stage2
-	nasm -f elf32 chainloader/stage2.asm -o ${KERNEL_STUB}
+	$(ASM) -f elf32 chainloader/stage2.asm -o ${KERNEL_STUB}
 
 # Compile C++ source files
-${OBJECTS_DIR}/main.o: ../main.cpp
-	@echo Compiling $<
-	wsl $(CXX) $(CXXFLAGS) -c $< -o $@
-
-${OBJECTS_DIR}/graphics/%.o: ../graphics/%.cpp
-	@echo Compiling $<
-	@wsl mkdir -p $(dir $@)
-	wsl $(CXX) $(CXXFLAGS) -c $< -o $@
-
 ${OBJECTS_DIR}/%.o: ../%.cpp
-	@echo Compiling $<
+	@echo [CXX]: Compiling $<
 	@wsl mkdir -p $(dir $@)
 	wsl $(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Compile ASM source files
+${OBJECTS_DIR}/%.asm.elf: ../%.asm
+	@echo [ASM]: Compiling $<
+	@wsl mkdir -p $(dir $@)
+	$(ASM) -f elf32 $< -o $@
 
 # Cleanup
 clean:

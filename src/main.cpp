@@ -3,17 +3,19 @@
  * C++ kernel implementation
  */
 
-#include "graphics/graphics.h"
-#include "graphics/print_text.h"
-#include "devices/debug/debugcon.h"
-#include "devices/init/init.hpp"
-#include "graphics/stuff/stuff.h"
+#include <graphics/graphics.h>
+#include <graphics/print_text.h>
+#include <devices/debug/debugcon.h>
+#include <devices/init/init.hpp>
+#include <graphics/stuff/stuff.h>
+#include <platform/gdt.hpp>
 
 void main(const VbeModeInfo *vbe_mode_info);
 void panic(const VbeModeInfo *vbe_mode_info);
 
 extern "C" void kmain(const VbeModeInfo *vbe_mode_info)
 {
+    g_GDTInit(); // Initialize the Global Descriptor Table (GDT)
     send_debug("KMAIN: Entrypoint hit!\n");
     
     // DEBUG: Print critical memory addresses to debug console
