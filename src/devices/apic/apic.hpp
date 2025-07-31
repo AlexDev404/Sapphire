@@ -1,5 +1,5 @@
 #pragma once
-#include "../../include/platform/x86.hpp"
+#include <platform/x86.hpp>
 
 /*
  * APIC (Advanced Programmable Interrupt Controller) header

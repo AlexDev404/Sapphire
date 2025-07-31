@@ -6,7 +6,7 @@
 #define GRAPHICS_H
 
 #include "vbe_mode_info.h"
-#include "../devices/debug/debugcon.h"
+#include <devices/debug/debugcon.h>
 
 // Define true color RGB values - no byte swapping needed since putpixel already handles BGR format
 #define RGB(r, g, b) ((r << 16) | (g << 8) | b)
