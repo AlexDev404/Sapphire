@@ -6,4 +6,4 @@
 
 void circle(float x, float y, float radius, int color, const VbeModeInfo* vbe_data);
 
-extern "C" void thing(uint8_t x, uint8_t y);
+extern "C" void thing(unsigned long x, unsigned long y);

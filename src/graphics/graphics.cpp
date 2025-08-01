@@ -9,7 +9,9 @@ extern "C" {
 #endif
 
 // Draw a single pixel to the framebuffer
-void putpixel(int x, int y, unsigned long color, const VbeModeInfo* vbe_data) {
+void putpixel(int x, int y, unsigned long color) {
+    const VbeModeInfo* vbe_data = vbe_block();
+    
     // Handle invalid coordinates
     if (x < 0 || y < 0 || x >= vbe_data->width || y >= vbe_data->height) {
         return;
@@ -63,7 +65,9 @@ void putpixel(int x, int y, unsigned long color, const VbeModeInfo* vbe_data) {
 }
 
 // Draw a horizontal line
-void hline(int x1, int x2, int y, unsigned long color, const VbeModeInfo* vbe_data) {
+void hline(int x1, int x2, int y, unsigned long color) {
+    const VbeModeInfo* vbe_data = vbe_block();
+
     if (x1 > x2) {
         // Swap if needed to ensure x1 <= x2
         int temp = x1;
@@ -75,7 +79,9 @@ void hline(int x1, int x2, int y, unsigned long color, const VbeModeInfo* vbe_da
 }
 
 // Draw a vertical line
-void vline(int x, int y1, int y2, unsigned long color, const VbeModeInfo* vbe_data) {
+void vline(int x, int y1, int y2, unsigned long color) {
+    const VbeModeInfo* vbe_data = vbe_block();
+
     if (y1 > y2) {
         // Swap if needed to ensure y1 <= y2
         int temp = y1;
@@ -89,7 +95,9 @@ void vline(int x, int y1, int y2, unsigned long color, const VbeModeInfo* vbe_da
 }
 
 // Draw a generic line
-void line(int x1, int y1, int x2, int y2, unsigned long color, const VbeModeInfo* vbe_data) {
+void line(int x1, int y1, int x2, int y2, unsigned long color) {
+    const VbeModeInfo* vbe_data = vbe_block();
+
     const float m = (y2 - y1) / (x2 - x1);
 
     for (int x = x1; x <= x2; x++) {
@@ -99,7 +107,9 @@ void line(int x1, int y1, int x2, int y2, unsigned long color, const VbeModeInfo
 }
 
 // Draw a rectangle outline
-void rect(int x1, int y1, int x2, int y2, unsigned long color, const VbeModeInfo* vbe_data) {
+void rect(int x1, int y1, int x2, int y2, unsigned long color) {
+    const VbeModeInfo* vbe_data = vbe_block();
+    
     hline(x1, x2, y1, color, vbe_data); // Top
     hline(x1, x2, y2, color, vbe_data); // Bottom
     vline(x1, y1, y2, color, vbe_data); // Left
@@ -107,7 +117,9 @@ void rect(int x1, int y1, int x2, int y2, unsigned long color, const VbeModeInfo
 }
 
 // Draw a filled rectangle
-void fillrect(int x1, int y1, int x2, int y2, unsigned long color, const VbeModeInfo* vbe_data) {
+void fillrect(int x1, int y1, int x2, int y2, unsigned long color) {
+    const VbeModeInfo* vbe_data = vbe_block();
+
     if (x1 > x2) {
         // Swap if needed to ensure x1 <= x2
         int temp = x1;
@@ -130,7 +142,9 @@ void fillrect(int x1, int y1, int x2, int y2, unsigned long color, const VbeMode
 }
 
 // Fill the entire screen with a color
-void fill_screen(const VbeModeInfo* vbe_data, unsigned long color) {
+void fill_screen(unsigned long color) {
+    const VbeModeInfo* vbe_data = vbe_block();
+    
     int screen_x = vbe_data->width;
     int screen_y = vbe_data->height;
     

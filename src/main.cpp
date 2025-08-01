@@ -32,7 +32,7 @@ extern "C" void kmain(const VbeModeInfo *vbe_mode_info)
     send_debug(hex_str);
     send_debug("\n");
     send_debug("========================\n");
-    
+
     // Debug: Mark start of kmain
     putpixel(100, 50, 0xFF0000, vbe_mode_info); // Red pixel = kmain started
     
@@ -187,7 +187,15 @@ void main(const VbeModeInfo *vbe_mode_info)
     // Stuff
     // @todo ---- Figure out what I actually want to do here ----
     circle(vbe_mode_info->width / 2, vbe_mode_info->height / 2, 50, COLOR_WHITE, vbe_mode_info); // Draw a circle in the center
-    thing(4, 5);
+    //thing(4, 5);
+    const unsigned char v[] = "Hey, this text is coming from the vbe_mode_info";
+    print_text(v, COLOR_LIGHT_GRAY, COLOR_BLACK, 30, 132, vbe_mode_info);
+    
+    const unsigned char t[] = "Hey, this text is coming from the vbe_block()";
+    print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148, vbe_block());
+    
+    const unsigned char u[] = "Hey, this text is coming from the vbe_mode_block";
+    print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180, &vbe_mode_block);
     // thing(1, 1);
     // thing(8, 8);
     // thing(9, 9);

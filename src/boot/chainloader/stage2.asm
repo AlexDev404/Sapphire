@@ -1,5 +1,7 @@
 [BITS 16]
 [GLOBAL _start]
+[GLOBAL vbe_block]
+[GLOBAL vbe_mode_block]
 [EXTERN kmain]  ; Changed from _rust to kmain
 
 ; %DEFINE MODE 103h  ; Test mode with 256 colors (palette-based)
@@ -87,6 +89,17 @@ PModeMain:
 
 ; PADDING
 ;times 512 - ($ - $$) db 0
+
+;extern "C" const VbeModeInfo* vbe_block();
+vbe_block:
+	; Save the call frame and create a new one (Prologue)
+	push ebp
+	mov ebp, esp
+	; Return the pointer to the vbe_mode_block (Epilogue)
+	mov eax, vbe_mode_block
+	mov esp, ebp
+	pop ebp
+	ret
 
 rodata:
 

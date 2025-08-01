@@ -2,8 +2,7 @@
  * Basic graphics primitives for the Sapphire OS
  */
 
-#ifndef GRAPHICS_H
-#define GRAPHICS_H
+#pragma once
 
 #include "vbe_mode_info.h"
 #include <devices/debug/debugcon.h>
@@ -60,8 +59,11 @@ extern "C"
     // Fill the entire screen with a color
     void fill_screen(const VbeModeInfo *vbe_data, unsigned long color);
 
-#ifdef __cplusplus
+    
+    #ifdef __cplusplus
 }
 #endif
 
-#endif /* GRAPHICS_H */
+// [BINDINGS]: From stage2 bootloader
+extern "C" const VbeModeInfo* vbe_block();
+extern "C" const VbeModeInfo vbe_mode_block;
