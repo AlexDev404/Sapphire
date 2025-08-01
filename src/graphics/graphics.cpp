@@ -66,7 +66,6 @@ void putpixel(int x, int y, unsigned long color) {
 
 // Draw a horizontal line
 void hline(int x1, int x2, int y, unsigned long color) {
-    const VbeModeInfo* vbe_data = vbe_block();
 
     if (x1 > x2) {
         // Swap if needed to ensure x1 <= x2
@@ -80,7 +79,6 @@ void hline(int x1, int x2, int y, unsigned long color) {
 
 // Draw a vertical line
 void vline(int x, int y1, int y2, unsigned long color) {
-    const VbeModeInfo* vbe_data = vbe_block();
 
     if (y1 > y2) {
         // Swap if needed to ensure y1 <= y2
@@ -90,25 +88,23 @@ void vline(int x, int y1, int y2, unsigned long color) {
     }
     
     for (int y = y1; y <= y2; y++) {
-        putpixel(x, y, color, vbe_data);
+        putpixel(x, y, color);
     }
 }
 
 // Draw a generic line
 void line(int x1, int y1, int x2, int y2, unsigned long color) {
-    const VbeModeInfo* vbe_data = vbe_block();
 
     const float m = (y2 - y1) / (x2 - x1);
 
     for (int x = x1; x <= x2; x++) {
         const float y = (m * x) + (y1 - m);
-        putpixel(x, y, color, vbe_data);
+        putpixel(x, y, color);
     }
 }
 
 // Draw a rectangle outline
 void rect(int x1, int y1, int x2, int y2, unsigned long color) {
-    const VbeModeInfo* vbe_data = vbe_block();
     
     hline(x1, x2, y1, color); // Top
     vline(x1, y1, y2, color); // Left
@@ -118,7 +114,6 @@ void rect(int x1, int y1, int x2, int y2, unsigned long color) {
 
 // Draw a filled rectangle
 void fillrect(int x1, int y1, int x2, int y2, unsigned long color) {
-    const VbeModeInfo* vbe_data = vbe_block();
 
     if (x1 > x2) {
         // Swap if needed to ensure x1 <= x2
@@ -136,7 +131,7 @@ void fillrect(int x1, int y1, int x2, int y2, unsigned long color) {
     
     for (int y = y1; y <= y2; y++) {
         for (int x = x1; x <= x2; x++) {
-            putpixel(x, y, color, vbe_data);
+            putpixel(x, y, color);
         }
     }
 }
@@ -150,7 +145,7 @@ void fill_screen(unsigned long color) {
     
     for (int y = 0; y < screen_y; y++) {
         for (int x = 0; x < screen_x; x++) {
-            putpixel(x, y, color, vbe_data);
+            putpixel(x, y, color);
         }
     }
 }

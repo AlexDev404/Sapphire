@@ -14,8 +14,6 @@ void print_text(
     int start_x,
     int y
 ) {
-    const VbeModeInfo* vbe_data = vbe_block();
-
     int pos = start_x;
     
     for (; *text != 0; text++) {
@@ -57,8 +55,7 @@ void print_at(
     unsigned long fgcolor,
     unsigned long bgcolor,
     int col,
-    int row,
-    const VbeModeInfo* vbe_data
+    int row
 ) {
     // Convert character-based coordinates to pixel coordinates
     // Each character is 8x16 pixels with 1 pixel spacing
@@ -114,7 +111,6 @@ void print_u16(
     int x,
     int y
 ) {
-    const VbeModeInfo* vbe_data = vbe_block();
     unsigned char buffer[6];  // Max 5 digits + null terminator
     u16_to_string(value, buffer, 6);
     print_text(buffer, fgcolor, bgcolor, x, y);

@@ -11,7 +11,7 @@
 #include <platform/gdt.hpp>
 
 void main(const VbeModeInfo *vbe_mode_info);
-void panic(const VbeModeInfo *vbe_mode_info);
+void panic();
 
 extern "C" void kmain(const VbeModeInfo *vbe_mode_info)
 {
@@ -34,22 +34,22 @@ extern "C" void kmain(const VbeModeInfo *vbe_mode_info)
     send_debug("========================\n");
 
     // Debug: Mark start of kmain
-    putpixel(100, 50, 0xFF0000, vbe_mode_info); // Red pixel = kmain started
+    putpixel(100, 50, 0xFF0000); // Red pixel = kmain started
     
     // Initialize devices, the system, and whatnot
-    init(vbe_mode_info);
+    init();
     
     // Debug: Mark after init
-    putpixel(102, 50, 0x00FF00, vbe_mode_info); // Green pixel = init completed
+    putpixel(102, 50, 0x00FF00); // Green pixel = init completed
     
     // This is our kernel entry point that will be called from the bootloader
     main(vbe_mode_info);
 
     // Debug: Mark after main (this probably won't be reached due to infinite loop in main)
-    putpixel(104, 50, 0x0000FF, vbe_mode_info); // Blue pixel = main completed
+    putpixel(104, 50, 0x0000FF); // Blue pixel = main completed
 
     // This function will be called on system panic
-    panic(vbe_mode_info);
+    panic();
 }
 
 // Kernel main function - entry point from bootloader
@@ -60,45 +60,45 @@ void main(const VbeModeInfo *vbe_mode_info)
 
     // Display welcome message with bright yellow on dark blue for good contrast
     const unsigned char welcome[] = "What's up?";
-    print_text(welcome, RGB(255, 199, 44), COLOR_DARK_BLUE, 30, 30, vbe_mode_info);
+    print_text(welcome, RGB(255, 199, 44), COLOR_DARK_BLUE, 30, 30);
 
     // Draw a box around the screen - bright white for visibility
-    rect(10, 10, vbe_mode_info->width - 10, vbe_mode_info->height - 10, COLOR_WHITE, vbe_mode_info);
+    rect(10, 10, vbe_mode_info->width - 10, vbe_mode_info->height - 10, COLOR_WHITE);
 
     // Display resolution information - light cyan for better visibility
     const unsigned char res_text[] = "Resolution: ";
-    print_text(res_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 30, 60, vbe_mode_info);
+    print_text(res_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 30, 60);
 
     // Convert width to string and display
     unsigned char width_str[6];
     u16_to_string(vbe_mode_info->width, width_str, 6);
-    print_text(width_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 138, 60, vbe_mode_info);
+    print_text(width_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 138, 60);
 
     // Add 'x' between width and height
     const unsigned char x_char[] = "x";
-    print_text(x_char, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 168, 60, vbe_mode_info);
+    print_text(x_char, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 168, 60);
 
     // Convert height to string and display
     unsigned char height_str[6];
     u16_to_string(vbe_mode_info->height, height_str, 6);
-    print_text(height_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 178, 60, vbe_mode_info);
+    print_text(height_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 178, 60);
 
     // Display color depth
     const unsigned char bpp_text[] = "Color depth: ";
-    print_text(bpp_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 30, 80, vbe_mode_info);
+    print_text(bpp_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 30, 80);
 
     // Convert bpp to string and display
     unsigned char bpp_str[6];
     u16_to_string(vbe_mode_info->bpp, bpp_str, 6);
-    print_text(bpp_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 146, 80, vbe_mode_info);
+    print_text(bpp_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 146, 80);
 
     // Add "bits" after the number
     const unsigned char bits_text[] = "bits";
-    print_text(bits_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 164, 80, vbe_mode_info);
+    print_text(bits_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 164, 80);
 
     // Add millions of colors text
     const unsigned char color_text[] = "Color support: 16.8M colors (Mode 115h)";
-    print_text(color_text, COLOR_LIGHT_GREEN, COLOR_DARK_BLUE, 30, 100, vbe_mode_info);
+    print_text(color_text, COLOR_LIGHT_GREEN, COLOR_DARK_BLUE, 30, 100);
 
     // Display test pattern with better visibility
     // test_print(30, 120, vbe_mode_info);
@@ -107,9 +107,9 @@ void main(const VbeModeInfo *vbe_mode_info)
     const unsigned char row_1[] = "Top Left";
     const unsigned char row_2[] = "Top Right";
     const unsigned char row_3[] = "Bottom Left";
-    print_at(row_1, COLOR_WHITE, COLOR_DARK_BLUE, 0, 0, vbe_mode_info);
-    print_at(row_2, COLOR_WHITE, COLOR_DARK_BLUE, 70, 0, vbe_mode_info);
-    print_at(row_3, COLOR_WHITE, COLOR_DARK_BLUE, 0, 28, vbe_mode_info);
+    print_at(row_1, COLOR_WHITE, COLOR_DARK_BLUE, 0, 0);
+    print_at(row_2, COLOR_WHITE, COLOR_DARK_BLUE, 70, 0);
+    print_at(row_3, COLOR_WHITE, COLOR_DARK_BLUE, 0, 28);
 
     send_debug("\n\nOS initialized successfully.\n");
     send_debug("Hey, what's up!\n\n");
@@ -181,21 +181,23 @@ void main(const VbeModeInfo *vbe_mode_info)
         }
 
         // Draw vertical line with the gradient color
-        vline(x, vbe_mode_info->height - gradient_height, vbe_mode_info->height - 20, color, vbe_mode_info);
+        vline(x, vbe_mode_info->height - gradient_height, vbe_mode_info->height - 20, color);
     }
 
     // Stuff
     // @todo ---- Figure out what I actually want to do here ----
-    circle(vbe_mode_info->width / 2, vbe_mode_info->height / 2, 50, COLOR_WHITE, vbe_mode_info); // Draw a circle in the center
+    circle(vbe_mode_info->width / 2, vbe_mode_info->height / 2, 50, COLOR_WHITE); // Draw a circle in the center
     //thing(4, 5);
     const unsigned char v[] = "Hey, this text is coming from the vbe_mode_info";
-    print_text(v, COLOR_LIGHT_GRAY, COLOR_BLACK, 30, 132, vbe_mode_info);
+    print_text(v, COLOR_LIGHT_GRAY, COLOR_BLACK, 30, 132);
     
     const unsigned char t[] = "Hey, this text is coming from the vbe_block()";
-    print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148, vbe_block());
+    // print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148, vbe_block());
+    print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148);
     
     const unsigned char u[] = "Hey, this text is coming from the vbe_mode_block";
-    print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180, &vbe_mode_block);
+    // print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180, &vbe_mode_block);
+    print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180);
     // thing(1, 1);
     // thing(8, 8);
     // thing(9, 9);
@@ -209,15 +211,15 @@ void main(const VbeModeInfo *vbe_mode_info)
 }
 
 // Panic handler
-void panic(const VbeModeInfo *vbe_mode_info)
+void panic()
 {
     // In a real system, we'd want to display an error message
     // For now, just an infinite loop
     send_debug("Kernel panic: An unrecoverable error occurred.\n");
-    fill_screen(vbe_mode_info, COLOR_BLACK); // Fill screen with red to indicate panic
-    print_text((const unsigned char *)"Kernel panic: An unrecoverable error occurred.", COLOR_RED, COLOR_BLACK, 30, 30, vbe_mode_info);
+    fill_screen(COLOR_BLACK); // Fill screen with red to indicate panic
+    print_text((const unsigned char *)"Kernel panic: An unrecoverable error occurred.", COLOR_RED, COLOR_BLACK, 30, 30);
     // Draw some simple shapes to indicate panic state
-    hline(30, 500, 50, COLOR_RED, vbe_mode_info); // Draw a horizontal line for visibility
+    hline(30, 500, 50, COLOR_RED); // Draw a horizontal line for visibility
     while (1)
     {
         // Busy loop

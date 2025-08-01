@@ -39,7 +39,7 @@ extern "C"
 #endif
 
     // Draw a single pixel to the framebuffer
-    void putpixel(int x, int y, unsigned long color, const VbeModeInfo *vbe_data);
+    void putpixel(int x, int y, unsigned long color);
 
     // Draw a horizontal line
     void hline(int x1, int x2, int y, unsigned long color);

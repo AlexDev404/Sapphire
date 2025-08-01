@@ -28,7 +28,7 @@ extern "C" void isr0_c(void)
  * Init function
  * The purpose of this function is to initialize all devices and the environment itself
  */
-void init(const VbeModeInfo *vbe_mode_info)
+void init(void)
 {
     // Initialize IDT with basic exception handlers
     idt_set_gate(0, (unsigned long *)isr0_handler, 0); // Divide by zero
@@ -36,7 +36,7 @@ void init(const VbeModeInfo *vbe_mode_info)
 
     // IDT is now active and ready to handle exceptions
     const unsigned char text[] = "IDT Initialized - Exception handling active";
-    print_text(text, COLOR_GREEN, COLOR_BLACK, 30, 200, vbe_mode_info);
+    print_text(text, COLOR_GREEN, COLOR_BLACK, 30, 200);
 
     // Try inline assembly to force the division
 // #ifndef _MSC_VER

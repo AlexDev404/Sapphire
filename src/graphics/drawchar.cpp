@@ -31,7 +31,7 @@ void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcol
             unsigned long color = (row & (1 << (CHAR_WIDTH - 1 - cx))) ? fgcolor : bgcolor;
             
             // Use the existing putpixel function to draw the pixel
-            putpixel(x + cx, y + cy, color, vbe_data);
+            putpixel(x + cx, y + cy, color);
         }
     }
 }
