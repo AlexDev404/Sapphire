@@ -26,3 +26,21 @@ void idt_init()
     asm volatile("lidt %0" : : "m"(idt_p));
 #endif
 }
+
+enum idt_gate_flags
+{
+    IDT_FLAG_GATE_TASK       = 0x5, // Task gate
+    IDT_FLAG_GATE_16BIT_INT  = 0x6, // 16-bit interrupt gate
+    IDT_FLAG_GATE_16BIT_TRAP = 0x7, // 16-bit trap gate
+    IDT_FLAG_GATE_32BIT_INT  = 0xE, // 32-bit interrupt gate
+    IDT_FLAG_GATE_32BIT_TRAP = 0xF,  // 32-bit trap gate
+
+
+    IDT_FLAG_RING0 = (0 << 5), // Ring 0 (highest privilege)
+    IDT_FLAG_RING1 = (1 << 5), // Ring 1
+    IDT_FLAG_RING2 = (2 << 5), // Ring 2
+    IDT_FLAG_RING3 = (3 << 5),  // Ring 3 (lowest privilege)
+
+
+    IDT_FLAG_PRESENT = 0x80, // Present flag
+};

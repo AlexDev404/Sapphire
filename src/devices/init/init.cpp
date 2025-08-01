@@ -25,19 +25,6 @@ extern "C" void isr0_c(void)
     return;
 }
 
-// Interrupt Service Routine for interrupt 0 (divide by zero)
-asm(
-    ".global isr0_handler    \n"
-    "isr0_handler:           \n"
-    "    cli                 \n" // Disable interrupts
-    "    pusha               \n" // Save all registers
-    "    call isr0_c         \n" // Call the C handler
-    "    popa                \n" // Restore all registers
-    "    sti                 \n" // Re-enable interrupts
-    "    add $16, %esp       \n" // Clean up the stack (vector number + EFLAGS)
-    "    iret                \n" // Return from interrupt
-);
-
 /*
  * Init function
  * The purpose of this function is to initialize all devices and the environment itself
@@ -69,16 +56,4 @@ void init(const VbeModeInfo *vbe_mode_info)
     // #ifndef _MSC_VER
     // asm volatile ("int $0" ::: "memory");  // Call interrupt 0 directly
     // #endif
-}
-
-// Also test a simple function that takes a different parameter type
-void test_with_int(int value)
-{
-    send_debug("INT TEST: Function with int parameter\n");
-}
-
-// Test function with no parameters to see if the issue is parameter-related
-void init_no_params(void)
-{
-    send_debug("NO PARAMS TEST: Function entered\n");
 }
