@@ -1,5 +1,5 @@
 #include "init.hpp"
-#include <devices/idt/idt.hpp>
+#include <platform/idt.hpp>
 #include <devices/debug/debugcon.h>
 #include <graphics/print_text.h>
 
