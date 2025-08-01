@@ -3,6 +3,7 @@
  */
 
 #include "drawchar.hpp"
+void drawchar_logic(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor, const VbeModeInfo *vbe_data);
 
 // Character drawing function implementation
 void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor)

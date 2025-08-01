@@ -192,12 +192,12 @@ void main(const VbeModeInfo *vbe_mode_info)
     print_text(v, COLOR_LIGHT_GRAY, COLOR_BLACK, 30, 132);
     
     const unsigned char t[] = "Hey, this text is coming from the vbe_block()";
-    // print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148, vbe_block());
-    print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148);
+    print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148, vbe_block());
+    // print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148);
     
     const unsigned char u[] = "Hey, this text is coming from the vbe_mode_block";
-    // print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180, &vbe_mode_block);
-    print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180);
+    print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180, &vbe_mode_block);
+    // print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180);
     // thing(1, 1);
     // thing(8, 8);
     // thing(9, 9);
