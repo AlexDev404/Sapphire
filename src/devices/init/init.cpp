@@ -5,7 +5,6 @@
 
 // Forward declaration for the interrupt handler
 extern "C" void isr0_handler(void);
-extern "C" void isr0_c(void);
 
 // Your C handler for interrupt 0 (divide by zero)
 extern "C" void isr0_c(void)
