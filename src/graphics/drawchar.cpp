@@ -5,7 +5,9 @@
 #include "drawchar.h"
 
 // Character drawing function implementation
-void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor, const VbeModeInfo* vbe_data) {
+void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor) {
+    const VbeModeInfo* vbe_data = vbe_block();
+    
     // Handle invalid coordinates
     if (x < 0 || y < 0 || x >= vbe_data->width || y >= vbe_data->height) {
         return;

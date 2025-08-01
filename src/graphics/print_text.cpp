@@ -12,9 +12,10 @@ void print_text(
     unsigned long fgcolor,
     unsigned long bgcolor,
     int start_x,
-    int y,
-    const VbeModeInfo* vbe_data
+    int y
 ) {
+    const VbeModeInfo* vbe_data = vbe_block();
+
     int pos = start_x;
     
     for (; *text != 0; text++) {
@@ -39,11 +40,11 @@ void print_text(
         // Only print printable ASCII characters
         else if (b >= 32 && b <= 126) {
             char c = (char)b;
-            drawchar(c, pos, y, fgcolor, bgcolor, vbe_data);
+            drawchar(c, pos, y, fgcolor, bgcolor);
         }
         else {
             // For other non-printable characters, print a dot
-            drawchar('.', pos, y, fgcolor, bgcolor, vbe_data);
+            drawchar('.', pos, y, fgcolor, bgcolor);
         }
         
         pos += 9; // Move to next position
@@ -64,7 +65,7 @@ void print_at(
     int x = col * 9;  // 8 pixels wide + 1 pixel spacing
     int y = row * 16; // 16 pixels tall
     
-    print_text(text, fgcolor, bgcolor, x, y, vbe_data);
+    print_text(text, fgcolor, bgcolor, x, y);
 }
 
 // Helper function to convert a 16-bit integer to a string
@@ -111,10 +112,10 @@ void print_u16(
     unsigned long fgcolor,
     unsigned long bgcolor,
     int x,
-    int y,
-    const VbeModeInfo* vbe_data
+    int y
 ) {
+    const VbeModeInfo* vbe_data = vbe_block();
     unsigned char buffer[6];  // Max 5 digits + null terminator
     u16_to_string(value, buffer, 6);
-    print_text(buffer, fgcolor, bgcolor, x, y, vbe_data);
+    print_text(buffer, fgcolor, bgcolor, x, y);
 }

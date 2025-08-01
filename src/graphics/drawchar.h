@@ -4,4 +4,4 @@
 #include "print_text.h"
 #include "graphics.h"
 
-void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor, const VbeModeInfo* vbe_data);
+void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor);

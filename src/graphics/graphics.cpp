@@ -75,7 +75,7 @@ void hline(int x1, int x2, int y, unsigned long color) {
         x2 = temp;
     }
     
-    line(x1, y, x2, y, color, vbe_data);
+    line(x1, y, x2, y, color);
 }
 
 // Draw a vertical line
@@ -110,10 +110,10 @@ void line(int x1, int y1, int x2, int y2, unsigned long color) {
 void rect(int x1, int y1, int x2, int y2, unsigned long color) {
     const VbeModeInfo* vbe_data = vbe_block();
     
-    hline(x1, x2, y1, color, vbe_data); // Top
-    hline(x1, x2, y2, color, vbe_data); // Bottom
-    vline(x1, y1, y2, color, vbe_data); // Left
-    vline(x2, y1, y2, color, vbe_data); // Right
+    hline(x1, x2, y1, color); // Top
+    vline(x1, y1, y2, color); // Left
+    hline(x1, x2, y2, color); // Bottom
+    vline(x2, y1, y2, color); // Right
 }
 
 // Draw a filled rectangle
@@ -144,7 +144,7 @@ void fillrect(int x1, int y1, int x2, int y2, unsigned long color) {
 // Fill the entire screen with a color
 void fill_screen(unsigned long color) {
     const VbeModeInfo* vbe_data = vbe_block();
-    
+
     int screen_x = vbe_data->width;
     int screen_y = vbe_data->height;
     

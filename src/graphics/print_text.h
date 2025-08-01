@@ -14,7 +14,7 @@ extern "C" {
 #endif
 
 // Character drawing function - should be implemented elsewhere
-void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor, const VbeModeInfo* vbe_data);
+void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor);
 
 // Print a null-terminated string to the screen
 void print_text(
@@ -22,8 +22,7 @@ void print_text(
     unsigned long fgcolor,
     unsigned long bgcolor,
     int start_x,
-    int y,
-    const VbeModeInfo* vbe_data
+    int y
 );
 
 // Function to print at specific row/column using character-based coordinates
@@ -32,8 +31,7 @@ void print_at(
     unsigned long fgcolor,
     unsigned long bgcolor,
     int col,
-    int row,
-    const VbeModeInfo* vbe_data
+    int row
 );
 
 // Helper function to convert a 16-bit integer to a string
@@ -45,8 +43,7 @@ void print_u16(
     unsigned long fgcolor,
     unsigned long bgcolor,
     int x,
-    int y,
-    const VbeModeInfo* vbe_data
+    int y
 );
 
 #ifdef __cplusplus
