@@ -185,7 +185,13 @@ void main(const VbeModeInfo *vbe_mode_info)
     }
 
     // Stuff
+    // @todo ---- Figure out what I actually want to do here ----
     circle(vbe_mode_info->width / 2, vbe_mode_info->height / 2, 50, COLOR_WHITE, vbe_mode_info); // Draw a circle in the center
+    thing(4, 5);
+    // thing(1, 1);
+    // thing(8, 8);
+    // thing(9, 9);
+
 
     // Infinite loop to prevent a kernel panic
     while (1)
