@@ -1,5 +1,6 @@
 #include "gdt.hpp"
 #include <devices/debug/debugcon.h>
+#include <graphics/print_text.hpp>
 
 GDTEntry g_GDT[] = {
 	GDT_ENTRY(0, 0, 0, 0),                                                                                                                                                     // Null descriptor

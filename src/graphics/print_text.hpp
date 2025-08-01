@@ -7,6 +7,7 @@
 
 // Include the VbeModeInfo structure definition directly
 #include "vbe_mode_info.h"
+#include <graphics/graphics.hpp>
 
 // Character drawing function - should be implemented elsewhere
 void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor);
