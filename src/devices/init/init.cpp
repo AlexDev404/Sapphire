@@ -1,7 +1,7 @@
 #include "init.hpp"
 #include <platform/idt.hpp>
 #include <devices/debug/debugcon.h>
-#include <graphics/print_text.h>
+#include <graphics/print_text.hpp>
 
 // Forward declaration for the interrupt handler
 extern "C" void isr0_handler(void);

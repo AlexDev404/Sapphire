@@ -3,8 +3,8 @@
  * C++ kernel implementation
  */
 
-#include <graphics/graphics.h>
-#include <graphics/print_text.h>
+#include <graphics/graphics.hpp>
+#include <graphics/print_text.hpp>
 #include <devices/debug/debugcon.h>
 #include <devices/init/init.hpp>
 #include <graphics/stuff/stuff.h>

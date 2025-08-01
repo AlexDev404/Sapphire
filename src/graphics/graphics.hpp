@@ -38,32 +38,34 @@ extern "C"
 {
 #endif
 
-    // Draw a single pixel to the framebuffer
-    void putpixel(int x, int y, unsigned long color);
+	// Draw a single pixel to the framebuffer
+	void putpixel(int x, int y, unsigned long color);
 
-    // Draw a horizontal line
-    void hline(int x1, int x2, int y, unsigned long color);
+	// (overload) Draw a single pixel to the framebuffer with VbeModeInfo
+	void putpixel(int x, int y, unsigned long color, const VbeModeInfo *vbe_data);
 
-    // Draw a vertical line
-    void vline(int x, int y1, int y2, unsigned long color);
+	// Draw a horizontal line
+	void hline(int x1, int x2, int y, unsigned long color);
 
-    // Draw a generic line
-    void line(int x1, int y1, int x2, int y2, unsigned long color);
+	// Draw a vertical line
+	void vline(int x, int y1, int y2, unsigned long color);
 
-    // Draw a rectangle outline
-    void rect(int x1, int y1, int x2, int y2, unsigned long color);
+	// Draw a generic line
+	void line(int x1, int y1, int x2, int y2, unsigned long color);
 
-    // Draw a filled rectangle
-    void fillrect(int x1, int y1, int x2, int y2, unsigned long color);
+	// Draw a rectangle outline
+	void rect(int x1, int y1, int x2, int y2, unsigned long color);
 
-    // Fill the entire screen with a color
-    void fill_screen(unsigned long color);
+	// Draw a filled rectangle
+	void fillrect(int x1, int y1, int x2, int y2, unsigned long color);
 
-    
-    #ifdef __cplusplus
+	// Fill the entire screen with a color
+	void fill_screen(unsigned long color);
+
+#ifdef __cplusplus
 }
 #endif
 
 // [BINDINGS]: From stage2 bootloader
-extern "C" const VbeModeInfo* vbe_block();
+extern "C" const VbeModeInfo *vbe_block();
 extern "C" const VbeModeInfo vbe_mode_block;

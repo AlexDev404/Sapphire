@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../graphics.h"
+#include "../graphics.hpp"
 #include <devices/debug/debugcon.h>
 #include <stdint.h>
 
