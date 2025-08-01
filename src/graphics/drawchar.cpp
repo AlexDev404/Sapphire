@@ -8,8 +8,7 @@ void drawchar_logic(char chr, int x, int y, unsigned long fgcolor, unsigned long
 // Character drawing function implementation
 void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor)
 {
-	const VbeModeInfo *vbe_data = vbe_block();
-	drawchar_logic(chr, x, y, fgcolor, bgcolor, vbe_data);
+	drawchar_logic(chr, x, y, fgcolor, bgcolor, nullptr);
 }
 
 // Character drawing function implementation
@@ -20,6 +19,11 @@ void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcol
 
 void drawchar_logic(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcolor, const VbeModeInfo *vbe_data)
 {
+	if (vbe_data == nullptr)
+	{
+		// If no VBE mode info is provided, use default values
+		vbe_data = vbe_block();
+	}
 	// Handle invalid coordinates
 	if (x < 0 || y < 0 || x >= vbe_data->width || y >= vbe_data->height)
 	{

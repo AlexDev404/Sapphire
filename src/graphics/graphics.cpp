@@ -8,8 +8,7 @@ void putpixel_logic(int x, int y, unsigned long color, const VbeModeInfo *vbe_da
 // Draw a single pixel to the framebuffer
 void putpixel(int x, int y, unsigned long color)
 {
-	const VbeModeInfo *vbe_data = vbe_block();
-	putpixel_logic(x, y, color, vbe_data);
+	putpixel_logic(x, y, color, nullptr);
 }
 
 // Draw a single pixel to the framebuffer
@@ -20,6 +19,11 @@ void putpixel(int x, int y, unsigned long color, const VbeModeInfo *vbe_data)
 
 void putpixel_logic(int x, int y, unsigned long color, const VbeModeInfo *vbe_data)
 {
+	if (vbe_data == nullptr)
+	{
+		// If no VBE mode info is provided, use default values
+		vbe_data = vbe_block();
+	}
 	// Handle invalid coordinates
 	if (x < 0 || y < 0 || x >= vbe_data->width || y >= vbe_data->height)
 	{
