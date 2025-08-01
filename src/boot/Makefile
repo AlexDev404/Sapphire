@@ -24,34 +24,36 @@ all: kernel
 
 # Main build target for C++ kernel
 kernel: chainloader stage2 $(ASM_OBJECTS) $(CPP_OBJECTS)
-	@echo Building C++ kernel image
-	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} $(ASM_OBJECTS) $(CPP_OBJECTS)
-	@echo Building debug image
-	wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN}.debug.elf ${KERNEL_STUB} $(ASM_OBJECTS) $(CPP_OBJECTS)
+	@echo Linking kernel image
+	@wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} $(ASM_OBJECTS) $(CPP_OBJECTS)
+	@echo Linking debug image
+	@wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN}.debug.elf ${KERNEL_STUB} $(ASM_OBJECTS) $(CPP_OBJECTS)
 	wsl cat ${CHAINLOADER} ${KERNEL_BIN} > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
 # Compile chainloader
 chainloader: chainloader/chainloader.asm always
 	@echo Building bootloader
-	$(ASM) -f bin chainloader/chainloader.asm -o ${CHAINLOADER}
+	@$(ASM) -f bin chainloader/chainloader.asm -o ${CHAINLOADER}
 
 # Compile stage 2 bootloader
 stage2: chainloader/stage2.asm always
 	@echo Building stage2
-	$(ASM) -f elf32 chainloader/stage2.asm -o ${KERNEL_STUB}
+	@$(ASM) -f elf32 chainloader/stage2.asm -o ${KERNEL_STUB}
+	@echo.
+	@echo Building kernel
 
 # Compile C++ source files
 ${OBJECTS_DIR}/%.o: ../%.cpp
 	@echo [CXX]: Compiling $<
 	@wsl mkdir -p $(dir $@)
-	wsl $(CXX) $(CXXFLAGS) -c $< -o $@
+	@wsl $(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Compile ASM source files
 ${OBJECTS_DIR}/%.asm.elf: ../%.asm
 	@echo [ASM]: Compiling $<
 	@wsl mkdir -p $(dir $@)
-	$(ASM) -f elf32 $< -o $@
+	@$(ASM) -f elf32 $< -o $@
 
 # Cleanup
 clean:
@@ -63,7 +65,8 @@ clean:
 	rm -rf out
 	rm -rf objects
 	rm -rf tools
-	@echo Project Output: Clean.
+	@echo.
+	@echo Project Structure: Clean.
 	@echo.
 	@echo.
 
@@ -94,6 +97,7 @@ always: clean
 	mkdir "objects/graphics"
 	mkdir "objects/bin"
 	wsl dd if=/dev/zero of=${BUILD_DIR}/${BUILD}.img bs=512 count=2880
+	@echo.
 	@echo Project Structure: Ready.
 	@echo.
 	@echo.
