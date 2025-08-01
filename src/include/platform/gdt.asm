@@ -6,17 +6,17 @@ g_GDTLoad:
 	push ebp 		; Save old call frame
 	mov ebp, esp	; Initialize new call frame
 
-	mov eax, [ebp + 8]		; Get GDT descriptor pointer
+	mov eax, [ebp + 8]		; Get GDT descriptor pointer  ([8         ]: GDTDescriptor *gdt)
 	lgdt [eax]				; Load GDT
 	
-	mov ax, [ebp + 16]		; Get data segment selector
+	mov ax, [ebp + 16]		; Get data segment selector   ([8 + (4* 2)]: uint16_t data_segment_selector)
 	mov ds, ax				; Set data segment
 	mov es, ax				; Set extra segment
 	mov fs, ax				; Set FS segment
 	mov gs, ax				; Set GS segment
 	mov ss, ax				; Set stack segment
 	
-	push dword [ebp + 12]	; Push code segment selector
+	push dword [ebp + 12]	; Push code segment selector ([8 + (4* 1)]: uint16_t code_segment_selector)
 	push dword .reload		; Push return address
 	retf					; Far return to reload CS
 	
