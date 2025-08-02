@@ -7,7 +7,7 @@
 #include "drawchar.hpp"
 
 void print_text_logic(
-	const unsigned char *text,
+	const char *text,
 	unsigned long fgcolor,
 	unsigned long bgcolor,
 	int start_x,
@@ -16,7 +16,7 @@ void print_text_logic(
 
 // Print a null-terminated string to the screen
 void print_text(
-	const unsigned char *text,
+	const char *text,
 	unsigned long fgcolor,
 	unsigned long bgcolor,
 	int start_x,
@@ -26,7 +26,7 @@ void print_text(
 }
 // Print a null-terminated string to the screen
 void print_text(
-	const unsigned char *text,
+	const char *text,
 	unsigned long fgcolor,
 	unsigned long bgcolor,
 	int start_x,
@@ -37,7 +37,7 @@ void print_text(
 }
 
 void print_text_logic(
-	const unsigned char *text,
+	const char *text,
 	unsigned long fgcolor,
 	unsigned long bgcolor,
 	int start_x,
@@ -82,8 +82,8 @@ void print_text_logic(
 		}
 		else
 		{
-			// For other non-printable characters, print a dot
-			drawchar('.', pos, y, fgcolor, bgcolor, vbe_mode_info);
+			// For other non-printable characters, print a question mark
+			drawchar('?', pos, y, fgcolor, bgcolor, vbe_mode_info);
 		}
 
 		pos += 9; // Move to next position
@@ -92,7 +92,7 @@ void print_text_logic(
 
 // Function to print at specific row/column using character-based coordinates
 void print_at(
-	const unsigned char *text,
+	const char *text,
 	unsigned long fgcolor,
 	unsigned long bgcolor,
 	int col,
@@ -159,5 +159,5 @@ void print_u16(
 {
 	unsigned char buffer[6]; // Max 5 digits + null terminator
 	u16_to_string(value, buffer, 6);
-	print_text(buffer, fgcolor, bgcolor, x, y);
+	print_text(reinterpret_cast<const char*>(buffer), fgcolor, bgcolor, x, y);
 }

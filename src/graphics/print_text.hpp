@@ -14,14 +14,14 @@ void drawchar(char chr, int x, int y, unsigned long fgcolor, unsigned long bgcol
 
 // Print a null-terminated string to the screen
 void print_text(
-	const unsigned char *text,
+	const char *text,
 	unsigned long fgcolor,
 	unsigned long bgcolor,
 	int start_x,
 	int y);
 // Print a null-terminated string to the screen
 void print_text(
-	const unsigned char *text,
+	const char *text,
 	unsigned long fgcolor,
 	unsigned long bgcolor,
 	int start_x,
@@ -30,7 +30,7 @@ void print_text(
 
 // Function to print at specific row/column using character-based coordinates
 void print_at(
-	const unsigned char *text,
+	const char *text,
 	unsigned long fgcolor,
 	unsigned long bgcolor,
 	int col,

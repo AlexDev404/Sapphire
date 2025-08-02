@@ -11,6 +11,7 @@ extern "C" void isr0_c(void)
 {
     // Send the debug output
     send_debug("EXCEPTION: Divide by zero detected!\n");
+    print_text("EXCEPTION: Divide by zero detected!", COLOR_RED, COLOR_BLACK, 30, 220);
 
     // In a real OS, you would:
     // 1. Check if this happened in user space or kernel space
@@ -35,8 +36,7 @@ void init(void)
     idt_init();
 
     // IDT is now active and ready to handle exceptions
-    const unsigned char text[] = "IDT Initialized - Exception handling active";
-    print_text(text, COLOR_GREEN, COLOR_BLACK, 30, 200);
+    print_text("IDT Initialized - Exception handling active", COLOR_GREEN, COLOR_BLACK, 30, 200);
 
     // Try inline assembly to force the division
 // #ifndef _MSC_VER
