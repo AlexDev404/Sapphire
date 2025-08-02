@@ -54,61 +54,44 @@ extern "C" void kmain(const VbeModeInfo *vbe_mode_info)
 // Kernel main function - entry point from bootloader
 void main(const VbeModeInfo *vbe_mode_info)
 {
-    // Fill screen with dark blue background
-    //fill_screen(vbe_mode_info, COLOR_DARK_BLUE);
+    // Display welcome message
+    print_text("What's up?", RGB(255, 199, 44), COLOR_DARK_BLUE, 30, 30);
 
-    // Display welcome message with bright yellow on dark blue for good contrast
-    const unsigned char welcome[] = "What's up?";
-    print_text(welcome, RGB(255, 199, 44), COLOR_DARK_BLUE, 30, 30);
-
-    // Draw a box around the screen - bright white for visibility
+    // Draw a box around the screen
     rect(10, 10, vbe_mode_info->width - 10, vbe_mode_info->height - 10, COLOR_WHITE);
 
-    // Display resolution information - light cyan for better visibility
-    const unsigned char res_text[] = "Resolution: ";
-    print_text(res_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 30, 60);
+    // Display resolution information
+    print_text("Resolution: ", COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 30, 60);
 
     // Convert width to string and display
     unsigned char width_str[6];
     u16_to_string(vbe_mode_info->width, width_str, 6);
-    print_text(width_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 138, 60);
+    print_text(reinterpret_cast<const char*>(width_str), COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 138, 60);
 
-    // Add 'x' between width and height
-    const unsigned char x_char[] = "x";
-    print_text(x_char, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 168, 60);
+    print_text("x", COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 168, 60);
 
     // Convert height to string and display
     unsigned char height_str[6];
     u16_to_string(vbe_mode_info->height, height_str, 6);
-    print_text(height_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 178, 60);
+    print_text(reinterpret_cast<const char*>(height_str), COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 178, 60);
 
     // Display color depth
-    const unsigned char bpp_text[] = "Color depth: ";
-    print_text(bpp_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 30, 80);
+    print_text("Color depth: ", COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 30, 80);
 
     // Convert bpp to string and display
     unsigned char bpp_str[6];
     u16_to_string(vbe_mode_info->bpp, bpp_str, 6);
-    print_text(bpp_str, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 146, 80);
+    print_text(reinterpret_cast<const char*>(bpp_str), COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 146, 80);
 
-    // Add "bits" after the number
-    const unsigned char bits_text[] = "bits";
-    print_text(bits_text, COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 164, 80);
+    print_text("bits", COLOR_LIGHT_CYAN, COLOR_DARK_BLUE, 164, 80);
 
     // Add millions of colors text
-    const unsigned char color_text[] = "Color support: 16.8M colors (Mode 115h)";
-    print_text(color_text, COLOR_LIGHT_GREEN, COLOR_DARK_BLUE, 30, 100);
-
-    // Display test pattern with better visibility
-    // test_print(30, 120, vbe_mode_info);
+    print_text("Color support: 16.8M colors (Mode 115h)", COLOR_LIGHT_GREEN, COLOR_DARK_BLUE, 30, 100);
 
     // Display some sample text using row/column positioning
-    const unsigned char row_1[] = "Top Left";
-    const unsigned char row_2[] = "Top Right";
-    const unsigned char row_3[] = "Bottom Left";
-    print_at(row_1, COLOR_WHITE, COLOR_DARK_BLUE, 0, 0);
-    print_at(row_2, COLOR_WHITE, COLOR_DARK_BLUE, 70, 0);
-    print_at(row_3, COLOR_WHITE, COLOR_DARK_BLUE, 0, 28);
+    print_at("Top Left", COLOR_WHITE, COLOR_DARK_BLUE, 0, 0);
+    print_at("Top Right", COLOR_WHITE, COLOR_DARK_BLUE, 70, 0);
+    print_at("Bottom Left", COLOR_WHITE, COLOR_DARK_BLUE, 0, 28);
 
     send_debug("\n\nOS initialized successfully.\n");
     send_debug("Hey, what's up!\n\n");
@@ -183,42 +166,27 @@ void main(const VbeModeInfo *vbe_mode_info)
         vline(x, vbe_mode_info->height - gradient_height, vbe_mode_info->height - 20, color);
     }
 
-    // Stuff
-    // @todo ---- Figure out what I actually want to do here ----
-    circle(vbe_mode_info->width / 2, vbe_mode_info->height / 2, 50, COLOR_WHITE); // Draw a circle in the center
-    //thing(4, 5);
-    const unsigned char v[] = "Hey, this text is coming from the vbe_mode_info";
-    print_text(v, COLOR_LIGHT_GRAY, COLOR_BLACK, 30, 132);
+    // Draw a circle in the center
+    circle(vbe_mode_info->width / 2, vbe_mode_info->height / 2, 50, COLOR_WHITE);
     
-    const unsigned char t[] = "Hey, this text is coming from the vbe_block()";
-    print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148, vbe_block());
-    // print_text(t, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148);
-    
-    const unsigned char u[] = "Hey, this text is coming from the vbe_mode_block";
-    print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180, &vbe_mode_block);
-    // print_text(u, COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180);
-    // thing(1, 1);
-    // thing(8, 8);
-    // thing(9, 9);
-
+    print_text("Hey, this text is coming from the vbe_mode_info", COLOR_LIGHT_GRAY, COLOR_BLACK, 30, 132);
+    print_text("Hey, this text is coming from the vbe_block()", COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 148, vbe_block());
+    print_text("Hey, this text is coming from the vbe_mode_block", COLOR_LIGHT_MAGENTA, COLOR_BLACK, 30, 180, &vbe_mode_block);
 
     // Infinite loop to prevent a kernel panic
     while (1)
     {
-        // Simple idle loop - removed stack monitoring that was causing issues
+        // Simple idle loop
     }
 }
 
 // Panic handler
 void panic()
 {
-    // In a real system, we'd want to display an error message
-    // For now, just an infinite loop
     send_debug("Kernel panic: An unrecoverable error occurred.\n");
-    fill_screen(COLOR_BLACK); // Fill screen with red to indicate panic
-    print_text((const unsigned char *)"Kernel panic: An unrecoverable error occurred.", COLOR_RED, COLOR_BLACK, 30, 30);
-    // Draw some simple shapes to indicate panic state
-    hline(30, 500, 50, COLOR_RED); // Draw a horizontal line for visibility
+    fill_screen(COLOR_BLACK);
+    print_text("Kernel panic: An unrecoverable error occurred.", COLOR_RED, COLOR_BLACK, 30, 30);
+    hline(30, 500, 50, COLOR_RED);
     while (1)
     {
         // Busy loop
