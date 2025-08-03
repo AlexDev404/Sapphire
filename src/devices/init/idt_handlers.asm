@@ -59,7 +59,7 @@ timer_interrupt_handler:
 isr33_handler:
 	cli                 ; Disable interrupts
 	pusha               ; Save all registers
-	call isr33_c         ; Call the C handler
+	call isr33_c        ; Call the C handler
 	popa                ; Restore all registers
 	sti                 ; Re-enable interrupts
 	iret                ; Return from interrupt
