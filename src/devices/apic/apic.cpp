@@ -101,7 +101,7 @@ void lapic_timer_setup(uint32_t vector, uint32_t initial_count, uint32_t divide_
     uint32_t* lapic_base = get_lapic_base();
     
     // First, mask the timer to prevent spurious interrupts during setup
-    // lapic_base[IA32_LAPIC_TIMER_LVT_OFFSET / 4] = LAPIC_LVT_MASKED;
+    lapic_base[IA32_LAPIC_TIMER_LVT_OFFSET / 4] = LAPIC_LVT_MASKED;
     
     // Set the divide configuration for the timer
     lapic_base[IA32_LAPIC_TIMER_DIVIDE_CONFIG_OFFSET / 4] = divide_config;

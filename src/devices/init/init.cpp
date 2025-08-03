@@ -8,6 +8,7 @@
 extern "C" void isr0_handler(void);
 extern "C" void spurious_interrupt_handler(void);
 extern "C" void timer_interrupt_handler(void);
+extern "C" void isr33_handler(void);
 
 // Timer tick counter
 static volatile uint32_t timer_ticks = 0;
@@ -70,12 +71,23 @@ extern "C" void spurious_interrupt_c(void)
 extern "C" void timer_interrupt_c(void)
 {
     timer_ticks++;
-    
+    const int column = timer_ticks % 89; // Assuming 89 columns for the console
+    const int row = timer_ticks / 89; // Calculate row based on ticks
+
     // Send immediate debug output for every interrupt
-    send_debug("TIMER IRQ ");
-    
+    print_at(".", COLOR_YELLOW, COLOR_BLACK, column, row);
+
     // Send EOI to acknowledge the interrupt
     lapic_send_eoi();
+}
+
+
+extern "C" void isr33_c(void)
+{
+    // Keyboard interrupt handler (vector 0x21)
+    print_text("Keyboard interrupt received (vector 0x21)\n", COLOR_YELLOW, COLOR_BLACK, 30, 240);
+    lapic_send_eoi(); // Acknowledge the interrupt
+    return;
 }
 
 /*
@@ -88,6 +100,7 @@ void init(void)
     idt_set_gate(0, (unsigned long *)isr0_handler, 0); // Divide by zero
     idt_set_gate(0xFF, (unsigned long *)spurious_interrupt_handler, 0); // Spurious interrupt
     idt_set_gate(0x20, (unsigned long *)timer_interrupt_handler, 0); // Timer interrupt
+    idt_set_gate(0x21, (unsigned long *)isr33_handler, 0); // Keyboard interrupt
     idt_init();
 
     // IDT is now active and ready to handle exceptions

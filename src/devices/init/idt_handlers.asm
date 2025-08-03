@@ -11,6 +11,9 @@
 [GLOBAL timer_interrupt_handler]
 [EXTERN timer_interrupt_c]
 
+[GLOBAL isr33_handler]
+[EXTERN isr33_c]
+
 
 ; Interrupt Service Routine for interrupt 0 (divide by zero)
 
@@ -31,7 +34,7 @@ isr13_handler:
 	call isr13_c
 	popa
 	sti
-	add esp, 16
+	add esp, 16         ; Clean up the stack (vector number + EFLAGS)
 	iret
 
 ; Spurious interrupt handler (vector 0xFF)
@@ -48,6 +51,15 @@ timer_interrupt_handler:
 	cli                 ; Disable interrupts
 	pusha               ; Save all registers
 	call timer_interrupt_c ; Call the C handler
+	popa                ; Restore all registers
+	sti                 ; Re-enable interrupts
+	iret                ; Return from interrupt
+
+; Keyboard handler 0x21
+isr33_handler:
+	cli                 ; Disable interrupts
+	pusha               ; Save all registers
+	call isr33_c         ; Call the C handler
 	popa                ; Restore all registers
 	sti                 ; Re-enable interrupts
 	iret                ; Return from interrupt
