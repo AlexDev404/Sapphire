@@ -11,7 +11,7 @@ CXX=g++
 ASM=nasm
 CXXFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32 -fno-pic -fno-pie -I../ -I../include
 
-CPP_SOURCES=$(wildcard ../*.cpp ../graphics/*.cpp ../graphics/**/*.cpp ../devices/**/*.cpp ../include/**/*.cpp)
+CPP_SOURCES=$(wildcard ../*.cpp ../graphics/*.cpp ../graphics/**/*.cpp ../devices/**/*.cpp ../include/**/*.cpp ../include/*.cpp)
 CPP_OBJECTS=$(patsubst ../%.cpp,${OBJECTS_DIR}/%.o,$(CPP_SOURCES))
 
 ASM_SOURCES=$(wildcard ../*.asm ../graphics/*.asm ../graphics/**/*.asm ../devices/**/*.asm ../include/**/*.asm)

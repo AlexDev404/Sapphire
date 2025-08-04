@@ -6,6 +6,8 @@
 #include <devices/acpi/acpi.hpp>
 #include <devices/apic/io_apic.hpp>
 #include <platform/x86.hpp>
+#include <strings.hpp>
+#include <devices/keyboard/keyboard.hpp>
 
 // Forward declaration for the interrupt handler
 extern "C" void isr0_handler(void);
@@ -29,30 +31,33 @@ extern "C" void isr0_c(void)
 	// 3. If kernel space: kernel panic
 
 	// We'll halt here once we catch the interrupt
-	while (1) {
+	while (1)
+	{
 		// Do nothing
 	}
 	return;
 }
 
-extern "C" void isr13_c(char error_code, unsigned short vector) {
+extern "C" void isr13_c(char error_code, unsigned short vector)
+{
 	// Send the debug output for the general protection fault
 	send_debug("EXCEPTION: General Protection Fault (vector: 0x");
-	
+
 	// Convert vector to hex string
 	send_debug(vector < 10 ? "0" : "");
-	
+
 	send_debug(") with error code: ");
-	
+
 	// Convert error code to hex string
 	send_debug(error_code < 10 ? "0" : "");
-	
+
 	send_debug("\n");
-	
+
 	print_text("EXCEPTION: General Protection Fault occurred!", COLOR_RED, COLOR_BLACK, 30, 220);
 
 	// Halt the system
-	while (1) {
+	while (1)
+	{
 		// Do nothing
 	}
 }
@@ -62,7 +67,7 @@ extern "C" void spurious_interrupt_c(void)
 {
 	// Send debug output (spurious interrupts are usually harmless)
 	send_debug("SPURIOUS INTERRUPT: Received spurious interrupt (0xFF)\n");
-	
+
 	// NOTE: For spurious interrupts, we do NOT send an EOI to the LAPIC
 	// The hardware handles this automatically for spurious interrupts
 	// Simply return - spurious interrupts are typically safe to ignore
@@ -84,15 +89,15 @@ extern "C" void timer_interrupt_c(void)
 	lapic_send_eoi();
 }
 
-
 extern "C" void isr33_c(void)
 {
 	// Keyboard interrupt handler (vector 0x21)
 	print_text("Keyboard interrupt received (vector 0x21)\n", COLOR_YELLOW, COLOR_BLACK, 30, 240);
-	send_debug("I/O APIC: Keyboard interrupt acknowledged\n");
+	// send_debug("I/O APIC: Keyboard interrupt acknowledged\n");
 	char scan_code = inportb(0x60); // Read scan code from keyboard controller
-	send_debug("Keyboard scan code: ");
-	send_debug(&scan_code);
+	const char scan_code_chr = scancode_to_char(scan_code);
+	const char scan_code_str[] = {scan_code_chr, '\0'}; // Convert scan code to string for debug output
+	send_debug(scan_code_str);
 	lapic_send_eoi(); // Acknowledge the interrupt
 }
 
@@ -103,93 +108,93 @@ extern "C" void isr33_c(void)
 void init(void)
 {
 	// Initialize IDT with basic exception handlers
-	idt_set_gate(0, (unsigned long *)isr0_handler, 0); // Divide by zero
+	idt_set_gate(0, (unsigned long *)isr0_handler, 0);					// Divide by zero
 	idt_set_gate(0xFF, (unsigned long *)spurious_interrupt_handler, 0); // Spurious interrupt
-	idt_set_gate(0x20, (unsigned long *)timer_interrupt_handler, 0); // Timer interrupt
-	idt_set_gate(0x21, (unsigned long *)isr33_handler, 0); // Keyboard interrupt
+	idt_set_gate(0x20, (unsigned long *)timer_interrupt_handler, 0);	// Timer interrupt
+	idt_set_gate(0x21, (unsigned long *)isr33_handler, 0);				// Keyboard interrupt
 	idt_init();
 
 	// IDT is now active and ready to handle exceptions
 	print_text("IDT Initialized - Exception handling active", COLOR_GREEN, COLOR_BLACK, 30, 200);
 
 	// Try inline assembly to force the division
-// #ifndef _MSC_VER
-//     asm volatile(
-//         "movl $100, %%eax;" // Load 100 into EAX
-//         "movl $0, %%ebx;"   // Load 0 into EBX
-//         "divl %%ebx;"       // Divide EAX by EBX (100/0) - should trigger interrupt 0
-//         :
-//         :
-//         : "eax", "ebx", "edx" // Clobbered registers
-//     );
-// #endif
+	// #ifndef _MSC_VER
+	//     asm volatile(
+	//         "movl $100, %%eax;" // Load 100 into EAX
+	//         "movl $0, %%ebx;"   // Load 0 into EBX
+	//         "divl %%ebx;"       // Divide EAX by EBX (100/0) - should trigger interrupt 0
+	//         :
+	//         :
+	//         : "eax", "ebx", "edx" // Clobbered registers
+	//     );
+	// #endif
 
-
-	 // Test with software interrupt (no instruction skipping needed)
+	// Test with software interrupt (no instruction skipping needed)
 	// #ifndef _MSC_VER
 	// asm volatile ("int $0" ::: "memory");  // Call interrupt 0 directly
 	// #endif
 
 	disable_pic8259(); // Disable the legacy PICs
 	print_text("Legacy PICs disabled", COLOR_YELLOW, COLOR_BLACK, 30, 240);
-	
-	enable_lapic();    // Enable the Local APIC
+
+	enable_lapic(); // Enable the Local APIC
 	print_text("LAPIC enabled and configured", COLOR_GREEN, COLOR_BLACK, 30, 260);
-	
+
 	// Get and display LAPIC ID
 	uint32_t lapic_id = lapic_get_id();
 	send_debug("LAPIC ID: ");
 	// Simple hex conversion for debugging
-	char hex_digits[] = "0123456789ABCDEF";
-	char id_str[3];
-	id_str[0] = hex_digits[(lapic_id >> 4) & 0xF];
-	id_str[1] = hex_digits[lapic_id & 0xF];
-	id_str[2] = '\0';
+	const char *id_str = hex2str(lapic_id);
 	send_debug(id_str);
 	send_debug("\n");
-	
+
 	// Set up LAPIC timer for periodic interrupts
 	// Vector 0x20, initial count 100000 (smaller for more frequent interrupts), divide by 16, periodic mode
 	send_debug("Setting up LAPIC timer...\n");
 	lapic_timer_setup(0x20, 100000, LAPIC_TIMER_DIVIDE_BY_16, LAPIC_TIMER_PERIODIC);
 	print_text("LAPIC timer configured (periodic mode)", COLOR_CYAN, COLOR_BLACK, 30, 280);
 	send_debug("LAPIC timer started - periodic interrupts enabled\n");
-	
+
 	// Check if timer is actually counting down
 	uint32_t current_count = lapic_get_timer_current_count();
 	send_debug("Timer current count: ");
 	char count_str[16];
 	int i = 0;
-	if (current_count == 0) {
+	if (current_count == 0)
+	{
 		count_str[i++] = '0';
-	} else {
+	}
+	else
+	{
 		char temp_buf[16];
 		int j = 0;
 		uint32_t temp = current_count;
-		while (temp > 0) {
+		while (temp > 0)
+		{
 			temp_buf[j++] = '0' + (temp % 10);
 			temp /= 10;
 		}
-		for (int k = j - 1; k >= 0; k--) {
+		for (int k = j - 1; k >= 0; k--)
+		{
 			count_str[i++] = temp_buf[k];
 		}
 	}
 	count_str[i] = '\0';
 	send_debug(count_str);
 	send_debug("\n");
-	
+
 	// Enable interrupts to allow timer interrupts to fire
 	send_debug("Interrupts enabled - timer should start firing\n");
-	#ifndef _MSC_VER
+#ifndef _MSC_VER
 	asm volatile("sti");
-	#endif
-	
+#endif
+
 	acpi_init(); // Initialize ACPI subsystem
 	print_text("ACPI subsystem initialized", COLOR_GREEN, COLOR_BLACK, 30, 300);
 	// Initialize I/O APIC
 	io_apic_init();
 	// Set up keyboard interrupt
-	uint8_t keyboard_vector = 0x21;        // IRQ1 -> Vector 0
+	uint8_t keyboard_vector = 0x21;			// IRQ1 -> Vector 0
 	uint8_t dest_lapic_id = lapic_get_id(); // Get current CPU's LAPIC ID
 	io_apic_setup_keyboard_interrupt(keyboard_vector, dest_lapic_id);
 	// Print setup complete message
