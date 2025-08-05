@@ -49,8 +49,15 @@ void print_text_logic(
 		// If no VBE mode info is provided, use default values
 		vbe_mode_info = vbe_block();
 	}
-	int pos = start_x;
 
+	if (text == nullptr || *text == '\0')
+	{
+		// If text is null or empty, do nothing
+		return;
+	}
+
+	int pos = start_x;
+	int pos_y = y;
 	for (; *text != 0; text++)
 	{
 		unsigned char b = *text;
@@ -59,7 +66,8 @@ void print_text_logic(
 		if (b == '\n')
 		{
 			// Handle newline - move to start of next line
-			pos = start_x;
+			pos_y += 16;   // Move down by 16 pixels (height of character)
+			pos = start_x; // Reset to start of line
 			continue;
 		}
 		else if (b == '\r')
@@ -74,16 +82,21 @@ void print_text_logic(
 			pos += 9 * 4;
 			continue;
 		}
-		// Only print printable ASCII characters
-		else if (b >= 32 && b <= 126)
+		else if (b == '\0')
+		{
+			// Null character - stop processing
+			break;
+		}
+		// Only print printable Extended ASCII characters
+		else if (b >= 32 && b <= 254)
 		{
 			char c = (char)b;
-			drawchar(c, pos, y, fgcolor, bgcolor, vbe_mode_info);
+			drawchar(c, pos, pos_y, fgcolor, bgcolor, vbe_mode_info);
 		}
 		else
 		{
 			// For other non-printable characters, print a question mark
-			drawchar('?', pos, y, fgcolor, bgcolor, vbe_mode_info);
+			drawchar('?', pos, pos_y, fgcolor, bgcolor, vbe_mode_info);
 		}
 
 		pos += 9; // Move to next position
@@ -159,5 +172,5 @@ void print_u16(
 {
 	unsigned char buffer[6]; // Max 5 digits + null terminator
 	u16_to_string(value, buffer, 6);
-	print_text(reinterpret_cast<const char*>(buffer), fgcolor, bgcolor, x, y);
+	print_text(reinterpret_cast<const char *>(buffer), fgcolor, bgcolor, x, y);
 }

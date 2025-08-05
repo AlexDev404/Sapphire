@@ -90,23 +90,31 @@ extern "C" void timer_interrupt_c(void)
 }
 
 static volatile uint32_t column = 0;
-static volatile uint32_t row	= 0;
+static volatile uint32_t row = 0;
 extern "C" void isr33_c(void)
 {
 	// Keyboard interrupt handler (vector 0x21)
-	print_text("Keyboard interrupt received (vector 0x21)\n", COLOR_YELLOW, COLOR_BLACK, 30, 240);
+	// print_text("Keyboard interrupt received (vector 0x21)\n", COLOR_YELLOW, COLOR_BLACK, 30, 240);
 	// send_debug("I/O APIC: Keyboard interrupt acknowledged\n");
 	char scan_code = inportb(0x60); // Read scan code from keyboard controller
 	const char scan_code_chr = scancode_to_char(scan_code);
-	const char scan_code_str[] = {scan_code_chr, '\0'}; // Convert scan code to string for debug output
-	
+	const char scan_code_str[] = {scan_code_chr, (char)221, '\0'}; // Convert scan code to string for debug output
+
+	send_debug("\nScan code list: 0x");
+	send_debug(hex2str(scan_code_str[0])); // Print scan code in hex
+	send_debug(", 0x");
+	send_debug(hex2str(scan_code_str[1])); // Print scan code in hex
+	send_debug("\nCharacter: ");
+
 	// Print it out
-	send_debug(scan_code_str);
+	send_debug(scan_code_chr != 0 ? scan_code_str : "NULL");
+	send_debug("\n");
 	print_at(scan_code_str, COLOR_YELLOW, COLOR_BLACK, column, row);
 
 	// Update column and row for next character
-	column++;
-	if (column >= 85) // Assuming 80 columns for the console
+	if (scan_code_chr != 0)
+		column++;
+	if (column >= 88 || scan_code_chr == '\n') // Assuming 89 columns for the console (minus one for cursor)
 	{
 		column = 0;
 		row++;
