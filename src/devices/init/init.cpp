@@ -91,6 +91,9 @@ extern "C" void timer_interrupt_c(void)
 
 static volatile uint32_t column = 0;
 static volatile uint32_t row = 0;
+static volatile uint32_t p_column = column;
+static volatile uint32_t p_row = row;
+
 extern "C" void isr33_c(void)
 {
 	// Keyboard interrupt handler (vector 0x21)
@@ -98,7 +101,7 @@ extern "C" void isr33_c(void)
 	// send_debug("I/O APIC: Keyboard interrupt acknowledged\n");
 	char scan_code = inportb(0x60); // Read scan code from keyboard controller
 	const char scan_code_chr = scancode_to_char(scan_code);
-	const char scan_code_str[] = {scan_code_chr, (char)221, '\0'}; // Convert scan code to string for debug output
+	const char scan_code_str[] = {scan_code_chr, (char)219, '\0'}; // Convert scan code to string for debug output
 
 	send_debug("\nScan code list: 0x");
 	send_debug(hex2str(scan_code_str[0])); // Print scan code in hex
@@ -109,6 +112,10 @@ extern "C" void isr33_c(void)
 	// Print it out
 	send_debug(scan_code_chr != 0 ? scan_code_str : "NULL");
 	send_debug("\n");
+	// Clear the past column
+	print_at(" ", COLOR_YELLOW, COLOR_BLACK, p_column, p_row);
+
+	// Print the actual text
 	print_at(scan_code_str, COLOR_YELLOW, COLOR_BLACK, column, row);
 
 	// Update column and row for next character
@@ -123,6 +130,8 @@ extern "C" void isr33_c(void)
 			row = 0; // Wrap around to the top
 		}
 	}
+	p_column = column;
+	p_row = row;
 	lapic_send_eoi(); // Acknowledge the interrupt
 }
 
