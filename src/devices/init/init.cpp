@@ -112,15 +112,19 @@ extern "C" void isr33_c(void)
 	// Print it out
 	send_debug(scan_code_chr != 0 ? scan_code_str : "NULL");
 	send_debug("\n");
-	// Clear the past column
-	print_at(" ", COLOR_YELLOW, COLOR_BLACK, p_column, p_row);
 
-	// Print the actual text
-	print_at(scan_code_str, COLOR_YELLOW, COLOR_BLACK, column, row);
-
+	
+	p_column = column;
+	p_row = row;
 	// Update column and row for next character
 	if (scan_code_chr != 0)
+	{
+		// Print the actual text
+		print_at(" ", COLOR_YELLOW, COLOR_BLACK, p_column, p_row);
+		print_at(scan_code_str, COLOR_YELLOW, COLOR_BLACK, column, row);
+		// Clear the past column
 		column++;
+	}
 	if (column >= 88 || scan_code_chr == '\n') // Assuming 89 columns for the console (minus one for cursor)
 	{
 		column = 0;
@@ -130,8 +134,6 @@ extern "C" void isr33_c(void)
 			row = 0; // Wrap around to the top
 		}
 	}
-	p_column = column;
-	p_row = row;
 	lapic_send_eoi(); // Acknowledge the interrupt
 }
 
