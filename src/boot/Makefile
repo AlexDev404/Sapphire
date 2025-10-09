@@ -107,7 +107,7 @@ boot-debug: out/floppy.img
 	qemu-system-i386 -debugcon stdio -s -S -fda out/floppy.img
 
 debug: build-gdb
-	gdb -ex "file tools/kernel.debug" -ex "set architecture i386" -ex "target remote :1234" -ex "b _rust"
+	gdb -ex "file tools/kernel.debug" -ex "set architecture i386" -ex "set osabi none" -ex "target remote :1234" -ex "b _rust"
 
 build-gdb:
 	@echo "Nothing specified for target 'build-gdb'"
