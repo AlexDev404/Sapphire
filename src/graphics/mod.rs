@@ -126,8 +126,7 @@ pub unsafe fn print_string(
     y: isize,
     vbe_data: &VbeModeInfo
 ) {
-    // Just draw a single character to indicate the function was called
-    drawchar('X', start_x, y, fgcolor, bgcolor, vbe_data);
+    print_text(str.as_bytes(), fgcolor, bgcolor, start_x, y, vbe_data);
 }
 
 // Add this test function if it doesn't exist
