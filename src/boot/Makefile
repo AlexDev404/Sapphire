@@ -3,13 +3,14 @@ BUILD=floppy
 OBJECTS_DIR=./objects
 VENDOR=SPPH
 KERNEL_BIN=kernel.bin
+KERNEL_DEBUG_TRANSIENT=kernel.debug.transient
 KERNEL_STUB=${OBJECTS_DIR}/kernel_stub.elf
 CHAINLOADER=${OBJECTS_DIR}/bin/chainloader.bin
 
 # C++ compiler settings
 CXX=g++
 ASM=nasm
-CXXFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32 -fno-pic -fno-pie -I../ -I../include
+CXXFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32 -fno-pic -g -fno-pie -I../ -I../include
 
 CPP_SOURCES=$(wildcard ../*.cpp ../graphics/*.cpp ../graphics/**/*.cpp ../devices/**/*.cpp ../include/**/*.cpp ../include/*.cpp)
 CPP_OBJECTS=$(patsubst ../%.cpp,${OBJECTS_DIR}/%.o,$(CPP_SOURCES))
@@ -26,8 +27,13 @@ all: kernel
 kernel: chainloader stage2 $(ASM_OBJECTS) $(CPP_OBJECTS)
 	@echo Linking kernel image
 	@wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN} ${KERNEL_STUB} $(ASM_OBJECTS) $(CPP_OBJECTS)
-	@echo Linking debug image
-	@wsl ld -T linker.ld --no-pie -m elf_i386 -o ${KERNEL_BIN}.debug.elf ${KERNEL_STUB} $(ASM_OBJECTS) $(CPP_OBJECTS)
+	@echo [SYMBOLS]: Creating debug symbols
+	@wsl ld -T linker.debug.ld --no-pie -m elf_i386 -o ${KERNEL_DEBUG_TRANSIENT} ${KERNEL_STUB} $(ASM_OBJECTS) $(CPP_OBJECTS)
+	@echo [SYMBOLS]: Stripping symbols
+	@wsl objcopy --only-keep-debug ${KERNEL_DEBUG_TRANSIENT} ${KERNEL_BIN}.sym
+	@echo [SYMBOLS]: Removing transient debug file
+	@wsl rm ${KERNEL_DEBUG_TRANSIENT}
+	@echo Creating bootable image
 	wsl cat ${CHAINLOADER} ${KERNEL_BIN} > image.bin
 	wsl dd if=image.bin of=${BUILD_DIR}/${BUILD}.img conv=notrunc
 
@@ -39,7 +45,7 @@ chainloader: chainloader/chainloader.asm always
 # Compile stage 2 bootloader
 stage2: chainloader/stage2.asm always
 	@echo Building stage2
-	@$(ASM) -f elf32 chainloader/stage2.asm -o ${KERNEL_STUB}
+	@$(ASM) -f elf32 -F dwarf -g chainloader/stage2.asm -o ${KERNEL_STUB}
 	@echo.
 	@echo Building kernel
 
@@ -82,7 +88,7 @@ boot-debug: out/floppy.img
 
 # Debug support
 debug: build-gdb
-	gdb -ex "file ${KERNEL_BIN}" -ex "set architecture i386" -ex "target remote :1234"
+	gdb -ex "file ${KERNEL_BIN}.sym" -ex "set architecture i386" -ex "set osabi none" -ex "target remote :1234"
 
 build-gdb:
 	@echo "Preparing debug session"
