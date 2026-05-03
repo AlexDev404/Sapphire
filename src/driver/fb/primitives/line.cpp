@@ -1,6 +1,6 @@
-#include <kernel/graphics/primitives/line.hpp>
+#include <driver/fb/primitives/line.hpp>
 #include <driver/fb/fb.hpp>
-#include <math.h>
+#include <cmath>
 
 // Draw a generic line
 void line(int x1, int y1, int x2, int y2, uint32_t color) {
