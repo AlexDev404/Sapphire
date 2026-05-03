@@ -94,10 +94,8 @@ pmode_entry:
 	mov ss, ax
 	mov esp, PM_STACK
 
-	; Call kmain(&vbe_mode_block) using cdecl
-	; push dword vbe_mode_block
+	; Call kmain()
 	call kmain
-	;add esp, 4
 
 	; If kmain ever returns, hang
 .hang:
