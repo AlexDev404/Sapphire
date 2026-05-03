@@ -12,10 +12,10 @@ CXX=g++
 ASM=nasm
 CXXFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -m32 -fno-pic -g -fno-pie -I./ -I./include
 
-CPP_SOURCES=$(wildcard kernel/*.cpp arch/x86/fb/*.cpp arch/x86/debug/*.cpp driver/debug/*.cpp driver/fb/*.cpp)
+CPP_SOURCES=$(wildcard kernel/*.cpp kernel/**/*.cpp kernel/**/**/*.cpp arch/x86/**/*.cpp driver/**/*.cpp)
 CPP_OBJECTS=$(patsubst %.cpp,${OBJECTS_DIR}/%.o,$(CPP_SOURCES))
 
-ASM_SOURCES=$(wildcard arch/x86/fb/*.asm boot/util/*.asm)
+ASM_SOURCES=$(wildcard arch/x86/**/*.asm boot/**/*.asm)
 ASM_OBJECTS=$(patsubst %.asm,${OBJECTS_DIR}/%.asm.elf,$(ASM_SOURCES))
 
 .PHONY: all clean boot boot-debug always
