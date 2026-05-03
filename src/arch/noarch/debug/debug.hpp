@@ -1,4 +1,5 @@
 #pragma once
+#include <stdint.h>
 
 /**
  * @brief Write a character to the debug port

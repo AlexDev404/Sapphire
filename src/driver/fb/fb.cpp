@@ -1,4 +1,4 @@
-#include <driver/fb/fb.hpp>
+#include <arch/noarch/fb/fb.h>
 #include <stdint.h>
 
 // Draw a single pixel to the framebuffer

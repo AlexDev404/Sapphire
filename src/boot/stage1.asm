@@ -48,7 +48,7 @@ ebr_system_id:               db 'fat12   '        ; 8 bytes
 %define STAGE2_SEGMENT 0x0000
 %define STAGE2_OFFSET  0x7E00
 
-%include "chainloader/util.asm"
+%include "boot/util.asm"
 
 main:
     ; Zero the segment registers (DL still holds the boot drive from BIOS)

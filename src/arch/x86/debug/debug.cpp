@@ -1,5 +1,5 @@
 // debug.cpp
-#include "debug.hpp"
+#include <arch/noarch/debug/debug.hpp>
 
 #define DEBUG_PORT 0xE9   // QEMU/Bochs debug console
 

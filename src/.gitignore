@@ -1,0 +1,15 @@
+out/
+objects/
+chainloader.bin
+kernel_stub.elf
+kernel.bin
+image.bin
+image.elf
+kernel.a
+sapphire.a
+kernel.debug.elf
+kernel.bin.debug.elf
+kernel.debug
+kernel.bin.sym
+*~1
+*.asm.elf
