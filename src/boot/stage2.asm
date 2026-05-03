@@ -97,7 +97,7 @@ pmode_entry:
 	; Call kmain(&vbe_mode_block) using cdecl
 	; push dword vbe_mode_block
 	call kmain
-	add esp, 4
+	;add esp, 4
 
 	; If kmain ever returns, hang
 .hang:
