@@ -10,9 +10,10 @@ CHAINLOADER=${OBJECTS_DIR}/bin/chainloader.bin
 # C++ compiler settings
 CXX=g++
 ASM=nasm
-CXXFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions \
+# Removed O2 because it caused issues with debugging and optimization in a kernel context
+CXXFLAGS=-ffreestanding -Wall -Wextra -fno-exceptions \
 	-fno-rtti -m32 -fno-pic -mno-sse -mno-sse2 -mno-mmx -mno-80387 -g \
-	-fno-pie -I./ -I./include
+	-fno-pie -fno-inline -I./ -I./include
 
 CPP_SOURCES=$(wildcard kernel/*.cpp kernel/**/*.cpp kernel/**/**/*.cpp \
                         arch/x86/**/*.cpp \
