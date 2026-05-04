@@ -2,14 +2,21 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug",
+      "name": "SapphireOS: Debug kernel",
       "type": "gdb",
       "request": "attach",
-      "executable": "${workspaceRoot}\\src\\boot\\objects\\kernel.debug",
+      "executable": "${workspaceFolder}\\src\\kernel.bin.sym",
       "target": "localhost:1234",
       "remote": true,
-      "cwd": "${workspaceRoot}",
-      "gdbpath": "gdb",
+      "cwd": "${workspaceFolder}\\src",
+      "gdbpath": "C:\\mingw64\\bin\\gdb.exe",
+      "debugger_args": [
+        "-ex", "set architecture i386",
+        "-ex", "set osabi none"
+      ],
+      "autorun": [
+        "b platform_init"
+      ],
       "valuesFormatting": "prettyPrinters"
     }
   ]
