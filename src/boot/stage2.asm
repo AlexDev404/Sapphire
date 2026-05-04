@@ -97,8 +97,8 @@ pmode_entry:
 
 	; Call platform_init()
 	; This will do architecture-specific setup
-	call platform_init			; this is located at <arch/noarch/platform/platform.hpp>
-	call kmain
+	call platform_init    ; arch/x86/platform/platform.cpp (x86 hardware init)
+	call kmain            ; kernel/main.cpp (kernel entry point)
 
 	; If kmain ever returns, hang
 .hang:
