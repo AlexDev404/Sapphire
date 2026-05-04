@@ -22,6 +22,7 @@
 
 [GLOBAL vbe_mode_block]
 [EXTERN platform_init]
+[EXTERN kmain]
 
 %define VBE_MODE  0x115        ; 800x600 24bpp
 %define VBE_LFB   0x4000       ; "use linear framebuffer" bit
@@ -94,10 +95,10 @@ pmode_entry:
 	mov ss, ax
 	mov esp, PM_STACK
 
-	; Call platform_init() [was kmain at first]
-	; This will do architecture-specific setup, and then call kmain()
-	; Once it's done
+	; Call platform_init()
+	; This will do architecture-specific setup
 	call platform_init			; this is located at <arch/noarch/platform/platform.hpp>
+	call kmain
 
 	; If kmain ever returns, hang
 .hang:
