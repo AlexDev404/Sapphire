@@ -1,5 +1,5 @@
 #include <kernel/kernel.hpp>
-#include <driver/debug/debug.hpp>
+#include <driver/fb/kprint.hpp>
 #include <driver/fb/primitives/line.hpp>
 #include <kernel/graphics/color.hpp>
 

@@ -21,7 +21,7 @@ GDTDescriptor g_GDTDescriptor = {
 };
 
 void init_gdt() {
-	kprint("GDT: Initializing Global Descriptor Table...\n");
+	kdebug("GDT: Initializing Global Descriptor Table...\n");
 	load_gdt(&g_GDTDescriptor, GDT_CODE_SEGMENT, GDT_DATA_SEGMENT);
-	kprint("GDT: Global Descriptor Table loaded successfully.\n");
+	kdebug("GDT: Global Descriptor Table loaded successfully.\n");
 }

@@ -1,9 +1,11 @@
 #include <driver/debug/debug.hpp>
 #include <arch/noarch/debug/debug.hpp>
 
-void kprint(const char *str) {
+void kdebug(const char *str) {
+	debug("[kernel]: ");
 	debug(str);
+	debug("\n");
 }
-void kputc(char c) {
+void kdebug_putc(char c) {
 	debug_putc(c);
 }
