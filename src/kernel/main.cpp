@@ -5,7 +5,6 @@
 
 extern "C" void kmain()
 {
-	kprint("Hello, World! This is a test of the kernel's main function.");
-	kprint_at("This text is printed at column 10, row 5.", 10, 5);
+	kprintf("\n\nHello, World! This is a test of the kernel's main function.");
 	line(10, 10, 100, 100, COLOR_RED);
 }
