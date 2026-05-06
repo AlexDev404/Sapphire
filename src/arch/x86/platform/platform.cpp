@@ -6,6 +6,7 @@
 extern "C" void platform_init(uint32_t boot_info_ptr) {
     BootInfo* boot_info = reinterpret_cast<BootInfo*>(boot_info_ptr);
     kprint(boot_info->e820_entry_count > 0 ? "Memory map found!\n" : "No memory map found!\n");    
+    kprintf("Memory map entry count: %d\n", boot_info->e820_entry_count);
     init_gdt();
 }
 
