@@ -10,7 +10,12 @@
       "Bash(wsl ls *)",
       "Bash(wsl *)",
       "Bash(objdump *)",
-      "Bash(python *)"
+      "Bash(python *)",
+      "mcp__ide__getDiagnostics",
+      "WebFetch(domain:wiki.osdev.org)",
+      "WebSearch",
+      "WebFetch(domain:osdev.wiki)",
+      "WebFetch(domain:darkhttpd.ubedubz.is-local.org)"
     ]
   }
 }
