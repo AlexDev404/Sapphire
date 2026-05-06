@@ -83,13 +83,13 @@ clean:
 
 # Boot with QEMU
 boot: out/floppy.img
-	qemu-system-i386 -debugcon stdio -s -fda out/floppy.img
+	qemu-system-i386 -debugcon stdio -s -fda out/floppy.img -m 1G
 
 boot-monitor: out/floppy.img
 	qemu-system-i386 -monitor stdio -s -fda out/floppy.img
 
 boot-debug: out/floppy.img
-	qemu-system-i386 -debugcon stdio -s -S -fda out/floppy.img
+	qemu-system-i386 -debugcon stdio -s -S -fda out/floppy.img -m 1G
 
 # Debug support
 debug: build-gdb
