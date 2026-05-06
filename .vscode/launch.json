@@ -15,6 +15,7 @@
         "-ex", "set osabi none"
       ],
       "autorun": [
+        "b _entry",
         "b platform_init"
       ],
       "valuesFormatting": "prettyPrinters"

@@ -3,7 +3,14 @@
     "allow": [
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Immanuel\\\\source\\\\Sapphire\\\\work\\\\main\" -Recurse -Force | Select-Object @{Name=\"Path\";Expression={$_.FullName.Substring\\(\"C:\\\\Users\\\\Immanuel\\\\source\\\\Sapphire\\\\work\\\\main\".Length\\).TrimStart\\('\\\\'\\)}}, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){'DIR'}else{'FILE'}}} | Sort-Object Path | Format-Table -AutoSize)",
       "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\Immanuel\\\\source\\\\Sapphire\\\\work\\\\src\" -Recurse -Force | Select-Object @{Name=\"Path\";Expression={$_.FullName.Substring\\(\"C:\\\\Users\\\\Immanuel\\\\source\\\\Sapphire\\\\work\\\\src\".Length\\).TrimStart\\('\\\\'\\)}}, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){'DIR'}else{'FILE'}}} | Sort-Object Path | Format-Table -AutoSize)",
-      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Immanuel\\\\source\\\\Sapphire\" | Select-Object Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){'DIR'}else{'FILE'}}})"
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\Immanuel\\\\source\\\\Sapphire\" | Select-Object Name, @{Name=\"Type\";Expression={if\\($_.PSIsContainer\\){'DIR'}else{'FILE'}}})",
+      "Bash(wsl objdump *)",
+      "Bash(objdump -d -M intel \"/mnt/c/Users/Immanuel/source/Sapphire/work/objects/arch/x86/platform/platform.o\")",
+      "Bash(wsl find *)",
+      "Bash(wsl ls *)",
+      "Bash(wsl *)",
+      "Bash(objdump *)",
+      "Bash(python *)"
     ]
   }
 }

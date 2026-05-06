@@ -5,12 +5,7 @@
 
 #ifndef VBE_MODE_INFO_H
 #define VBE_MODE_INFO_H
-
-#ifdef __GNUC__
-#define PACKED __attribute__((packed))
-#else
-#define PACKED
-#endif
+#include <packed.hpp>
 
 /* 
  * VBE Mode Information Block structure

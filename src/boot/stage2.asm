@@ -21,6 +21,7 @@
 [BITS 16]
 
 [GLOBAL vbe_mode_block]
+[GLOBAL _entry]					; debugging entrypoint symbol
 [EXTERN platform_init]
 [EXTERN kmain]
 
@@ -60,6 +61,12 @@ _entry:
 	mov bx, VBE_MODE | VBE_LFB
 	int 0x10
 
+	; --- Generate a memory map  ---
+	mov di, e820_map		; ES:DI points to buffer
+	xor ebx, ebx			; continuation token
+	xor bp, bp				; entry count
+	jmp .next_e820_entry
+.init_a20:
 	; --- A20 via fast gate (port 0x92) ---
 	in al, 0x92
 	test al, 2
@@ -68,7 +75,6 @@ _entry:
 	and al, 0xFE            ; make sure system-reset bit is clear
 	out 0x92, al
 .a20_done:
-
 	; --- Switch to protected mode ---
 	cli                     ; no interrupts until kernel sets up an IDT
 	lgdt [gdtr]
@@ -79,7 +85,29 @@ _entry:
 
 	; Far jump to flush CS into the new code segment and enter 32-bit code.
 	jmp CODE_SEL:pmode_entry
+.next_e820_entry:
+	mov eax, 0xE820			; fn 0xE820
+	mov edx, 0x534D4150     ; magic: 'SMAP'
+	mov ecx, 20				; entry size
+	int 0x15
 
+	jc .mm_done			; once carry is set it means we're at the end of the list
+	cmp eax, 0x534D4150     ; EAX must come back as 'SMAP'
+    jne .mm_done
+
+	test ecx, ecx			; skip empty entries
+	jz .skip_e820_entry
+
+	inc bp					; count this entry
+	add di, 20				; advance to next entry
+.skip_e820_entry:
+	test ebx, ebx			; empty = last entry
+	jz .mm_done
+	cmp bp, 64				; prevent overflow
+	jl .next_e820_entry
+.mm_done:
+	mov [boot_info.e820_entry_count], bp
+	jmp .init_a20
 
 [BITS 32]
 ; -----------------------------------------------------------------------------
@@ -95,10 +123,12 @@ pmode_entry:
 	mov ss, ax
 	mov esp, PM_STACK
 
-	; Call platform_init()
+	push dword boot_info	; pass pointer to boot info (E820 map, VBE info, etc.)
+	
+	; Call platform_init(BootInfo* boot_info)
 	; This will do architecture-specific setup
-	call platform_init    ; arch/x86/platform/platform.cpp (x86 hardware init)
-	call kmain            ; kernel/main.cpp (kernel entry point)
+	call platform_init		; arch/x86/platform/platform.cpp (x86 hardware init)
+	call kmain				; kernel/main.cpp (kernel entry point)
 
 	; If kmain ever returns, hang
 .hang:
@@ -127,7 +157,13 @@ gdtr:
 	dw gdt_end - gdt - 1
 	dd gdt
 
-
+; -----------------------------------------------------------------------------
+; E820 Memory map
+; -----------------------------------------------------------------------------
+e820_map:			times 128 db 0	; space for up to 6 entries, 20 bytes each
+boot_info:
+	.e820_map:	dd e820_map		; pointer to E820 map
+	.e820_entry_count:	dd 0			; initialize to 0 entries
 ; -----------------------------------------------------------------------------
 ; VBE buffers (filled in by BIOS during real-mode setup above)
 ; -----------------------------------------------------------------------------

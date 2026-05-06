@@ -1,6 +1,6 @@
 [BITS 16]
 
-%define SECTORS_TO_READ 40
+%define SECTORS_TO_READ 60
 
 ; -----------------------------------------------------------------------------
 ; disk_read: read SECTORS_TO_READ sectors starting at LBA 1 (sector 2 in CHS)
