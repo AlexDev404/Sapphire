@@ -25,11 +25,12 @@
 [EXTERN platform_init]
 [EXTERN kmain]
 
-%define VBE_MODE  0x115        ; 800x600 24bpp
-%define VBE_LFB   0x4000       ; "use linear framebuffer" bit
-%define CODE_SEL  0x08
-%define DATA_SEL  0x10
-%define PM_STACK  0x90000      ; 32-bit stack top (576 KB)
+%define VBE_MODE	0x115		; 800x600 24bpp
+%define VBE_LFB		0x4000		; "use linear framebuffer" bit
+%define CODE_SEL	0x08
+%define DATA_SEL	0x10
+%define PM_STACK	0x90000		; 32-bit stack top (576 KB)
+%define PG_DIR		0x9C000		; page directory (4KB aligned)
 
 ; -----------------------------------------------------------------------------
 ; Entry point — must be the very first byte at 0x7E00.
@@ -93,7 +94,7 @@ _entry:
 
 	jc .mm_done			; once carry is set it means we're at the end of the list
 	cmp eax, 0x534D4150     ; EAX must come back as 'SMAP'
-    jne .mm_done
+	jne .mm_done
 
 	test ecx, ecx			; skip empty entries
 	jz .skip_e820_entry
@@ -162,8 +163,9 @@ gdtr:
 ; -----------------------------------------------------------------------------
 e820_map:			times 128 db 0	; space for up to 6 entries, 20 bytes each
 boot_info:
-	.e820_map:	dd e820_map		; pointer to E820 map
+	.e820_map:			dd e820_map		; pointer to E820 map
 	.e820_entry_count:	dd 0			; initialize to 0 entries
+	.page_directory:	dd PG_DIR		; page directory for protected mode (identity-mapped, 4 KB pages)
 ; -----------------------------------------------------------------------------
 ; VBE buffers (filled in by BIOS during real-mode setup above)
 ; -----------------------------------------------------------------------------

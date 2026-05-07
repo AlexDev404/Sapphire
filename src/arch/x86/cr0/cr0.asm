@@ -1,12 +1,14 @@
 [global _read_cr0]
 [global _write_cr0]
 
-; extern "C" uint32_t _read_cr0(void)
+; uint32_t _read_cr0(void)
+; extern "C"
 _read_cr0:
 		mov eax, cr0
 		ret
-; extern "C" void _write_cr0(uint32_t val)
+; void _write_cr0(uint32_t val)
+; extern "C"
 _write_cr0:
-		mov eax, [ebp+8]
+		mov eax, [esp+4]
 		mov cr0, eax
 		ret
