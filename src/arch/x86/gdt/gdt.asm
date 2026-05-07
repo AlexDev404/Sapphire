@@ -1,8 +1,8 @@
 [BITS 32]
-[GLOBAL load_gdt]
+[GLOBAL _load_gdt]
 
-; void CDECL load_gdt(GDTDescriptor *gdt, uint16_t code_sel, uint16_t data_sel);
-load_gdt:
+; void CDECL _load_gdt(GDTDescriptor *gdt, uint16_t code_sel, uint16_t data_sel);
+_load_gdt:
 	push ebp
 	mov ebp, esp
 

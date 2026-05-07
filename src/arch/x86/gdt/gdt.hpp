@@ -91,5 +91,5 @@ enum GDT_FLAGS
  * @param data_segment_selector Selector to load into DS, ES, FS, GS, SS.
  * @note Internal - do not call directly. Use init_gdt() instead.
  */
-extern "C" void CDECL load_gdt(GDTDescriptor *gdt, uint16_t code_segment_selector, uint16_t data_segment_selector);
+extern "C" void CDECL _load_gdt(GDTDescriptor *gdt, uint16_t code_segment_selector, uint16_t data_segment_selector);
 void init_gdt();
