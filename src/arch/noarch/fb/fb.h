@@ -7,6 +7,7 @@ typedef struct {
     unsigned short width;
     unsigned short height;
     unsigned char  bpp;          /* bits per pixel */
+    uint32_t       size;         /* framebuffer size in bytes */
     uintptr_t      framebuffer;  /* address of the linear framebuffer */
 } FramebufferInfo;
 
