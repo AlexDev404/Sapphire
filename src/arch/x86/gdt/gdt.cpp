@@ -1,6 +1,9 @@
 #include "gdt.hpp"
 #include <driver/debug/debug.hpp>
 
+// The GDT is essentially just a stub - since nobody really uses segmentation like
+// they used to anymore, we just set up a flat memory model with a code and data segment
+// that both cover the entire 4GB address space. This is sufficient for our needs.
 GDTEntry g_GDT[] = {
 	GDT_ENTRY(0, 0, 0, 0),                                          // Null descriptor
 	GDT_ENTRY(0x00000000, 0xFFFFFFFF,                               // Code segment

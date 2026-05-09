@@ -16,9 +16,10 @@ void MemoryMap::identity_map_usable(PageDirectory &pd)
 			continue;
 
 		// Clamp to 32-bit address space
-		uint32_t base = (uint32_t)entry->base;
+		uint32_t base = (uint32_t)entry->base;			// We do this by casting to uint32_t which 
+														// effectively truncates any address above 4GB
 		uint64_t end64 = entry->base + entry->length;
-		uint32_t end = (end64 > 0xFFFFFFFF) ? 0xFFFFFFFF : (uint32_t)end64;
+		uint32_t end = clamp(end64); // Clamp end to 4GB
 
 		pd.identity_map_range(base, end);
 	}

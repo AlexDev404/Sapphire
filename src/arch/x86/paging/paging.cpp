@@ -4,6 +4,7 @@
 
 static void zero_memory(void *dest, uint32_t size)
 {
+	// Simple byte-wise zeroing
 	uint8_t *d = (uint8_t *)dest;
 	for (uint32_t i = 0; i < size; i++)
 		d[i] = 0;
