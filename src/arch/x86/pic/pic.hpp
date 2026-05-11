@@ -2,9 +2,9 @@
 #include <stdint.h>
 
 // PIC I/O ports
-#define PIC1_COMMAND 0x20
+#define PIC1_COMMAND 0x20 // Master
 #define PIC1_DATA 0x21
-#define PIC2_COMMAND 0xA0
+#define PIC2_COMMAND 0xA0 // Slave
 #define PIC2_DATA 0xA1
 
 // ICW = Initialization Command Word (the steps to configure the PIC)
@@ -58,4 +58,10 @@ extern "C" uint8_t inb(uint16_t port);
 static inline void io_wait()
 {
 	outb(0x80, 0); // port 0x80 is used for POST codes — writing to it is a safe no-op delay
+}
+
+static inline void io_wait(void (*fn)(uint16_t, uint8_t), uint16_t port, uint8_t value)
+{
+	fn(port, value);
+	io_wait();
 }

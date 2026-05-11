@@ -7,125 +7,109 @@
 
 ; void _load_idt(IDTDescriptor *idt)
 _load_idt:
-	; TODO: Load the IDT
-	; 1. Get the pointer from the stack: mov eax, [esp+4]
-	; 2. Load it: lidt [eax]
-	; 3. Return: ret
-	; ... your code here ...
+	mov eax, [esp+4]
+	lidt [eax]
+	ret
 
 ; =============================================================================
 ; ISR stubs for CPU exceptions (interrupts 0-31)
 ;
 ; Some exceptions push an error code automatically, some don't.
 ; To keep the stack layout consistent, we push a dummy 0 for the ones that don't.
-;
-; The pattern for each stub:
-;   1. push 0          (dummy error code — ONLY for exceptions that don't push one)
-;   2. push <int_num>  (so the C++ handler knows which interrupt fired)
-;   3. jmp isr_common  (save registers, call C++ handler)
-;
-; Exceptions that push their OWN error code (do NOT push dummy 0):
-;   8 (Double Fault), 10 (Invalid TSS), 11 (Segment Not Present),
-;   12 (Stack Fault), 13 (GPF), 14 (Page Fault), 17 (Alignment Check),
-;   21 (Control Protection), 29 (VMM Communication), 30 (Security Exception)
 ; =============================================================================
 
 ; Macro for ISR that does NOT have an error code (most of them)
-; TODO: Define this macro
-;   1. Make the label global: [GLOBAL isr%1]
-;   2. Create the label: isr%1:
-;   3. Push dummy error code: push 0
-;   4. Push the interrupt number: push %1
-;   5. Jump to common handler: jmp isr_common
-;
-; Usage: ISR_NO_ERR 0
-;        ISR_NO_ERR 1
-;        etc.
 %macro ISR_NO_ERR 1
-	; ... your code here ...
+[GLOBAL isr%1]
+isr%1:
+	push 0          ; dummy error code
+	push %1         ; interrupt number
+	jmp isr_common
 %endmacro
 
 ; Macro for ISR that DOES have an error code (CPU pushes it automatically)
-; TODO: Define this macro
-;   Same as above but WITHOUT the dummy push (the CPU already pushed the error code)
-;   1. [GLOBAL isr%1]
-;   2. isr%1:
-;   3. push %1          (just the interrupt number — error code is already on stack)
-;   4. jmp isr_common
 %macro ISR_HAS_ERR 1
-	; ... your code here ...
+[GLOBAL isr%1]
+isr%1:
+	push %1         ; interrupt number (error code already on stack)
+	jmp isr_common
 %endmacro
 
-; TODO: Use the macros to create stubs for ISR 0-31
-; Exceptions WITHOUT error code: 0-7, 9, 15, 16, 18-20, 22-28, 31
-; Exceptions WITH error code:    8, 10, 11, 12, 13, 14, 17, 21, 29, 30
-;
-; Example:
-;   ISR_NO_ERR 0
-;   ISR_NO_ERR 1
-;   ...
-;   ISR_HAS_ERR 8
-;   ISR_NO_ERR 9
-;   ISR_HAS_ERR 10
-;   ...
-; ... your code here ...
+; CPU exceptions 0-31
+ISR_NO_ERR  0   ; Division by Zero
+ISR_NO_ERR  1   ; Debug
+ISR_NO_ERR  2   ; Non-Maskable Interrupt
+ISR_NO_ERR  3   ; Breakpoint
+ISR_NO_ERR  4   ; Overflow
+ISR_NO_ERR  5   ; Bound Range Exceeded
+ISR_NO_ERR  6   ; Invalid Opcode
+ISR_NO_ERR  7   ; Device Not Available
+ISR_HAS_ERR 8   ; Double Fault
+ISR_NO_ERR  9   ; Coprocessor Segment Overrun
+ISR_HAS_ERR 10  ; Invalid TSS
+ISR_HAS_ERR 11  ; Segment Not Present
+ISR_HAS_ERR 12  ; Stack-Segment Fault
+ISR_HAS_ERR 13  ; General Protection Fault
+ISR_HAS_ERR 14  ; Page Fault
+ISR_NO_ERR  15  ; Reserved
+ISR_NO_ERR  16  ; x87 FP Exception
+ISR_HAS_ERR 17  ; Alignment Check
+ISR_NO_ERR  18  ; Machine Check
+ISR_NO_ERR  19  ; SIMD FP Exception
+ISR_NO_ERR  20  ; Virtualization Exception
+ISR_HAS_ERR 21  ; Control Protection
+ISR_NO_ERR  22  ; Reserved
+ISR_NO_ERR  23  ; Reserved
+ISR_NO_ERR  24  ; Reserved
+ISR_NO_ERR  25  ; Reserved
+ISR_NO_ERR  26  ; Reserved
+ISR_NO_ERR  27  ; Reserved
+ISR_NO_ERR  28  ; Hypervisor Injection
+ISR_HAS_ERR 29  ; VMM Communication
+ISR_HAS_ERR 30  ; Security Exception
+ISR_NO_ERR  31  ; Reserved
 
 ; =============================================================================
 ; IRQ stubs for hardware interrupts (IRQs 0-15 → interrupts 32-47)
-;
-; IRQs never have error codes, so they all push a dummy 0.
-; They push the ACTUAL interrupt number (32+), not the IRQ number.
 ; =============================================================================
 
-; Macro for IRQ stubs
-; %1 = IRQ number (0-15), %2 = interrupt number (32-47)
-; TODO: Define this macro
-;   1. [GLOBAL irq%1]
-;   2. irq%1:
-;   3. push 0            (dummy error code)
-;   4. push %2           (interrupt number = IRQ + 32)
-;   5. jmp isr_common
 %macro IRQ 2
-	; ... your code here ...
+[GLOBAL irq%1]
+irq%1:
+	push 0          ; dummy error code
+	push %2         ; interrupt number (32+)
+	jmp isr_common
 %endmacro
 
-; TODO: Use the IRQ macro for IRQs 0-15
-; Example:
-;   IRQ 0, 32
-;   IRQ 1, 33
-;   ...
-;   IRQ 15, 47
-; ... your code here ...
+IRQ  0, 32  ; Timer
+IRQ  1, 33  ; Keyboard
+IRQ  2, 34  ; Cascade (slave PIC)
+IRQ  3, 35  ; COM2
+IRQ  4, 36  ; COM1
+IRQ  5, 37  ; LPT2
+IRQ  6, 38  ; Floppy
+IRQ  7, 39  ; LPT1 / Spurious
+IRQ  8, 40  ; RTC
+IRQ  9, 41  ; Free
+IRQ 10, 42  ; Free
+IRQ 11, 43  ; Free
+IRQ 12, 44  ; PS/2 Mouse
+IRQ 13, 45  ; FPU
+IRQ 14, 46  ; Primary ATA
+IRQ 15, 47  ; Secondary ATA
 
 ; =============================================================================
 ; Common handler — saves registers, calls C++ isr_handler, restores, returns
-;
-; At this point the stack looks like:
-;   [esp+0]  interrupt number  (pushed by our stub)
-;   [esp+4]  error code        (pushed by CPU or our dummy 0)
-;   [esp+8]  EIP               (pushed by CPU)
-;   [esp+12] CS                (pushed by CPU)
-;   [esp+16] EFLAGS            (pushed by CPU)
 ; =============================================================================
 [EXTERN isr_handler]
 
 isr_common:
-	; TODO: Save all general-purpose registers
-	; Hint: pusha pushes EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI in one instruction
+	pusha               ; save all general-purpose registers
 
-	; TODO: Pass a pointer to the InterruptFrame to the C++ handler
-	; Hint: after pusha, ESP points to the start of the InterruptFrame struct
-	;   push esp           ; pass pointer to frame as argument
-	;   call isr_handler   ; call C++ handler
-	;   add esp, 4         ; clean up the argument we pushed
+	push esp            ; pass pointer to InterruptFrame as argument
+	call isr_handler    ; call C++ handler
+	add esp, 4          ; clean up argument
 
-	; TODO: Restore all general-purpose registers
-	; Hint: popa (reverse of pusha)
-
-	; TODO: Clean up the interrupt number and error code from the stack
-	; Hint: add esp, 8  (skip over the 2 dwords we pushed)
-
-	; TODO: Return from interrupt
-	; Hint: iret (NOT ret — iret restores EIP, CS, and EFLAGS from the stack)
-
-	; ... your code here ...
+	popa                ; restore registers
+	add esp, 8          ; clean up interrupt number + error code
+	iret                ; return from interrupt

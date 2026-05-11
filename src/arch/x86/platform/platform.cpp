@@ -1,5 +1,6 @@
 #include <arch/noarch/platform/platform.hpp>
 #include <arch/x86/gdt/gdt.hpp>
+#include <arch/x86/idt/idt.hpp>
 #include <arch/x86/platform/boot_info.hpp>
 #include <arch/x86/fb/fb.h>
 #include <arch/x86/paging/paging.hpp>
@@ -63,6 +64,7 @@ extern "C" void platform_init(uint32_t boot_info_ptr)
 	kprintf("Freed b, re-alloc(200) = 0x%x (should be 0x%x)\n", (uint32_t)d, (uint32_t)b);
 
 	init_gdt();
+	init_idt();
 }
 
 void platform_interrupts_enable() { asm volatile("sti"); }

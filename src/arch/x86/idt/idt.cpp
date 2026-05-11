@@ -3,118 +3,150 @@
 #include <arch/x86/gdt/gdt.hpp>
 #include <driver/fb/kprint.hpp>
 
-// The IDT — 256 entries
+// The IDT — 256 entries (hardware table, loaded by lidt)
 static IDTEntry g_IDT[IDT_MAX_ENTRIES];
 
 // The IDT descriptor (loaded by lidt)
 static IDTDescriptor g_IDTDescriptor;
 
+// Software dispatch table — function pointers, one per interrupt.
+// isr_handler looks up handlers[intno] and calls it.
+// Default handler for unregistered interrupts.
+static void default_handler(InterruptFrame *frame);
+static void default_exception_handler(InterruptFrame *frame);
+static void default_irq_handler(InterruptFrame *frame);
+
+// Declare the handler table — 256 function pointers, all initialized to default_handler
+// Hint: static isr_t handlers[IDT_MAX_ENTRIES] = { [0 ... 255] = default_handler };
+// (This is the GNU range initializer you wanted to use!)
+static isr_t handlers[IDT_MAX_ENTRIES];
+
 // Human-readable exception names for debugging
 static const char *exception_names[] = {
-	"Division by Zero",        // 0
-	"Debug",                   // 1
-	"Non-Maskable Interrupt",  // 2
-	"Breakpoint",              // 3
-	"Overflow",                // 4
-	"Bound Range Exceeded",    // 5
-	"Invalid Opcode",          // 6
-	"Device Not Available",    // 7
-	"Double Fault",            // 8
-	"Coprocessor Segment",     // 9
-	"Invalid TSS",             // 10
-	"Segment Not Present",     // 11
-	"Stack-Segment Fault",     // 12
-	"General Protection Fault",// 13
-	"Page Fault",              // 14
-	"Reserved",                // 15
-	"x87 FP Exception",       // 16
-	"Alignment Check",         // 17
-	"Machine Check",           // 18
-	"SIMD FP Exception",      // 19
-	"Virtualization Exception",// 20
-	"Control Protection",      // 21
+	"Division by Zero",			// 0
+	"Debug",					// 1
+	"Non-Maskable Interrupt",	// 2
+	"Breakpoint",				// 3
+	"Overflow",					// 4
+	"Bound Range Exceeded",		// 5
+	"Invalid Opcode",			// 6
+	"Device Not Available",		// 7
+	"Double Fault",				// 8
+	"Coprocessor Segment",		// 9
+	"Invalid TSS",				// 10
+	"Segment Not Present",		// 11
+	"Stack-Segment Fault",		// 12
+	"General Protection Fault", // 13
+	"Page Fault",				// 14
+	"Reserved",					// 15
+	"x87 FP Exception",			// 16
+	"Alignment Check",			// 17
+	"Machine Check",			// 18
+	"SIMD FP Exception",		// 19
+	"Virtualization Exception", // 20
+	"Control Protection",		// 21
 	"Reserved", "Reserved", "Reserved", "Reserved", "Reserved", "Reserved",
-	"Hypervisor Injection",    // 28
-	"VMM Communication",       // 29
-	"Security Exception",      // 30
-	"Reserved"                 // 31
+	"Hypervisor Injection", // 28
+	"VMM Communication",	// 29
+	"Security Exception",	// 30
+	"Reserved"				// 31
 };
 
 // Set a single IDT entry.
 //
-// TODO: Fill in the IDTEntry fields:
-//   - offset_low:  low 16 bits of handler address
-//   - selector:    code segment selector (GDT_CODE_SEGMENT)
+// The IDTEntry fields:
+//   - offset_low:  low 16 bits of handler address  → handler & 0xFFFF
+//   - selector:    code segment selector            → GDT_CODE_SEGMENT
 //   - reserved:    always 0
-//   - flags:       the flags parameter (e.g. IDT_FLAG_GATE_INTERRUPT)
-//   - offset_high: high 16 bits of handler address
-//
-// Hint: look at how GDT_ENTRY macro splits base into low/middle/high.
-//       Same idea here but simpler — only low and high.
+//   - flags:       the flags parameter
+//   - offset_high: high 16 bits of handler address  → (handler >> 16) & 0xFFFF
 static void idt_set_entry(uint8_t index, uint32_t handler, uint8_t flags)
 {
-	// TODO: Fill in g_IDT[index]
-	// g_IDT[index].offset_low  = ???
-	// g_IDT[index].selector    = ???
-	// g_IDT[index].reserved    = ???
-	// g_IDT[index].flags       = ???
-	// g_IDT[index].offset_high = ???
+	// Fill in g_IDT[index]
+	g_IDT[index].offset_low = handler & 0xFFFF;
+	g_IDT[index].selector = GDT_CODE_SEGMENT;
+	g_IDT[index].reserved = false;
+	g_IDT[index].flags = flags;
+	g_IDT[index].offset_high = (handler >> 16) & 0xFFFF;
 }
 
 void init_idt()
 {
-	// TODO Step 1: Set up the IDT descriptor
-	// g_IDTDescriptor.limit = ???  (hint: sizeof(g_IDT) - 1, same pattern as GDT)
-	// g_IDTDescriptor.base  = ???  (hint: address of g_IDT)
+	// Step 1: Set up the IDT descriptor
+	g_IDTDescriptor.limit = sizeof(g_IDT) - 1;
+	g_IDTDescriptor.base = (uint32_t)&g_IDT;
 
-	// TODO Step 2: Register all CPU exception handlers (ISR 0-31)
-	// Call idt_set_entry for each one with IDT_FLAG_GATE_INTERRUPT
+	// Fill the ISR handlers
+	fill(handlers, default_handler, 0, 256);
+	fill(handlers, default_exception_handler, 0, 32);
+	fill(handlers, default_irq_handler, 32, 48);
+	// Step 2: Register all CPU exception ISR stubs (0-31) in the IDT
+	// These are the ASM stubs, NOT the C++ handlers.
 	// Example: idt_set_entry(0, (uint32_t)isr0, IDT_FLAG_GATE_INTERRUPT);
 	//          idt_set_entry(1, (uint32_t)isr1, IDT_FLAG_GATE_INTERRUPT);
 	//          ... up to isr31
-	// ... your code here ...
+	for (int i = 0; i < 32; i++)
+	{
+		idt_set_entry(i, (uint32_t)(isr[i]), IDT_FLAG_GATE_INTERRUPT);
+	}
 
-	// TODO Step 3: Remap the PIC
+	for (int i = 32; i < 48; i++)
+	{
+		idt_set_entry(i, (uint32_t)(irqp[i - 32]), IDT_FLAG_GATE_INTERRUPT);
+	}
+
+	// Step 3: Remap the PIC
 	// Call pic_remap with offsets 0x20 (32) and 0x28 (40)
-	// ... your code here ...
+	pic_remap(32, 40);
 
-	// TODO Step 4: Register all IRQ handlers (IRQ 0-15 → interrupts 32-47)
-	// Example: idt_set_entry(32, (uint32_t)irq0, IDT_FLAG_GATE_INTERRUPT);
-	//          idt_set_entry(33, (uint32_t)irq1, IDT_FLAG_GATE_INTERRUPT);
-	//          ... up to irq15 at entry 47
-	// ... your code here ...
-
-	// TODO Step 5: Load the IDT
+	//  Step 4: Load the IDT
 	// Call _load_idt(&g_IDTDescriptor);
-	// ... your code here ...
+	_load_idt(&g_IDTDescriptor);
 }
 
-// This is the C++ handler that ALL interrupt stubs call.
-// The asm stub pushes an InterruptFrame onto the stack and passes a pointer to it.
+// Register a custom handler for a specific interrupt.
+// Example: register_interrupt_handler(14, my_page_fault_handler);
+void register_interrupt_handler(uint8_t intno, isr_t handler)
+{
+	handlers[intno] = handler;
+}
+
+// This is the C++ handler that ALL asm stubs call.
+// It dispatches to the appropriate function pointer in handlers[].
 extern "C" void isr_handler(InterruptFrame *frame)
 {
-	uint32_t intno = frame->interrupt_number;
 
-	if (intno < 32)
-	{
-		// TODO: CPU exception
-		// Print the exception name and number, then halt
-		// Hint: use exception_names[intno] for the name
-		// kprintf("Exception %d: %s\n", intno, exception_names[intno]);
-		// kprintf("Error code: 0x%x\n", frame->error_code);
-		// kprintf("EIP: 0x%x\n", frame->eip);
-		// Then halt: for(;;) asm volatile("cli; hlt");
-		// ... your code here ...
-	}
-	else if (intno >= 32 && intno < 48)
-	{
-		// TODO: Hardware IRQ
-		// The IRQ number is intno - 32
-		// For now, just silently acknowledge it
-		// Later you can add specific handlers (timer, keyboard, etc.)
-		//
-		// IMPORTANT: You MUST send EOI to the PIC or no more IRQs will fire!
-		// Call pic_send_eoi(intno - 32);
-		// ... your code here ...
-	}
+	// Look up the handler in the table and call it
+	uint32_t intno = frame->interrupt_number;
+	if (handlers[intno])
+		handlers[intno](frame);
+
+	// For IRQs (intno >= 32 && intno < 48)
+	// you MUST send EOI after the handler runs.
+	// Call pic_send_eoi(intno - 32);
+	if (intno >= 32 && intno < 48)
+		pic_send_eoi(intno - 32);
+}
+
+// Default exception handler — prints info and halts
+static void default_exception_handler(InterruptFrame *frame)
+{
+	kprintf("Exception %d: %s\n", frame->interrupt_number, exception_names[frame->interrupt_number]);
+	kprintf("Error code: 0x%x\n", frame->error_code);
+	kprintf("EIP: 0x%x\n", frame->eip);
+	while (true)
+		asm volatile("cli; hlt");
+}
+
+// Default IRQ handler — silently acknowledges the interrupt
+// (EOI is sent by isr_handler after this returns)
+static void default_irq_handler(InterruptFrame *frame)
+{
+	(void)frame; // unused — just let isr_handler send EOI
+}
+
+// Default handler — does nothing (for interrupts 48-255 that nobody cares about)
+static void default_handler(InterruptFrame *frame)
+{
+	(void)frame; // unused
 }
