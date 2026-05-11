@@ -112,11 +112,13 @@ void Heap::free(void *ptr)
 	BlockHeader *current = head;
 	while (current)
 	{
-		while (block->free && block->next && block->next->free)
+		while (current->free && current->next && current->next->free)
 		{
-			block->size += sizeof(BlockHeader) + block->next->size;
-			block->next = block->next->next;
+			current->size += sizeof(BlockHeader) + current->next->size;
+			current->next = current->next->next;
 		}
+		// Advance
+		current = current->next;
 	}
 }
 
