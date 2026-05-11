@@ -35,7 +35,7 @@ void Heap::init(FrameAllocator &fa, PageDirectory &pd, uint32_t num_pages)
 
 void *Heap::alloc(uint32_t size)
 {
-	// TODO: Walk the free list and find a block that fits
+	// Walk the free list and find a block that fits
 	// Hint: start at head, follow ->next
 	//
 	// For each block:
@@ -52,6 +52,46 @@ void *Heap::alloc(uint32_t size)
 	//
 	// If nothing found, return nullptr
 
+	// Walk the linked list and find a block that fits
+
+	// Start at head
+	BlockHeader *block = head;
+	while (block)
+	{
+		if (!block->free || block->size < size)
+		{
+			block = block->next;
+			continue;
+		}
+		// If the block is big enough to split create a new header
+		if (block->size >= size + sizeof(BlockHeader) + MIN_SPLIT)
+		{
+			// Carve out space from this block to fit the amount of space we need
+			BlockHeader *newBlock = (BlockHeader *)((uint8_t *)block + sizeof(BlockHeader) + size);
+			newBlock->free = true;
+			// .. Transfer the old pointer to newBlock
+			newBlock->next = block->next;
+			// Update new block size to the leftover space
+			newBlock->size = ((block->size) - size) - sizeof(BlockHeader);
+			// Resize block to the space we're allocating
+			block->size = size;
+			// Update block to now be used
+			block->free = false;
+			// Block now gets set to newBlock
+			block->next = newBlock;
+
+			// The chain is now complete.
+
+			// Return the block address after the header
+			return (void *)(block + 1);
+		}
+
+		// If the block is to small to split, but is big enough
+		// Just use it directly
+		block->free = false;
+		return (void *)(block + 1);
+	}
+	// If nothing is found, return nullptr
 	return nullptr;
 }
 
