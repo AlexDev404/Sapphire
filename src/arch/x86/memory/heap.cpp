@@ -5,25 +5,32 @@ static Heap kernel_heap;
 
 void Heap::init(FrameAllocator &fa, PageDirectory &pd, uint32_t num_pages)
 {
-	// TODO Step 1: Allocate num_pages frames from fa
+	// Step 1: Allocate num_pages frames from fa
 	// Store the first frame's address as the start of the heap
 	// Hint: the first call to alloc_frame() gives you the base address
+
 	uint32_t heap_start = 0;
-	// ... your code here ...
+	uint32_t heap_end = 0;
+	for (uint32_t i = 0; i < num_pages; i++)
+	{
+		heap_end = fa.alloc_frame();
+		if (i == 0)
+			heap_start = heap_end;
+	}
 
-	// TODO Step 2: Identity-map the heap region
-	// ... your code here ...
+	// Step 2: Identity-map the heap region
+	pd.identity_map_range(heap_start, heap_end + PAGE_SIZE);
 
-	// TODO Step 3: Set total_size
-	total_size = 0; // fix this
+	// Step 3: Set total_size
+	total_size = (heap_end + PAGE_SIZE) - heap_start;
 
-	// TODO Step 4: Point head at the start of the heap
-	head = nullptr; // fix this
+	// Step 4: Point head at the start of the heap
+	head = (BlockHeader *)(heap_start);
 
-	// TODO Step 5: Set up head as one big free block
-	// head->size = ???
-	// head->free = ???
-	// head->next = ???
+	// Step 5: Set up head as one big free block
+	head->size = total_size - sizeof(BlockHeader);
+	head->free = true;
+	head->next = nullptr;
 }
 
 void *Heap::alloc(uint32_t size)
@@ -50,7 +57,8 @@ void *Heap::alloc(uint32_t size)
 
 void Heap::free(void *ptr)
 {
-	if (!ptr) return;
+	if (!ptr)
+		return;
 
 	// TODO Step 1: Get the block header
 	// Hint: BlockHeader *block = (BlockHeader *)ptr - 1;
