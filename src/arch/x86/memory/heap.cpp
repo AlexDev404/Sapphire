@@ -100,18 +100,20 @@ void Heap::free(void *ptr)
 	if (!ptr)
 		return;
 
-	// TODO Step 1: Get the block header
-	// Hint: BlockHeader *block = (BlockHeader *)ptr - 1;
+	// Get the block header
 	// (ptr points to the usable area, the header is right before it)
+	BlockHeader *block = (BlockHeader *)ptr - 1;
 
-	// TODO Step 2: Mark it free
-	// block->free = true;
+	// Mark it free
+	block->free = true;
 
-	// TODO Step 3: Merge adjacent free blocks
-	// Walk from head. For each block:
-	//   while (block->free && block->next && block->next->free):
-	//     block->size += sizeof(BlockHeader) + block->next->size
-	//     block->next = block->next->next
+	// Merge adjacent free blocks
+	// Walk from head.
+	while (block->free && block->next && block->next->free)
+	{
+		block->size += sizeof(BlockHeader) + block->next->size;
+		block->next = block->next->next;
+	}
 }
 
 // Global wrappers
