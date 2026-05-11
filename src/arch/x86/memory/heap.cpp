@@ -109,10 +109,14 @@ void Heap::free(void *ptr)
 
 	// Merge adjacent free blocks
 	// Walk from head.
-	while (block->free && block->next && block->next->free)
+	BlockHeader *current = head;
+	while (current)
 	{
-		block->size += sizeof(BlockHeader) + block->next->size;
-		block->next = block->next->next;
+		while (block->free && block->next && block->next->free)
+		{
+			block->size += sizeof(BlockHeader) + block->next->size;
+			block->next = block->next->next;
+		}
 	}
 }
 
