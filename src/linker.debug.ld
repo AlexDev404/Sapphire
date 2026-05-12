@@ -1,20 +1,28 @@
+KERNEL_VMA = 0xC0000000;
+
 SECTIONS {
     . = 0x7E00;
-
-    .text : {
-        *(.text)
-    }
-    
-    .rodata : {
-        *(.rodata .rodata.*)
+    .boot : {
+        *kernel_stub.elf(.text .data .rodata .bss)
+        *(.boot .boot.*)
     }
 
-    .data : {
-        *(.data .data.*)
+    . += KERNEL_VMA;
+
+    .text : AT(ADDR(.text) - KERNEL_VMA) {
+        EXCLUDE_FILE(*kernel_stub.elf) *(.text)
     }
 
-    .bss : {
-        *(.bss .bss.*)
+    .rodata : AT(ADDR(.rodata) - KERNEL_VMA) {
+        EXCLUDE_FILE(*kernel_stub.elf) *(.rodata .rodata.*)
+    }
+
+    .data : AT(ADDR(.data) - KERNEL_VMA) {
+        EXCLUDE_FILE(*kernel_stub.elf) *(.data .data.*)
+    }
+
+    .bss : AT(ADDR(.bss) - KERNEL_VMA) {
+        EXCLUDE_FILE(*kernel_stub.elf) *(.bss .bss.*)
     }
 
     /* Include debug sections */

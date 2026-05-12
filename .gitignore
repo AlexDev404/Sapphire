@@ -1,2 +1,5 @@
 out
 .ignored.*
+.idea
+cmake-build-*/
+.claude

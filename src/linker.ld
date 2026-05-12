@@ -1,33 +1,38 @@
 OUTPUT_FORMAT("binary")
 
+KERNEL_VMA = 0xC0000000;
+
 SECTIONS {
+    /* Stage 2 bootloader — runs before paging, needs physical addresses.
+       VMA == LMA here (no paging yet). */
     . = 0x7E00;
-
-    .text : {
-        *(.text)
-    }
-    
-    .rodata : {
-        *(.rodata .rodata.*)
+    .boot : {
+        *kernel_stub.elf(.text .data .rodata .bss)
+        *(.boot .boot.*)
     }
 
-    .data : {
-        *(.data .data.*)
+    /* Kernel code — linked at higher-half virtual addresses.
+       The binary is still loaded at the same physical spot by the bootloader,
+       but the linker resolves all symbol addresses to 0xC0000000+. */
+
+    /* advance VMA into the higher half */
+    . += KERNEL_VMA;
+
+    .text : AT(ADDR(.text) - KERNEL_VMA) {
+        EXCLUDE_FILE(*kernel_stub.elf) *(.text)
     }
 
-    .bss : {
-        *(.bss .bss.*)
+    .rodata : AT(ADDR(.rodata) - KERNEL_VMA) {
+        EXCLUDE_FILE(*kernel_stub.elf) *(.rodata .rodata.*)
     }
 
-    /* Include debug sections */
-    .debug_info       0 : { *(.debug_info) }
-    .debug_abbrev     0 : { *(.debug_abbrev) }
-    .debug_loc        0 : { *(.debug_loc) }
-    .debug_aranges    0 : { *(.debug_aranges) }
-    .debug_ranges     0 : { *(.debug_ranges) }
-    .debug_line       0 : { *(.debug_line) }
-    .debug_str        0 : { *(.debug_str) }
-    .debug_frame      0 : { *(.debug_frame) }
+    .data : AT(ADDR(.data) - KERNEL_VMA) {
+        EXCLUDE_FILE(*kernel_stub.elf) *(.data .data.*)
+    }
+
+    .bss : AT(ADDR(.bss) - KERNEL_VMA) {
+        EXCLUDE_FILE(*kernel_stub.elf) *(.bss .bss.*)
+    }
 
     /DISCARD/ : {
         *(.comment)

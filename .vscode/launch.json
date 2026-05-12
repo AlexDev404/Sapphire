@@ -16,6 +16,7 @@
       ],
       "autorun": [
         "b _entry",
+        "b bootstrap_paging",
         "b platform_init"
       ],
       "valuesFormatting": "prettyPrinters"

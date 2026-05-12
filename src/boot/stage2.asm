@@ -22,6 +22,7 @@
 
 [GLOBAL vbe_mode_block]
 [GLOBAL _entry]					; debugging entrypoint symbol
+[EXTERN bootstrap_paging]		; defined in paging.asm, sets up identity-mapped paging for the transition to protected mode
 [EXTERN platform_init]
 [EXTERN kmain]
 
@@ -124,11 +125,13 @@ pmode_entry:
 	mov ss, ax
 	mov esp, PM_STACK
 
-	push dword boot_info	; pass pointer to boot info (E820 map, VBE info, etc.)
+	call bootstrap_paging	; set up identity-mapped paging so we can access all memory
 	
+	push dword boot_info	; pass pointer to boot info (E820 map, VBE info, etc.)
+
 	; Call platform_init(BootInfo* boot_info)
 	; This will do architecture-specific setup
-	call platform_init		; arch/x86/platform/platform.cpp (x86 hardware init)
+	call platform_init		; now at 0xC000xxxx — paging maps this correctly!
 	call kmain				; kernel/main.cpp (kernel entry point)
 
 	; If kmain ever returns, hang
