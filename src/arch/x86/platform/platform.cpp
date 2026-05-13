@@ -7,6 +7,7 @@
 #include <arch/x86/memory/memory_map.hpp>
 #include <arch/x86/memory/frame_alloc.hpp>
 #include <arch/x86/memory/heap.hpp>
+#include <arch/x86/memory/vmm.hpp>
 #include <driver/fb/kprint.hpp>
 #include <stdint.h>
 
@@ -68,6 +69,22 @@ extern "C" void platform_init(uint32_t boot_info_ptr)
 	// Initialize the kernel heap (16 pages = 64KB)
 	Heap heap;
 	heap.init(frame_alloc, pd, 16);
+
+	// Initialize the virtual memory manager
+	init_vmm(frame_alloc, pd);
+
+	// Test VMM
+	void *p1 = kmalloc_pages(1);
+	void *p2 = kmalloc_pages(4);
+	kprintf("vmm alloc(1) = 0x%x\n", (uint32_t)p1);
+	kprintf("vmm alloc(4) = 0x%x\n", (uint32_t)p2);
+	// Write to it to prove it's mapped
+	*(uint32_t *)p1 = 0xCAFEBABE;
+	kprintf("Wrote 0x%x to p1\n", *(uint32_t *)p1);
+	// Free and re-alloc
+	kfree_pages(p1, 1);
+	void *p3 = kmalloc_pages(1);
+	kprintf("Freed p1, re-alloc(1) = 0x%x (should be 0x%x)\n", (uint32_t)p3, (uint32_t)p1);
 
 	// Verify we're running in higher-half — print address of this function
 	kprintf("platform_init is at: 0x%x\n", (uint32_t)platform_init);

@@ -3,14 +3,6 @@
 #include <arch/x86/cr3/cr3.hpp>
 #include <arch/x86/cr4/cr4.hpp>
 
-static void zero_memory(void *dest, uint32_t size)
-{
-	// Simple byte-wise zeroing
-	uint8_t *d = (uint8_t *)dest;
-	for (uint32_t i = 0; i < size; i++)
-		d[i] = 0;
-}
-
 void PageDirectory::init(uint32_t *dir_addr)
 {
 	entries = dir_addr;
