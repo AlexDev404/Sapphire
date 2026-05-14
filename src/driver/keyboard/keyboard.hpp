@@ -15,11 +15,12 @@
 // Index = scancode, value = ASCII character (0 = no printable character)
 extern const char scancode_to_ascii[128];
 
-struct Keyboard {
+struct Keyboard
+{
 	// Ring buffer for storing typed characters
 	char buffer[KB_BUFFER_SIZE];
-	uint32_t read_pos;   // where the consumer reads from
-	uint32_t write_pos;  // where the ISR writes to
+	uint32_t read_pos;	// where the consumer reads from
+	uint32_t write_pos; // where the ISR writes to
 
 	// Modifier key state
 	bool shift_held;
@@ -37,9 +38,13 @@ struct Keyboard {
 	bool has_input();
 };
 
-// Initialize the keyboard driver (registers IRQ1 handler)
-void init_keyboard();
+namespace keyboard
+{
+	// Initialize the keyboard driver (registers IRQ1 handler)
+	void init_keyboard();
 
-// Read a character (blocking or non-blocking depending on implementation)
-char kb_read_char();
-bool kb_has_input();
+	// Read a character (blocking or non-blocking depending on implementation)
+	char read_char();
+	// Check if the buffer has anything for us
+	bool has_input();
+}

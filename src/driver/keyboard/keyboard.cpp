@@ -1,6 +1,6 @@
 #include <driver/keyboard/keyboard.hpp>
-#include <arch/x86/idt/idt.hpp>
-#include <arch/x86/pic/pic.hpp>
+#include <arch/noarch/interrupts/interrupts.hpp>
+#include <arch/noarch/io/io.hpp>
 #include <driver/fb/kprint.hpp>
 
 // Global keyboard instance
@@ -31,12 +31,12 @@ const char scancode_to_ascii_shift[128] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // Scancodes for modifier keys (Scancode Set 1)
-#define SC_LSHIFT_PRESS 0x2A
-#define SC_RSHIFT_PRESS 0x36
-#define SC_LSHIFT_RELEASE 0xAA
-#define SC_RSHIFT_RELEASE 0xB6
-#define SC_CTRL_PRESS 0x1D
-#define SC_CTRL_RELEASE 0x9D
+#define SC_LSHIFT_PRESS		0x2A
+#define SC_RSHIFT_PRESS		0x36
+#define SC_LSHIFT_RELEASE	0xAA
+#define SC_RSHIFT_RELEASE	0xB6
+#define SC_CTRL_PRESS		0x1D
+#define SC_CTRL_RELEASE		0x9D
 
 void Keyboard::init()
 {
@@ -49,7 +49,7 @@ void Keyboard::init()
 void Keyboard::handle_interrupt()
 {
 	// Read the scancode from the keyboard data port.
-	uint8_t scancode = inb(KB_DATA_PORT);
+	uint8_t scancode = io::read8(KB_DATA_PORT);
 
 	// Handle modifier keys (shift, ctrl).
 	// Check if the scancode is a shift press/release or ctrl press/release.
@@ -106,7 +106,7 @@ char Keyboard::read_char()
 
 bool Keyboard::has_input()
 {
-	return read_pos != write_pos; // replace this
+	return read_pos != write_pos;
 }
 
 // IRQ1 handler — called by the IDT dispatch system
@@ -116,19 +116,19 @@ static void keyboard_irq_handler(InterruptFrame *frame)
 	kb.handle_interrupt();
 }
 
-void init_keyboard()
+void keyboard::init_keyboard()
 {
 	kb.init();
 	// Register our handler for IRQ1 (interrupt 33)
 	register_interrupt_handler(33, keyboard_irq_handler);
 }
 
-char kb_read_char()
+char keyboard::read_char()
 {
 	return kb.read_char();
 }
 
-bool kb_has_input()
+bool keyboard::has_input()
 {
 	return kb.has_input();
 }
