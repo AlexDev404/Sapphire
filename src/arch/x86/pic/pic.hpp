@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <arch/x86/io/io.hpp>
 
 // PIC I/O ports
 #define PIC1_COMMAND 0x20 // Master
@@ -49,10 +50,6 @@ void pic_remap(uint8_t offset1, uint8_t offset2);
 //   1. If irq >= 8, send PIC_EOI to PIC2_COMMAND
 //   2. Always send PIC_EOI to PIC1_COMMAND
 void pic_send_eoi(uint8_t irq);
-
-// Port I/O helpers — you'll need these
-extern "C" void outb(uint16_t port, uint8_t value);
-extern "C" uint8_t inb(uint16_t port);
 
 // Small delay for PIC (some hardware needs a moment between commands)
 static inline void io_wait()

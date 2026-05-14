@@ -1,4 +1,5 @@
 #pragma once
+#include <arch/noarch/interrupts/interrupts.hpp>
 #include <stdint.h>
 #include <packed.hpp>
 
@@ -48,18 +49,13 @@ struct InterruptFrame
 	uint32_t eip, cs, eflags;
 } PACKED;
 
-// Function pointer type for interrupt handlers
-typedef void (*isr_t)(InterruptFrame *frame);
+
 
 // Assembly function to load the IDT (like _load_gdt)
 extern "C" void _load_idt(IDTDescriptor *idt);
 
 // Initialize the IDT: set up all 256 entries, remap PIC, load IDT
 void init_idt();
-
-// Register a custom handler for a specific interrupt number.
-// Example: register_interrupt_handler(14, page_fault_handler);
-void register_interrupt_handler(uint8_t intno, isr_t handler);
 
 // The C++ handler that asm stubs call — declared extern "C" so asm can find it
 extern "C" void isr_handler(InterruptFrame *frame);

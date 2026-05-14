@@ -91,7 +91,5 @@ extern "C" void platform_init(uint32_t boot_info_ptr)
 
 	init_gdt();
 	init_idt();
+	interrupts_enable();
 }
-
-void platform_interrupts_enable() { asm volatile("sti"); }
-void platform_interrupts_disable() { asm volatile("cli"); }

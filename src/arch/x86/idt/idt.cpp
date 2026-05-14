@@ -111,6 +111,9 @@ void register_interrupt_handler(uint8_t intno, isr_t handler)
 	handlers[intno] = handler;
 }
 
+void interrupts_enable() { asm volatile("sti"); }
+void interrupts_disable() { asm volatile("cli"); }
+
 // This is the C++ handler that ALL asm stubs call.
 // It dispatches to the appropriate function pointer in handlers[].
 extern "C" void isr_handler(InterruptFrame *frame)
