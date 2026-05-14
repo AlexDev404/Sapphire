@@ -2,6 +2,7 @@
 #include <arch/noarch/interrupts/interrupts.hpp>
 #include <stdint.h>
 #include <packed.hpp>
+#include <fill.hpp>
 
 // IDT can hold 256 entries (0-255)
 #define IDT_MAX_ENTRIES 256
@@ -49,13 +50,15 @@ struct InterruptFrame
 	uint32_t eip, cs, eflags;
 } PACKED;
 
-
-
 // Assembly function to load the IDT (like _load_gdt)
 extern "C" void _load_idt(IDTDescriptor *idt);
 
 // Initialize the IDT: set up all 256 entries, remap PIC, load IDT
-void init_idt();
+namespace idt
+{
+	void init();
+	void set_entry(uint8_t index, uint32_t handler, uint8_t flags);
+}
 
 // The C++ handler that asm stubs call — declared extern "C" so asm can find it
 extern "C" void isr_handler(InterruptFrame *frame);
@@ -114,13 +117,6 @@ extern "C"
 	extern void irq13();
 	extern void irq14();
 	extern void irq15();
-}
-
-template <typename T>
-void fill(T *arr, T val, int start, int end)
-{
-	for (int i = start; i < end; i++)
-		arr[i] = val;
 }
 
 inline void (*isr[])() = {

@@ -23,7 +23,7 @@ GDTDescriptor g_GDTDescriptor = {
 	.base  = (uint32_t)g_GDT
 };
 
-void init_gdt() {
+void gdt::init() {
 	kdebug("GDT: Initializing Global Descriptor Table...");
 	_load_gdt(&g_GDTDescriptor, GDT_CODE_SEGMENT, GDT_DATA_SEGMENT);
 	kdebug("GDT: Global Descriptor Table loaded successfully.");

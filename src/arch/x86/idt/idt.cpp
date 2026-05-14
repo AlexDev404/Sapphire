@@ -60,7 +60,7 @@ static const char *exception_names[] = {
 //   - reserved:    always 0
 //   - flags:       the flags parameter
 //   - offset_high: high 16 bits of handler address  → (handler >> 16) & 0xFFFF
-static void idt_set_entry(uint8_t index, uint32_t handler, uint8_t flags)
+void idt::set_entry(uint8_t index, uint32_t handler, uint8_t flags)
 {
 	// Fill in g_IDT[index]
 	g_IDT[index].offset_low = handler & 0xFFFF;
@@ -70,7 +70,7 @@ static void idt_set_entry(uint8_t index, uint32_t handler, uint8_t flags)
 	g_IDT[index].offset_high = (handler >> 16) & 0xFFFF;
 }
 
-void init_idt()
+void idt::init()
 {
 	// Step 1: Set up the IDT descriptor
 	g_IDTDescriptor.limit = sizeof(g_IDT) - 1;
@@ -82,17 +82,17 @@ void init_idt()
 	fill(handlers, default_irq_handler, 32, 48);
 	// Step 2: Register all CPU exception ISR stubs (0-31) in the IDT
 	// These are the ASM stubs, NOT the C++ handlers.
-	// Example: idt_set_entry(0, (uint32_t)isr0, IDT_FLAG_GATE_INTERRUPT);
-	//          idt_set_entry(1, (uint32_t)isr1, IDT_FLAG_GATE_INTERRUPT);
+	// Example: idt::set_entry(0, (uint32_t)isr0, IDT_FLAG_GATE_INTERRUPT);
+	//          idt::set_entry(1, (uint32_t)isr1, IDT_FLAG_GATE_INTERRUPT);
 	//          ... up to isr31
 	for (int i = 0; i < 32; i++)
 	{
-		idt_set_entry(i, (uint32_t)(isr[i]), IDT_FLAG_GATE_INTERRUPT);
+		idt::set_entry(i, (uint32_t)(isr[i]), IDT_FLAG_GATE_INTERRUPT);
 	}
 
 	for (int i = 32; i < 48; i++)
 	{
-		idt_set_entry(i, (uint32_t)(irqp[i - 32]), IDT_FLAG_GATE_INTERRUPT);
+		idt::set_entry(i, (uint32_t)(irqp[i - 32]), IDT_FLAG_GATE_INTERRUPT);
 	}
 
 	// Step 3: Remap the PIC
@@ -106,13 +106,13 @@ void init_idt()
 
 // Register a custom handler for a specific interrupt.
 // Example: register_interrupt_handler(14, my_page_fault_handler);
-void register_interrupt_handler(uint8_t intno, isr_t handler)
+void interrupts::register_handler(uint8_t intno, isr_t handler)
 {
 	handlers[intno] = handler;
 }
 
-void interrupts_enable() { asm volatile("sti"); }
-void interrupts_disable() { asm volatile("cli"); }
+void interrupts::enable() { asm volatile("sti"); }
+void interrupts::disable() { asm volatile("cli"); }
 
 // This is the C++ handler that ALL asm stubs call.
 // It dispatches to the appropriate function pointer in handlers[].

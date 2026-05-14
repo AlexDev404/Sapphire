@@ -1,7 +1,4 @@
 #include <driver/keyboard/keyboard.hpp>
-#include <arch/noarch/interrupts/interrupts.hpp>
-#include <arch/noarch/io/io.hpp>
-#include <driver/fb/kprint.hpp>
 
 // Global keyboard instance
 static Keyboard kb;
@@ -120,7 +117,7 @@ void keyboard::init_keyboard()
 {
 	kb.init();
 	// Register our handler for IRQ1 (interrupt 33)
-	register_interrupt_handler(33, keyboard_irq_handler);
+	interrupts::register_handler(33, keyboard_irq_handler);
 }
 
 char keyboard::read_char()

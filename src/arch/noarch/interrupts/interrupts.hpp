@@ -11,9 +11,11 @@ struct InterruptFrame;
 // Function pointer type for interrupt handlers
 typedef void (*isr_t)(InterruptFrame *frame);
 
-// Register a handler for a specific interrupt number.
-void register_interrupt_handler(uint8_t intno, isr_t handler);
-
-// Enable/disable interrupts (platform-specific implementation)
-void interrupts_enable();
-void interrupts_disable();
+namespace interrupts
+{
+    // Register a handler for a specific interrupt number.
+    void register_handler(uint8_t intno, isr_t handler);
+    void enable();
+    // Enable/disable interrupts (platform-specific implementation)
+    void disable();
+}

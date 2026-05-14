@@ -1,15 +1,18 @@
 #pragma once
 #include <stdint.h>
+#include <arch/noarch/interrupts/interrupts.hpp>
+#include <arch/noarch/io/io.hpp>
+#include <driver/fb/kprint.hpp>
 
 // PS/2 Keyboard I/O ports
-#define KB_DATA_PORT    0x60  // Read scancode from here
-#define KB_STATUS_PORT  0x64  // Check status before reading
+#define KB_DATA_PORT 0x60	// Read scancode from here
+#define KB_STATUS_PORT 0x64 // Check status before reading
 
 // Key state flags
-#define KB_RELEASED     0x80  // Bit 7 set = key released (break code)
+#define KB_RELEASED 0x80 // Bit 7 set = key released (break code)
 
 // Ring buffer size (must be power of 2 for easy wrapping)
-#define KB_BUFFER_SIZE  256
+#define KB_BUFFER_SIZE 256
 
 // Scancode Set 1 → ASCII lookup table (lowercase only for now)
 // Index = scancode, value = ASCII character (0 = no printable character)

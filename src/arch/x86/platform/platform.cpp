@@ -8,6 +8,7 @@
 #include <arch/x86/memory/frame_alloc.hpp>
 #include <arch/x86/memory/heap.hpp>
 #include <arch/x86/memory/vmm.hpp>
+#include <arch/noarch/syscall/syscall.hpp>
 #include <driver/fb/kprint.hpp>
 #include <stdint.h>
 
@@ -89,7 +90,9 @@ extern "C" void platform_init(uint32_t boot_info_ptr)
 	// Verify we're running in higher-half — print address of this function
 	kprintf("platform_init is at: 0x%x\n", (uint32_t)platform_init);
 
-	init_gdt();
-	init_idt();
-	interrupts_enable();
+	gdt::init();
+	idt::init();
+	interrupts::enable();
+	// Syscalls
+	syscalls::init();
 }

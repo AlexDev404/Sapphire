@@ -13,10 +13,11 @@ ASM=nasm
 # Removed O2 because it caused issues with debugging and optimization in a kernel context
 CXXFLAGS=-ffreestanding -Wall -Wextra -fno-exceptions \
 	-fno-rtti -m32 -fno-pic -mno-sse -mno-sse2 -mno-mmx -mno-80387 -g \
-	-fno-pie -fno-inline -I./ -I./include
+	-fno-pie -fno-inline -I./ -I./include -I./arch/noarch/include
 
 CPP_SOURCES=$(wildcard kernel/*.cpp kernel/**/*.cpp kernel/**/**/*.cpp \
                         arch/x86/**/*.cpp \
+						arch/x86/**/**/*.cpp \
                         driver/**/*.cpp driver/**/**/*.cpp)
 CPP_OBJECTS=$(patsubst %.cpp,${OBJECTS_DIR}/%.o,$(CPP_SOURCES))
 
