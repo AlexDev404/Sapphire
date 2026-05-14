@@ -1,7 +1,7 @@
 #include <driver/fb/primitives/string.hpp>
 
-
-void draw_string(const char *text, unsigned long fgcolor, unsigned long bgcolor, int start_x, int y){
+void draw_string(const char *text, unsigned long fgcolor, unsigned long bgcolor, int start_x, int y)
+{
 	if (text == nullptr || *text == '\0')
 	{
 		// If text is null or empty, do nothing
@@ -26,6 +26,14 @@ void draw_string(const char *text, unsigned long fgcolor, unsigned long bgcolor,
 		{
 			// Carriage return - move to start of current line
 			pos = start_x;
+			continue;
+		}
+		else if (b == '\b')
+		{
+			// Clear the last character and continue
+			// Don't let the cursor be less than zero
+			pos = pos <= 0 ? 0 : pos - 9;
+			draw_char(' ', pos, pos_y, fgcolor, bgcolor);
 			continue;
 		}
 		else if (b == '\t')

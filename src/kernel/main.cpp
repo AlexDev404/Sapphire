@@ -9,6 +9,7 @@ extern "C" void kmain()
 	kprintf("\n\nHello, World! This is a test of the kernel's main function.");
 	line(10, 10, 100, 100, COLOR_RED);
 	keyboard::init_keyboard();
+	kprintf("\n[keyboard]: Keyboard driver is ready\n");
 	while (true)
 	{
 		if (keyboard::has_input())
