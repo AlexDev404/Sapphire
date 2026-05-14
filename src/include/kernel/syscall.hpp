@@ -17,3 +17,14 @@
 //   EBX = arg1
 //   Return value comes back in EAX
 uint32_t syscall(uint32_t number, uint32_t arg1 = 0);
+
+struct WriteArgs {
+    uint32_t count;
+    uint32_t fd;
+    void* buf;
+};
+struct ReadArgs {
+    uint32_t count;
+    uint32_t fd;
+    void* buf;
+};

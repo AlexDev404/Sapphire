@@ -100,6 +100,7 @@ extern "C"
 	extern void isr29();
 	extern void isr30();
 	extern void isr31();
+	extern void isr128(); // Special case (syscalls)
 	// Hardware IRQs (32-47)
 	extern void irq0();
 	extern void irq1();

@@ -95,6 +95,9 @@ void idt::init()
 		idt::set_entry(i, (uint32_t)(irqp[i - 32]), IDT_FLAG_GATE_INTERRUPT);
 	}
 
+	// Special case: Syscall handler
+	idt::set_entry(128, (uint32_t)(isr128), IDT_FLAG_GATE_INTERRUPT);
+
 	// Step 3: Remap the PIC
 	// Call pic_remap with offsets 0x20 (32) and 0x28 (40)
 	pic_remap(32, 40);

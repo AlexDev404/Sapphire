@@ -27,6 +27,15 @@ isr%1:
 	jmp isr_common
 %endmacro
 
+; Syscall handler (interrupt 128)
+; also doesn't have an error code
+; but we want to pass 128 as the interrupt number
+[GLOBAL isr128]
+isr128:
+	push 0          ; dummy error code
+	push 128        ; interrupt number (for syscall)
+	jmp isr_common
+
 ; Macro for ISR that DOES have an error code (CPU pushes it automatically)
 %macro ISR_HAS_ERR 1
 [GLOBAL isr%1]
