@@ -99,6 +99,11 @@ debug: build-gdb
 build-gdb:
 	@echo "Preparing debug session"
 
+# Regenerate compile_commands.json for clangd (run after adding source dirs
+# or changing CXXFLAGS above)
+compile_commands.json:
+	bash tools/gen_compile_commands.sh
+
 # Create directories and setup empty floppy image
 always: clean
 	@echo Preparing...

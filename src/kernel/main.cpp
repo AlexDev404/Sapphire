@@ -11,14 +11,6 @@ extern "C" void kmain()
 	line(10, 10, 100, 100, COLOR_RED);
 	keyboard::init_keyboard();
 	kprintf("\n[keyboard]: Keyboard driver is ready\n");
-	// while (true)
-	// {
-	// 	if (keyboard::has_input())
-	// 	{
-	// 		char c = keyboard::read_char();
-	// 		kprintf("%c", c);
-	// 	}
-	// }
 
 	// Test the "write" syscall
 	const char *buf_wa = "TEST";
