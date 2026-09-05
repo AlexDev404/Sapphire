@@ -16,5 +16,5 @@ CompileFlags:
     - "-mno-80387"
     - "-xc++"
 Diagnostics:
-  MissingIncludes: Strict
+  MissingIncludes: None
   UnusedIncludes: Strict
