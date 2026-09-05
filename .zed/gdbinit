@@ -1,0 +1,6 @@
+set architecture i386
+set osabi none
+break _entry
+break bootstrap_paging
+break platform_init
+target remote localhost:1234

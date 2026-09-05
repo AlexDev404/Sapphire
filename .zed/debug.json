@@ -1,0 +1,13 @@
+[
+  {
+    "label": "SapphireOS: Debug kernel",
+    "adapter": "GDB",
+    "request": "launch",
+    "program": "$ZED_WORKTREE_ROOT/src/kernel.bin.sym",
+    "cwd": "$ZED_WORKTREE_ROOT/src",
+    "gdb_path": "C:\\mingw64\\bin\\gdb.exe",
+    "gdb_args": [
+      "-x", "$ZED_WORKTREE_ROOT/.zed/gdbinit"
+    ]
+  }
+]
